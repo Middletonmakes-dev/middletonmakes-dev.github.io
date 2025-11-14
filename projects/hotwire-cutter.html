@@ -83,14 +83,14 @@
     <header>
       <h1>CNC Hotwire Cutter</h1>
       <p class="subtitle">
-        Custom foam-cutting rig for wings and fuselages, running CNC control and built to experiment with wire tension.
+        Custom foam-cutting rig for wings and fuselages, running CNC control and custom dynamic wire tensioner.
       </p>
     </header>
 
     <!-- HERO MEDIA -->
     <div class="hero-media">
       <!-- Option A: main image (once you upload it, update the src below) -->
-      <img src="/assets/images/hotwire-cutter/hero.jpg" alt="CNC Hotwire Cutter">
+      <img src="/assets/images/hotwire-cutter/hero.jpg">
 
       <!-- Option B: use a YouTube hero instead of the image
       <iframe src="YOUTUBE_EMBED_URL_1" title="Hotwire cutter demo" allowfullscreen></iframe>
@@ -101,8 +101,8 @@
       <h2 class="section-title">Overview</h2>
       <p class="muted">
         This CNC hotwire cutter is built for shaping XPS/EPS foam cores for UAV wings and fuselages.
-        The rig is driven by a controller running G-code (CNCjs on a Raspberry Pi) and was designed as a flexible
-        platform for experimenting with wire tension, temperature, and cutting strategies.
+        The rig is driven by a controller running G-code on a MKS gen L and was designed as a flexible
+        platform for experimenting with wire tension, temperature, and cutting strategies. Based on RC keiths hotwire.
       </p>
     </section>
 
@@ -110,9 +110,9 @@
       <h2 class="section-title">Mechanical & electronics</h2>
       <ul>
         <li>Frame built to accommodate wing panels and full fuselage blocks.</li>
-        <li>Stepper-driven axes controlled via a CNC controller (e.g. MKS Gen L) and CNCjs on a Raspberry Pi.</li>
+        <li>Stepper-driven axes controlled via a CNC controller MKS Gen L.</li>
         <li>Nichrome cutting wire, powered with adjustable current for tuning cut quality.</li>
-        <li>Future integration with a dedicated wire tensioner (ESP32 + load cell / stepper concepts).</li>
+        <li>Integrated with a dedicated wire tensioner (ESP32 + load cell / stepper motor).</li>
       </ul>
     </section>
 
@@ -187,6 +187,7 @@
   </script>
 </body>
 </html>
+
 
 
 
