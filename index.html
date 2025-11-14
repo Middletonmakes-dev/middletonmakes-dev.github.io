@@ -31,6 +31,8 @@
     .hero{text-align:center;margin-bottom:18px}
     .hero h1{font-size:36px;margin-bottom:4px}
     .hero p{color:var(--muted)}
+    .section-title{margin-top:32px;font-size:22px}
+    .section-sub{margin-top:6px;color:var(--muted);font-size:14px}
     .grid{
       display:grid;
       grid-template-columns:repeat(auto-fill,minmax(260px,1fr));
@@ -57,7 +59,6 @@
       padding:6px 10px;border-radius:10px;
       border:1px solid #2a313a;
     }
-    .section-title{margin-top:32px;font-size:22px}
     .about, .contact{margin-top:12px;color:var(--muted)}
     .footer{
       border-top:1px solid #1f2329;
@@ -72,9 +73,10 @@
 </head>
 <body>
   <nav class="topnav">
-    <a class="brand" href="#">Middleton Makes</a>
+    <a class="brand" href="/">Middleton Makes</a>
     <div class="links">
-      <a href="#projects" class="active">Projects</a>
+      <a href="#uav" class="active">UAV Projects</a>
+      <a href="#builds">Builds & Experiments</a>
       <a href="#about">About</a>
       <a href="#contact">Contact</a>
       <a href="https://github.com/YOUR-GITHUB-USERNAME" target="_blank" rel="noopener">GitHub</a>
@@ -87,55 +89,159 @@
       <p>UAVs · Electronics · 3D Printing · Mixed Media Builds</p>
     </header>
 
-    <section id="projects">
-      <h2 class="section-title">Projects</h2>
-      <p class="about">A selection of things I’ve built or worked on. Each tile links to code, notes, or media.</p>
+    <!-- UAV PROJECTS -->
+    <section id="uav">
+      <h2 class="section-title">UAV Platforms</h2>
+      <p class="section-sub">Key airframes and platforms I’ve contributed to: design, integration, testing, and iteration.</p>
 
       <div class="grid">
-        <!-- Project 1 -->
+        <!-- VALK -->
         <article class="card">
           <div class="thumb">
-            <img src="https://placehold.co/600x338?text=CNC+Hotwire" alt="CNC Hotwire Cutter">
+            <img src="https://placehold.co/600x338?text=VALK+UAV" alt="VALK UAV">
+          </div>
+          <div class="card-body">
+            <h3>VALK</h3>
+            <p>High-endurance fixed-wing UAV platform. Roles: design support, integration, testing, and field operations.</p>
+            <div class="meta">
+              <a class="btn" href="/projects/valk.html">View project</a>
+            </div>
+          </div>
+        </article>
+
+        <!-- ENDURA -->
+        <article class="card">
+          <div class="thumb">
+            <img src="https://placehold.co/600x338?text=ENDURA+UAV" alt="ENDURA UAV">
+          </div>
+          <div class="card-body">
+            <h3>ENDURA</h3>
+            <p>Long-range endurance UAV. Focus on structural optimization, composite work, and mission-profile tuning.</p>
+            <div class="meta">
+              <a class="btn" href="/projects/endura.html">View project</a>
+            </div>
+          </div>
+        </article>
+
+        <!-- SCOUT -->
+        <article class="card">
+          <div class="thumb">
+            <img src="https://placehold.co/600x338?text=SCOUT+UAV" alt="SCOUT UAV">
+          </div>
+          <div class="card-body">
+            <h3>SCOUT</h3>
+            <p>Compact UAV for mapping/surveillance use-cases. Involvement across design, integration, and field testing.</p>
+            <div class="meta">
+              <a class="btn" href="/projects/scout.html">View project</a>
+            </div>
+          </div>
+        </article>
+      </div>
+    </section>
+
+    <!-- BUILDS & EXPERIMENTS -->
+    <section id="builds">
+      <h2 class="section-title">Builds & Experiments</h2>
+      <p class="section-sub">Tools, rigs, and side projects that support UAV work, testing, and general making.</p>
+
+      <div class="grid">
+        <!-- Hotwire cutter -->
+        <article class="card">
+          <div class="thumb">
+            <img src="https://placehold.co/600x338?text=Hotwire+Cutter" alt="CNC Hotwire Cutter">
           </div>
           <div class="card-body">
             <h3>CNC Hotwire Cutter</h3>
-            <p>CNC foam cutter for wings / fuselages, with custom wire tension control and CNCjs on a Raspberry Pi.</p>
+            <p>Custom foam cutter for wings and fuselages, running CNCjs on a Raspberry Pi with custom wire tension ideas.</p>
             <div class="meta">
-              <a class="btn" href="https://github.com/YOUR-GITHUB-USERNAME/REPO-NAME" target="_blank">View code</a>
-              <!-- <a class="btn" href="YOUTUBE-EMBED-OR-VIDEO-LINK" target="_blank">Demo video</a> -->
+              <a class="btn" href="/projects/hotwire-cutter.html">View project</a>
             </div>
           </div>
         </article>
 
-        <!-- Project 2 -->
+        <!-- UAV motor bench tester -->
         <article class="card">
           <div class="thumb">
-            <img src="https://placehold.co/600x338?text=ESP32+Tensioner" alt="ESP32 Wire Tension Meter">
+            <img src="https://placehold.co/600x338?text=Motor+Bench+Tester" alt="UAV Motor Bench Tester">
           </div>
           <div class="card-body">
-            <h3>ESP32 Wire Tension Meter</h3>
-            <p>OLED + HX711 load cell displaying real-time wire tension with a calibrated factor, built for the hotwire rig.</p>
+            <h3>UAV Motor Bench Tester</h3>
+            <p>Bench test rig for motors and props, logging thrust, current, and temperature for propulsion tuning.</p>
             <div class="meta">
-              <a class="btn" href="https://github.com/YOUR-GITHUB-USERNAME/ANOTHER-REPO" target="_blank">View code</a>
+              <a class="btn" href="/projects/motor-bench.html">View project</a>
             </div>
           </div>
         </article>
 
-        <!-- Project 3 -->
+        <!-- Temp logger -->
         <article class="card">
           <div class="thumb">
-            <img src="https://placehold.co/600x338?text=UAV+Interceptor" alt="UAV Interceptor Concept">
+            <img src="https://placehold.co/600x338?text=Temp+Logger" alt="Temperature Logger">
           </div>
           <div class="card-body">
-            <h3>Interceptor UAV Concepts</h3>
-            <p>High-speed VTOL interceptor concepts with modular payloads, focused on agility and compact airframes.</p>
+            <h3>Temperature Logger</h3>
+            <p>Microcontroller-based temperature logging for curing, resin work, or test environments.</p>
             <div class="meta">
-              <a class="btn" href="https://github.com/YOUR-GITHUB-USERNAME" target="_blank">Design notes</a>
+              <a class="btn" href="/projects/temp-logger.html">View project</a>
             </div>
           </div>
         </article>
 
-        <!-- Add more <article> blocks here for more projects -->
+        <!-- Slow-motion timer -->
+        <article class="card">
+          <div class="thumb">
+            <img src="https://placehold.co/600x338?text=Slow+Motion+Timer" alt="Slow Motion Timer">
+          </div>
+          <div class="card-body">
+            <h3>Slow-motion Timer</h3>
+            <p>Millisecond timer used with high-FPS video to measure acceleration and motion events.</p>
+            <div class="meta">
+              <a class="btn" href="/projects/slowmo-timer.html">View project</a>
+            </div>
+          </div>
+        </article>
+
+        <!-- Portal PC -->
+        <article class="card">
+          <div class="thumb">
+            <img src="https://placehold.co/600x338?text=Portal+PC" alt="Portal-themed PC">
+          </div>
+          <div class="card-body">
+            <h3>Portal PC</h3>
+            <p>Custom SFF PC build with a Portal-inspired aesthetic and telemetry display.</p>
+            <div class="meta">
+              <a class="btn" href="/projects/portal-pc.html">View project</a>
+            </div>
+          </div>
+        </article>
+
+        <!-- Watchdog -->
+        <article class="card">
+          <div class="thumb">
+            <img src="https://placehold.co/600x338?text=Watchdog" alt="Watchdog project">
+          </div>
+          <div class="card-body">
+            <h3>Watchdog</h3>
+            <p>Monitoring / safety system (details you can expand: watchdog timer, alarms, or GCS helper).</p>
+            <div class="meta">
+              <a class="btn" href="/projects/watchdog.html">View project</a>
+            </div>
+          </div>
+        </article>
+
+        <!-- UAV launcher -->
+        <article class="card">
+          <div class="thumb">
+            <img src="https://placehold.co/600x338?text=UAV+Launcher" alt="UAV Launcher">
+          </div>
+          <div class="card-body">
+            <h3>UAV Launcher</h3>
+            <p>Custom rail launcher for fixed-wing UAVs, including draw-weight and launch-speed calculations.</p>
+            <div class="meta">
+              <a class="btn" href="/projects/uav-launcher.html">View project</a>
+            </div>
+          </div>
+        </article>
       </div>
     </section>
 

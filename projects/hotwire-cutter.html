@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>CNC Hotwire Cutter — Middleton Makes</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <style>
+    :root{
+      --bg:#0b0d10; --card:#14181d; --text:#e6e8eb;
+      --muted:#98a2b3; --accent:#5bd1ff; --chip:#21262d;
+    }
+    *{box-sizing:border-box;margin:0;padding:0}
+    body{
+      background:var(--bg);color:var(--text);
+      font:16px/1.6 system-ui,Segoe UI,Roboto,Ubuntu,"Helvetica Neue",Arial;
+    }
+    a{color:var(--accent);text-decoration:none}
+    a:hover{text-decoration:underline}
+    .topnav{
+      position:sticky;top:0;
+      backdrop-filter:saturate(120%) blur(6px);
+      background:rgba(11,13,16,.85);
+      border-bottom:1px solid #1f2329;
+      display:flex;align-items:center;justify-content:space-between;
+      padding:12px 24px;z-index:10;
+    }
+    .brand{font-weight:700;letter-spacing:.3px}
+    .links a{margin-left:16px;opacity:.9}
+    .links a.active{border-bottom:2px solid var(--accent)}
+    .container{max-width:900px;margin:0 auto;padding:24px}
+    h1{font-size:30px;margin-bottom:4px}
+    .subtitle{color:var(--muted);margin-bottom:18px}
+    .hero-media{margin:12px 0 20px;border-radius:14px;overflow:hidden;border:1px solid #1f2329}
+    .hero-media img{width:100%;display:block;object-fit:cover;max-height:420px}
+    .hero-media iframe{width:100%;aspect-ratio:16/9;border:0;display:block}
+    .section-title{margin-top:24px;font-size:20px;margin-bottom:6px}
+    .muted{color:var(--muted)}
+    ul{margin:8px 0 12px 18px}
+    .btn-row{margin-top:14px;display:flex;gap:10px;flex-wrap:wrap}
+    .btn{
+      display:inline-block;font-size:14px;
+      padding:6px 10px;border-radius:10px;
+      border:1px solid #2a313a;
+    }
+    .gallery{
+      display:grid;
+      grid-template-columns:repeat(auto-fill,minmax(200px,1fr));
+      gap:10px;margin-top:8px;
+    }
+    .gallery img{
+      width:100%;border-radius:10px;border:1px solid #1f2329;
+      object-fit:cover;max-height:180px;
+    }
+    .video-grid{
+      display:grid;
+      grid-template-columns:1fr;
+      gap:12px;
+      margin-top:10px;
+    }
+    .footer{
+      border-top:1px solid #1f2329;
+      padding:24px;text-align:center;color:var(--muted);
+      margin-top:32px;
+    }
+    @media (max-width:600px){
+      .container{padding:16px}
+      h1{font-size:24px}
+    }
+  </style>
+</head>
+<body>
+  <nav class="topnav">
+    <a class="brand" href="/">Middleton Makes</a>
+    <div class="links">
+      <a href="/#uav">UAV Projects</a>
+      <a href="/#builds">Builds & Experiments</a>
+      <a href="/#about">About</a>
+      <a href="/#contact">Contact</a>
+    </div>
+  </nav>
+
+  <main class="container">
+    <header>
+      <h1>CNC Hotwire Cutter</h1>
+      <p class="subtitle">
+        Custom foam-cutting rig for wings and fuselages, running CNC control and built to experiment with wire tension.
+      </p>
+    </header>
+
+    <!-- HERO MEDIA -->
+    <div class="hero-media">
+      <!-- Option A: main image (once you upload it, update the src below) -->
+      <img src="/assets/images/hotwire-cutter/hero.jpg" alt="CNC Hotwire Cutter">
+
+      <!-- Option B: use a YouTube hero instead of the image
+      <iframe src="YOUTUBE_EMBED_URL_1" title="Hotwire cutter demo" allowfullscreen></iframe>
+      -->
+    </div>
+
+    <section>
+      <h2 class="section-title">Overview</h2>
+      <p class="muted">
+        This CNC hotwire cutter is built for shaping XPS/EPS foam cores for UAV wings and fuselages.
+        The rig is driven by a controller running G-code (CNCjs on a Raspberry Pi) and was designed as a flexible
+        platform for experimenting with wire tension, temperature, and cutting strategies.
+      </p>
+    </section>
+
+    <section>
+      <h2 class="section-title">Mechanical & electronics</h2>
+      <ul>
+        <li>Frame built to accommodate wing panels and full fuselage blocks.</li>
+        <li>Stepper-driven axes controlled via a CNC controller (e.g. MKS Gen L) and CNCjs on a Raspberry Pi.</li>
+        <li>Nichrome cutting wire, powered with adjustable current for tuning cut quality.</li>
+        <li>Future integration with a dedicated wire tensioner (ESP32 + load cell / stepper concepts).</li>
+      </ul>
+    </section>
+
+    <section>
+      <h2 class="section-title">What the rig is used for</h2>
+      <ul>
+        <li>Cutting wing cores with specific airfoils for fixed-wing UAVs.</li>
+        <li>Fuselage blanks that later get CNC-milled or hand-shaped.</li>
+        <li>Process experiments: wire temp vs feed rate vs foam type.</li>
+        <li>Supporting composite work (foam cores for resin-infused skins).</li>
+      </ul>
+    </section>
+
+    <section>
+      <h2 class="section-title">Videos</h2>
+      <p class="muted">Short clips showing the machine in action and test cuts.</p>
+      <div class="video-grid">
+        <!-- Video 1 -->
+        <div class="hero-media">
+          <iframe
+            src="https://youtu.be/tF-kG6sH9Ek"
+            title="Hotwire cutter video 1"
+            allowfullscreen>
+          </iframe>
+        </div>
+
+        <!-- Video 2 -->
+        <div class="hero-media">
+          <iframe
+            src="https://youtu.be/jXeEOqtek9w"
+            title="Hotwire cutter video 2"
+            allowfullscreen>
+          </iframe>
+        </div>
+      </div>
+    </section>
+
+    <section>
+      <h2 class="section-title">Build gallery</h2>
+      <p class="muted">Photos of the frame, electronics, and some of the foam parts it’s produced.</p>
+      <div class="gallery">
+        <!-- Replace these with your real image paths once you upload them -->
+        <img src="https://placehold.co/600x400?text=Frame+Build" alt="Hotwire cutter frame">
+        <img src="https://placehold.co/600x400?text=Electronics" alt="Electronics and controller">
+        <img src="https://placehold.co/600x400?text=Foam+Wing+Core" alt="Cut foam wing core">
+      </div>
+    </section>
+
+    <section>
+      <h2 class="section-title">Code & configuration</h2>
+      <p class="muted">
+        If you publish the controller config, CNCjs setup, or wire-tension experiments,
+        link them here. Otherwise this section can describe your approach to feeds, speeds, and wire temperatures.
+      </p>
+      <div class="btn-row">
+        <!-- Uncomment + edit if you have a repo -->
+        <!--
+        <a class="btn" href="https://github.com/YOUR-GITHUB-USERNAME/HOTWIRE-REPO" target="_blank" rel="noopener">
+          View config / code
+        </a>
+        -->
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    © <span id="year"></span> Middleton Makes
+  </footer>
+
+  <script>
+    document.getElementById('year').textContent = new Date().getFullYear();
+  </script>
+</body>
+</html>
