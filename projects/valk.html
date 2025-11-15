@@ -62,21 +62,25 @@
       position:absolute;
     }
 
-    /* Slide offset logic */
+    /* Slide offset logic (now 8 slides) */
     .carousel > input:nth-of-type(1):checked ~ .carousel__slides .carousel__slide:first-of-type { margin-left:0%; }
     .carousel > input:nth-of-type(2):checked ~ .carousel__slides .carousel__slide:first-of-type { margin-left:-100%; }
     .carousel > input:nth-of-type(3):checked ~ .carousel__slides .carousel__slide:first-of-type { margin-left:-200%; }
     .carousel > input:nth-of-type(4):checked ~ .carousel__slides .carousel__slide:first-of-type { margin-left:-300%; }
     .carousel > input:nth-of-type(5):checked ~ .carousel__slides .carousel__slide:first-of-type { margin-left:-400%; }
     .carousel > input:nth-of-type(6):checked ~ .carousel__slides .carousel__slide:first-of-type { margin-left:-500%; }
+    .carousel > input:nth-of-type(7):checked ~ .carousel__slides .carousel__slide:first-of-type { margin-left:-600%; }
+    .carousel > input:nth-of-type(8):checked ~ .carousel__slides .carousel__slide:first-of-type { margin-left:-700%; }
 
-    /* Thumbnail highlight */
+    /* Thumbnail highlight (also 8) */
     .carousel > input:nth-of-type(1):checked ~ .carousel__thumbnails li:nth-of-type(1),
     .carousel > input:nth-of-type(2):checked ~ .carousel__thumbnails li:nth-of-type(2),
     .carousel > input:nth-of-type(3):checked ~ .carousel__thumbnails li:nth-of-type(3),
     .carousel > input:nth-of-type(4):checked ~ .carousel__thumbnails li:nth-of-type(4),
     .carousel > input:nth-of-type(5):checked ~ .carousel__thumbnails li:nth-of-type(5),
-    .carousel > input:nth-of-type(6):checked ~ .carousel__thumbnails li:nth-of-type(6){
+    .carousel > input:nth-of-type(6):checked ~ .carousel__thumbnails li:nth-of-type(6),
+    .carousel > input:nth-of-type(7):checked ~ .carousel__thumbnails li:nth-of-type(7),
+    .carousel > input:nth-of-type(8):checked ~ .carousel__thumbnails li:nth-of-type(8){
       box-shadow:0 0 0 2px rgba(91,209,255,0.9);
       border-radius:8px;
     }
@@ -247,13 +251,15 @@
 
       <!-- Carousel with YouTube as first slide -->
       <div class="carousel">
-        <!-- Radio controls -->
+        <!-- Radio controls (now 8) -->
         <input type="radio" name="valk-slides" id="valk-slide-1" checked>
         <input type="radio" name="valk-slides" id="valk-slide-2">
         <input type="radio" name="valk-slides" id="valk-slide-3">
         <input type="radio" name="valk-slides" id="valk-slide-4">
         <input type="radio" name="valk-slides" id="valk-slide-5">
         <input type="radio" name="valk-slides" id="valk-slide-6">
+        <input type="radio" name="valk-slides" id="valk-slide-7">
+        <input type="radio" name="valk-slides" id="valk-slide-8">
 
         <!-- Main slides -->
         <ul class="carousel__slides">
@@ -296,7 +302,6 @@
             </figure>
           </li>
 
-          <!-- Optional extra slides -->
           <li class="carousel__slide">
             <figure>
               <div class="carousel__media">
@@ -312,19 +317,19 @@
               </div>
             </figure>
           </li>
-        
+
           <li class="carousel__slide">
             <figure>
               <div class="carousel__media">
-                <img src="/assets/images/valk/build-6.jpg" alt="VALK UAV in flight">
+                <img src="/assets/images/valk/build-6.jpg" alt="VALK UAV in flight 2">
               </div>
             </figure>
           </li>
-          
+
           <li class="carousel__slide">
             <figure>
               <div class="carousel__media">
-                <img src="/assets/images/valk/build-7.jpg" alt="VALK UAV in flight">
+                <img src="/assets/images/valk/build-7.jpg" alt="VALK UAV in flight 3">
               </div>
             </figure>
           </li>
@@ -334,7 +339,6 @@
         <ul class="carousel__thumbnails">
           <li>
             <label for="valk-slide-1">
-              <!-- Thumb for video (could be a frame grab or logo) -->
               <img src="/assets/images/valk/thumb-video.jpg" alt="VALK overview video thumbnail">
             </label>
           </li>
@@ -365,12 +369,12 @@
           </li>
           <li>
             <label for="valk-slide-7">
-              <img src="/assets/images/valk/build-6.jpg" alt="VALK flight photo thumbnail">
+              <img src="/assets/images/valk/build-6.jpg" alt="VALK flight photo thumbnail 2">
             </label>
           </li>
           <li>
             <label for="valk-slide-8">
-              <img src="/assets/images/valk/build-7.jpg" alt="VALK flight photo thumbnail">
+              <img src="/assets/images/valk/build-7.jpg" alt="VALK flight photo thumbnail 3">
             </label>
           </li>
         </ul>
@@ -387,5 +391,3 @@
   </script>
 </body>
 </html>
-
-
