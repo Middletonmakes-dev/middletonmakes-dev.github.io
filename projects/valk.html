@@ -37,97 +37,130 @@
     .muted{color:var(--muted)}
     ul{margin:8px 0 12px 18px}
 
-    /* --- Carousel --- */
+    /* --- Carousel (radio + thumbnails) --- */
     .carousel{
+      display:block;
+      text-align:left;
+      position:relative;
       margin-top:16px;
+      margin-bottom:12px;
+      background:var(--card);
       border-radius:12px;
       border:1px solid #1f2329;
-      overflow:hidden;
-      position:relative;
-      background:var(--card);
-    }
-    .carousel-track{
-      display:flex;
-      transition:transform 0.4s ease;
-      will-change:transform;
-    }
-    .carousel-slide{
-      min-width:100%;
-    }
-    .carousel-slide img{
-      width:100%;
-      display:block;
-      object-fit:cover;
-      max-height:260px;
-      cursor:pointer;
-    }
-    .carousel-btn{
-      position:absolute;
-      top:50%;
-      transform:translateY(-50%);
-      background:rgba(0,0,0,0.45);
-      border:none;
-      color:#fff;
-      padding:6px 10px;
-      border-radius:8px;
-      cursor:pointer;
-      font-size:20px;
-      z-index:5;
-      transition:background 0.15s;
-    }
-    .carousel-btn:hover{
-      background:rgba(0,0,0,0.7);
-    }
-    .carousel-btn.prev{left:8px;}
-    .carousel-btn.next{right:8px;}
-    .carousel-dots{
-      display:flex;
-      justify-content:center;
-      gap:8px;
-      padding:8px 0 4px;
-    }
-    .carousel-dot{
-      width:8px;
-      height:8px;
-      border-radius:50%;
-      background:var(--muted);
-      cursor:pointer;
-      transition:background 0.15s, transform 0.15s;
-    }
-    .carousel-dot.active{
-      background:var(--accent);
-      transform:scale(1.15);
+      padding:14px 14px 10px;
     }
 
-    /* --- Lightbox --- */
-    .lightbox{
-      position:fixed;
-      inset:0;
-      background:rgba(0,0,0,0.85);
-      display:none;
-      align-items:center;
-      justify-content:center;
-      z-index:100;
-      padding:16px;
+    /* hide inputs but keep accessible */
+    .carousel > input{
+      clip:rect(1px,1px,1px,1px);
+      clip-path:inset(50%);
+      height:1px;
+      width:1px;
+      margin:-1px;
+      overflow:hidden;
+      padding:0;
+      position:absolute;
     }
-    .lightbox.open{
+
+    /* Slide offset logic */
+    .carousel > input:nth-of-type(1):checked ~ .carousel__slides .carousel__slide:first-of-type { margin-left:0%; }
+    .carousel > input:nth-of-type(2):checked ~ .carousel__slides .carousel__slide:first-of-type { margin-left:-100%; }
+    .carousel > input:nth-of-type(3):checked ~ .carousel__slides .carousel__slide:first-of-type { margin-left:-200%; }
+    .carousel > input:nth-of-type(4):checked ~ .carousel__slides .carousel__slide:first-of-type { margin-left:-300%; }
+    .carousel > input:nth-of-type(5):checked ~ .carousel__slides .carousel__slide:first-of-type { margin-left:-400%; }
+    .carousel > input:nth-of-type(6):checked ~ .carousel__slides .carousel__slide:first-of-type { margin-left:-500%; }
+
+    /* Thumbnail highlight */
+    .carousel > input:nth-of-type(1):checked ~ .carousel__thumbnails li:nth-of-type(1),
+    .carousel > input:nth-of-type(2):checked ~ .carousel__thumbnails li:nth-of-type(2),
+    .carousel > input:nth-of-type(3):checked ~ .carousel__thumbnails li:nth-of-type(3),
+    .carousel > input:nth-of-type(4):checked ~ .carousel__thumbnails li:nth-of-type(4),
+    .carousel > input:nth-of-type(5):checked ~ .carousel__thumbnails li:nth-of-type(5),
+    .carousel > input:nth-of-type(6):checked ~ .carousel__thumbnails li:nth-of-type(6){
+      box-shadow:0 0 0 2px rgba(91,209,255,0.9);
+      border-radius:8px;
+    }
+
+    .carousel__slides{
+      position:relative;
+      z-index:1;
+      padding:0;
+      margin:0;
+      overflow:hidden;
+      white-space:nowrap;
+      box-sizing:border-box;
       display:flex;
+      border-radius:10px;
     }
-    .lightbox img{
-      max-width:95vw;
-      max-height:95vh;
-      border-radius:12px;
-      border:1px solid #1f2329;
-      box-shadow:0 18px 45px rgba(0,0,0,0.7);
+    .carousel__slide{
+      position:relative;
+      display:block;
+      flex:1 0 100%;
+      width:100%;
+      height:100%;
+      overflow:hidden;
+      transition:all 300ms ease-out;
+      vertical-align:top;
+      box-sizing:border-box;
+      white-space:normal;
     }
-    .lightbox-hint{
-      position:fixed;
-      bottom:12px;
-      left:50%;
-      transform:translateX(-50%);
-      color:#ccc;
-      font-size:12px;
-      opacity:0.8;
+    .carousel__slide figure{
+      margin:0;
+    }
+
+    /* Main media area (video or image) */
+    .carousel__media{
+      width:100%;
+      aspect-ratio:16 / 9;
+      position:relative;
+      overflow:hidden;
+      border-radius:10px;
+      background:#000;
+    }
+    .carousel__media img,
+    .carousel__media iframe{
+      position:absolute;
+      inset:0;
+      width:100%;
+      height:100%;
+      border:0;
+      display:block;
+      object-fit:cover;
+    }
+
+    .carousel__thumbnails{
+      list-style:none;
+      padding:0;
+      margin:12px 0 0;
+      display:flex;
+      gap:8px;
+      justify-content:flex-start;
+      flex-wrap:wrap;
+    }
+    .carousel__thumbnails li{
+      flex:0 0 auto;
+      max-width:calc((100% / 6) - 4px);
+      transition:all 200ms ease-in-out;
+    }
+    .carousel__thumbnails label{
+      display:block;
+      width:100%;
+      aspect-ratio:1 / 1;
+      border-radius:8px;
+      overflow:hidden;
+      cursor:pointer;
+    }
+    .carousel__thumbnails img{
+      display:block;
+      width:100%;
+      height:100%;
+      object-fit:cover;
+      transition:transform 200ms ease-in-out, box-shadow 200ms ease-in-out;
+    }
+    .carousel__thumbnails label:hover img,
+    .carousel__thumbnails label:focus img{
+      transform:scale(1.03);
+      box-shadow:0 0 0 1px rgba(255,255,255,0.35);
     }
 
     .footer{
@@ -138,7 +171,15 @@
     @media (max-width:600px){
       .container{padding:16px}
       h1{font-size:24px}
-      .carousel-slide img{max-height:220px;}
+      .carousel{
+        padding:10px 10px 8px;
+      }
+      .carousel__thumbnails{
+        gap:6px;
+      }
+      .carousel__thumbnails li{
+        max-width:calc((100% / 4) - 4px);
+      }
     }
   </style>
 </head>
@@ -168,8 +209,8 @@
       <h2 class="section-title">Overview</h2>
       <p class="muted">
         VALK is a slow-flying, highly stable fixed-wing UAV designed for long-endurance missions with multiple
-        sensor payload options. My role was to take the original 2D airframe drawings into full 3D CAD, operate and service 3d printers, 
-        run the CNC work for structural components, assist with composite molding, and later redesign the landing
+        sensor payload options. My role was to take the original 2D airframe drawings into full 3D CAD, run the
+        CNC work for molds and structural components, assist with composite molding, and later redesign the landing
         gear system from the ground up.
       </p>
     </section>
@@ -181,6 +222,7 @@
         <li>CNC programming and machining for cores, tooling, and mold components.</li>
         <li>Composite layups, resin infusion, and mold preparation for key structural parts.</li>
         <li>Redesign of the landing gear to improve practicality and robustness in the field.</li>
+        <li>Integration of avionics: flight controller, power system, antennas, and payload provisions.</li>
         <li>Support with launch and recovery testing, tuning, and test flights.</li>
       </ul>
     </section>
@@ -201,59 +243,112 @@
 
     <section>
       <h2 class="section-title">Media</h2>
-      <p class="muted">A short overview video and a few build shots.</p>
+      <p class="muted">Overview video and build / flight shots.</p>
 
-      <!-- Main YouTube video -->
-      <div class="hero-media">
-        <iframe
-          src="https://www.youtube.com/embed/7zJk28XQCvc"
-          title="VALK UAV overview video"
-          allowfullscreen
-          loading="lazy">
-        </iframe>
-      </div>
+      <!-- Carousel with YouTube as first slide -->
+      <div class="carousel">
+        <!-- Radio controls -->
+        <input type="radio" name="valk-slides" id="valk-slide-1" checked>
+        <input type="radio" name="valk-slides" id="valk-slide-2">
+        <input type="radio" name="valk-slides" id="valk-slide-3">
+        <input type="radio" name="valk-slides" id="valk-slide-4">
+        <input type="radio" name="valk-slides" id="valk-slide-5">
+        <input type="radio" name="valk-slides" id="valk-slide-6">
 
-      <!-- Carousel replacing the 3-image gallery -->
-      <div class="carousel" id="valkCarousel">
-        <button class="carousel-btn prev" aria-label="Previous image">&#10094;</button>
-        <div class="carousel-track">
-          <div class="carousel-slide">
-            <img
-              src="/assets/images/valk/build-1.jpg"
-              data-full="/assets/images/valk/build-1.jpg"
-              alt="VALK wing and fuselage during composite layup">
-          </div>
-          <div class="carousel-slide">
-            <img
-              src="/assets/images/valk/build-2.jpg"
-              data-full="/assets/images/valk/build-2.jpg"
-              alt="CNC-machined cores and tooling for VALK">
-          </div>
-          <div class="carousel-slide">
-            <img
-              src="/assets/images/valk/build-3.jpg"
-              data-full="/assets/images/valk/build-3.jpg"
-              alt="VALK UAV on the field ready for test flight">
-          </div>
-          <!-- Add more slides as needed -->
-          <!--
-          <div class="carousel-slide">
-            <img
-              src="/assets/images/valk/build-4.jpg"
-              data-full="/assets/images/valk/build-4.jpg"
-              alt="Additional VALK build detail">
-          </div>
-          <div class="carousel-slide">
-            <img
-              src="/assets/images/valk/build-5.jpg"
-              data-full="/assets/images/valk/build-5.jpg"
-              alt="VALK UAV in flight">
-          </div>
-          -->
-        </div>
-        <button class="carousel-btn next" aria-label="Next image">&#10095;</button>
+        <!-- Main slides -->
+        <ul class="carousel__slides">
+          <!-- Slide 1: YouTube video -->
+          <li class="carousel__slide">
+            <figure>
+              <div class="carousel__media">
+                <iframe
+                  src="https://www.youtube.com/embed/7zJk28XQCvc"
+                  title="VALK UAV overview video"
+                  allowfullscreen
+                  loading="lazy">
+                </iframe>
+              </div>
+            </figure>
+          </li>
+
+          <!-- Slide 2+ : Images -->
+          <li class="carousel__slide">
+            <figure>
+              <div class="carousel__media">
+                <img src="/assets/images/valk/build-1.jpg" alt="VALK wing and fuselage during composite layup">
+              </div>
+            </figure>
+          </li>
+
+          <li class="carousel__slide">
+            <figure>
+              <div class="carousel__media">
+                <img src="/assets/images/valk/build-2.jpg" alt="CNC-machined cores and tooling for VALK">
+              </div>
+            </figure>
+          </li>
+
+          <li class="carousel__slide">
+            <figure>
+              <div class="carousel__media">
+                <img src="/assets/images/valk/build-3.jpg" alt="VALK UAV on the field ready for test flight">
+              </div>
+            </figure>
+          </li>
+
+          <!-- Optional extra slides -->
+          <li class="carousel__slide">
+            <figure>
+              <div class="carousel__media">
+                <img src="/assets/images/valk/build-4.jpg" alt="Additional VALK build detail">
+              </div>
+            </figure>
+          </li>
+
+          <li class="carousel__slide">
+            <figure>
+              <div class="carousel__media">
+                <img src="/assets/images/valk/build-5.jpg" alt="VALK UAV in flight">
+              </div>
+            </figure>
+          </li>
+        </ul>
+
+        <!-- Thumbnails -->
+        <ul class="carousel__thumbnails">
+          <li>
+            <label for="valk-slide-1">
+              <!-- Thumb for video (could be a frame grab or logo) -->
+              <img src="/assets/images/valk/thumb-video.jpg" alt="VALK overview video thumbnail">
+            </label>
+          </li>
+          <li>
+            <label for="valk-slide-2">
+              <img src="/assets/images/valk/build-1-thumb.jpg" alt="VALK build photo 1 thumbnail">
+            </label>
+          </li>
+          <li>
+            <label for="valk-slide-3">
+              <img src="/assets/images/valk/build-2-thumb.jpg" alt="VALK build photo 2 thumbnail">
+            </label>
+          </li>
+          <li>
+            <label for="valk-slide-4">
+              <img src="/assets/images/valk/build-3-thumb.jpg" alt="VALK build photo 3 thumbnail">
+            </label>
+          </li>
+          <li>
+            <label for="valk-slide-5">
+              <img src="/assets/images/valk/build-4-thumb.jpg" alt="VALK extra photo thumbnail">
+            </label>
+          </li>
+          <li>
+            <label for="valk-slide-6">
+              <img src="/assets/images/valk/build-5-thumb.jpg" alt="VALK flight photo thumbnail">
+            </label>
+          </li>
+        </ul>
       </div>
-      <div class="carousel-dots" id="valkCarouselDots"></div>
     </section>
   </main>
 
@@ -261,84 +356,8 @@
     © <span id="year"></span> Middleton Makes
   </footer>
 
-  <!-- Lightbox overlay -->
-  <div class="lightbox" id="lightbox">
-    <img id="lightboxImage" src="" alt="Expanded VALK image">
-    <div class="lightbox-hint">Click anywhere or press Esc to close</div>
-  </div>
-
   <script>
-    (function(){
-      // Footer year
-      document.getElementById('year').textContent = new Date().getFullYear();
-
-      // Simple carousel init
-      function initCarousel(carouselId, dotsId){
-        const carousel = document.getElementById(carouselId);
-        if (!carousel) return;
-
-        const track = carousel.querySelector('.carousel-track');
-        const slides = Array.from(track.querySelectorAll('.carousel-slide'));
-        const prevBtn = carousel.querySelector('.prev');
-        const nextBtn = carousel.querySelector('.next');
-        const dotsContainer = document.getElementById(dotsId);
-
-        let index = 0;
-
-        // Create dots
-        slides.forEach((_, i) => {
-          const dot = document.createElement('div');
-          dot.className = 'carousel-dot' + (i === 0 ? ' active' : '');
-          dot.addEventListener('click', () => {
-            index = i;
-            update();
-          });
-          dotsContainer.appendChild(dot);
-        });
-
-        const dots = Array.from(dotsContainer.querySelectorAll('.carousel-dot'));
-
-        function update(){
-          track.style.transform = 'translateX(' + (-index * 100) + '%)';
-          dots.forEach(d => d.classList.remove('active'));
-          if (dots[index]) dots[index].classList.add('active');
-        }
-
-        nextBtn.addEventListener('click', () => {
-          index = (index + 1) % slides.length;
-          update();
-        });
-
-        prevBtn.addEventListener('click', () => {
-          index = (index - 1 + slides.length) % slides.length;
-          update();
-        });
-      }
-
-      initCarousel('valkCarousel', 'valkCarouselDots');
-
-      // Lightbox logic
-      const lightbox = document.getElementById('lightbox');
-      const lightboxImage = document.getElementById('lightboxImage');
-
-      document.querySelectorAll('#valkCarousel img').forEach(img => {
-        img.addEventListener('click', () => {
-          const full = img.getAttribute('data-full') || img.src;
-          lightboxImage.src = full;
-          lightbox.classList.add('open');
-        });
-      });
-
-      function closeLightbox(){
-        lightbox.classList.remove('open');
-        lightboxImage.src = '';
-      }
-
-      lightbox.addEventListener('click', closeLightbox);
-      document.addEventListener('keydown', (e) => {
-        if (e.key === 'Escape') closeLightbox();
-      });
-    })();
+    document.getElementById('year').textContent = new Date().getFullYear();
   </script>
 </body>
 </html>
