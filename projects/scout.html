@@ -1,0 +1,350 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>SCOUT UAV — Middleton Makes</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <style>
+    :root{
+      --bg:#0b0d10; --card:#14181d; --text:#e6e8eb;
+      --muted:#98a2b3; --accent:#5bd1ff; --chip:#21262d;
+    }
+    *{box-sizing:border-box;margin:0;padding:0}
+    body{
+      background:var(--bg);color:var(--text);
+      font:16px/1.6 system-ui,Segoe UI,Roboto,Ubuntu,"Helvetica Neue",Arial;
+    }
+    a{color:var(--accent);text-decoration:none}
+    a:hover{text-decoration:underline}
+    .topnav{
+      position:sticky;top:0;
+      backdrop-filter:saturate(120%) blur(6px);
+      background:rgba(11,13,16,.85);
+      border-bottom:1px solid #1f2329;
+      display:flex;align-items:center;justify-content:space-between;
+      padding:12px 24px;z-index:10;
+    }
+    .brand{font-weight:700;letter-spacing:.3px}
+    .links a{margin-left:16px;opacity:.9}
+    .links a.active{border-bottom:2px solid var(--accent)}
+    .container{max-width:900px;margin:0 auto;padding:24px}
+    h1{font-size:30px;margin-bottom:4px}
+    .subtitle{color:var(--muted);margin-bottom:18px}
+    .hero-media{margin:12px 0 20px;border-radius:14px;overflow:hidden;border:1px solid #1f2329}
+    .hero-media img{width:100%;display:block;object-fit:cover;max-height:420px}
+    .hero-media iframe{width:100%;aspect-ratio:16/9;border:0;display:block}
+    .section-title{margin-top:24px;font-size:20px;margin-bottom:6px}
+    .muted{color:var(--muted)}
+    ul{margin:8px 0 12px 18px}
+
+    /* --- Carousel (radio + thumbnails) --- */
+    .carousel{
+      display:block;
+      text-align:left;
+      position:relative;
+      margin-top:16px;
+      margin-bottom:12px;
+      background:var(--card);
+      border-radius:12px;
+      border:1px solid #1f2329;
+      padding:14px 14px 10px;
+    }
+
+    /* hide inputs but keep accessible */
+    .carousel > input{
+      clip:rect(1px,1px,1px,1px);
+      clip-path:inset(50%);
+      height:1px;
+      width:1px;
+      margin:-1px;
+      overflow:hidden;
+      padding:0;
+      position:absolute;
+    }
+
+    /* Slide offset logic (5 slides) */
+    .carousel > input:nth-of-type(1):checked ~ .carousel__slides .carousel__slide:first-of-type { margin-left:0%; }
+    .carousel > input:nth-of-type(2):checked ~ .carousel__slides .carousel__slide:first-of-type { margin-left:-100%; }
+    .carousel > input:nth-of-type(3):checked ~ .carousel__slides .carousel__slide:first-of-type { margin-left:-200%; }
+    .carousel > input:nth-of-type(4):checked ~ .carousel__slides .carousel__slide:first-of-type { margin-left:-300%; }
+    .carousel > input:nth-of-type(5):checked ~ .carousel__slides .carousel__slide:first-of-type { margin-left:-400%; }
+
+    /* Thumbnail highlight (5) */
+    .carousel > input:nth-of-type(1):checked ~ .carousel__thumbnails li:nth-of-type(1),
+    .carousel > input:nth-of-type(2):checked ~ .carousel__thumbnails li:nth-of-type(2),
+    .carousel > input:nth-of-type(3):checked ~ .carousel__thumbnails li:nth-of-type(3),
+    .carousel > input:nth-of-type(4):checked ~ .carousel__thumbnails li:nth-of-type(4),
+    .carousel > input:nth-of-type(5):checked ~ .carousel__thumbnails li:nth-of-type(5){
+      box-shadow:0 0 0 2px rgba(91,209,255,0.9);
+      border-radius:8px;
+    }
+
+    .carousel__slides{
+      position:relative;
+      z-index:1;
+      padding:0;
+      margin:0;
+      overflow:hidden;
+      white-space:nowrap;
+      box-sizing:border-box;
+      display:flex;
+      border-radius:10px;
+    }
+    .carousel__slide{
+      position:relative;
+      display:block;
+      flex:1 0 100%;
+      width:100%;
+      height:100%;
+      overflow:hidden;
+      transition:all 300ms ease-out;
+      vertical-align:top;
+      box-sizing:border-box;
+      white-space:normal;
+    }
+    .carousel__slide figure{
+      margin:0;
+    }
+
+    /* Main media area (images only for SCOUT) */
+    .carousel__media{
+      width:100%;
+      aspect-ratio:16 / 9;
+      position:relative;
+      overflow:hidden;
+      border-radius:10px;
+      background:#000;
+    }
+    .carousel__media img,
+    .carousel__media iframe{
+      position:absolute;
+      inset:0;
+      width:100%;
+      height:100%;
+      border:0;
+      display:block;
+      object-fit:cover;
+    }
+
+    .carousel__thumbnails{
+      list-style:none;
+      padding:0;
+      margin:12px 0 0;
+      display:flex;
+      gap:8px;
+      justify-content:flex-start;
+      flex-wrap:wrap;
+    }
+    .carousel__thumbnails li{
+      flex:0 0 auto;
+      max-width:calc((100% / 5) - 4px);
+      transition:all 200ms ease-in-out;
+    }
+    .carousel__thumbnails label{
+      display:block;
+      width:100%;
+      aspect-ratio:1 / 1;
+      border-radius:8px;
+      overflow:hidden;
+      cursor:pointer;
+    }
+    .carousel__thumbnails img{
+      display:block;
+      width:100%;
+      height:100%;
+      object-fit:cover;
+      transition:transform 200ms ease-in-out, box-shadow 200ms ease-in-out;
+    }
+    .carousel__thumbnails label:hover img,
+    .carousel__thumbnails label:focus img{
+      transform:scale(1.03);
+      box-shadow:0 0 0 1px rgba(255,255,255,0.35);
+    }
+
+    .footer{
+      border-top:1px solid #1f2329;
+      padding:24px;text-align:center;color:var(--muted);
+      margin-top:32px;
+    }
+    @media (max-width:600px){
+      .container{padding:16px}
+      h1{font-size:24px}
+      .carousel{
+        padding:10px 10px 8px;
+      }
+      .carousel__thumbnails{
+        gap:6px;
+      }
+      .carousel__thumbnails li{
+        max-width:calc((100% / 4) - 4px);
+      }
+    }
+  </style>
+</head>
+<body>
+  <nav class="topnav">
+    <a class="brand" href="/">Middleton Makes</a>
+    <div class="links">
+      <a href="/#uav">UAV Projects</a>
+      <a href="/#builds">Builds & Experiments</a>
+      <a href="/#about">About</a>
+      <a href="/#contact">Contact</a>
+    </div>
+  </nav>
+
+  <main class="container">
+    <header>
+      <h1>SCOUT UAV</h1>
+      <p class="subtitle">Conventional VTOL airframe — CAD, tooling, and composite build under tight timelines.</p>
+    </header>
+
+    <!-- HERO MEDIA -->
+    <div class="hero-media">
+      <img src="/assets/images/scout/hero.jpg" alt="SCOUT UAV composite airframe on bench">
+    </div>
+
+    <!-- OVERVIEW -->
+    <section>
+      <h2 class="section-title">Overview</h2>
+      <p class="muted">
+        SCOUT is a conventional fixed-wing VTOL airframe designed to a detailed client specification. The platform
+        combines a composite fuselage, foam-core wings, and a foam-core / 3D-printed empennage to create a clean,
+        modular structure optimised for the client’s proprietary avionics and payload stack.
+        <br><br>
+        To deliver the geometry and surface quality required on a compressed schedule, this project pushed a lot
+        of tooling development in-house. It required building a dedicated
+        <a href="/projects/hotwire-cutter.html">4-axis hotwire cutter</a> for wing and tail cores, 3D-printing plugs
+        and fixtures, and then taking the foam surfaces through additional subtractive work on the CNC before
+        glassing with fabric.
+        <br><br>
+        The scope for SCOUT was airframe-only: the client retained responsibility for all systems integration,
+        avionics, and flight testing. My role covered the full airframe workflow—from translating spec into CAD,
+        through digital tooling, 3D printing, hotwire cutting and CNC machining, to hands-on support during
+        composite layup and construction.
+      </p>
+    </section>
+
+    <!-- CONTRIBUTIONS -->
+    <section>
+      <h2 class="section-title">My contributions</h2>
+      <ul>
+        <li>Translated the client’s performance and packaging requirements into a full airframe CAD model.</li>
+        <li>Defined fuselage, wing, and empennage structure, including foam-core strategy and join interfaces.</li>
+        <li>Developed and used in-house 4-axis hotwire cutting capability for wing and tail cores.</li>
+        <li>3D-printed plugs, fixtures, and small structural parts for the fuselage and empennage.</li>
+        <li>Programmed and ran CNC operations for subtractive finishing of foam wings and plugs.</li>
+        <li>Assisted with production of composite tooling and molds under a compressed timeline.</li>
+        <li>Supported composite layup and glassing of wings and control surfaces.</li>
+        <li>Shop-floor support during assembly: fit checks, minor design tweaks, and build documentation.</li>
+      </ul>
+    </section>
+
+    <!-- TECHNICAL SNAPSHOT -->
+    <section>
+      <h2 class="section-title">Technical snapshot</h2>
+      <ul>
+        <li><strong>Wingspan:</strong> 1.95&nbsp;m</li>
+        <li><strong>Length:</strong> 1.3&nbsp;m</li>
+        <li><strong>Maximum takeoff weight (MTOW):</strong> 6.5&nbsp;kg</li>
+        <li><strong>Propulsion:</strong> Twin electric tilt-rotor VTOL</li>
+        <li><strong>Navigation / autopilot stack:</strong> Proprietary to client</li>
+      </ul>
+    </section>
+
+    <!-- MEDIA -->
+    <section>
+      <h2 class="section-title">Media</h2>
+      <p class="muted">Five-image gallery showing tooling, cores, layups, and the assembled airframe.</p>
+
+      <div class="carousel">
+        <!-- Radio Inputs (5 images, no video) -->
+        <input type="radio" name="scout-slides" id="scout-slide-1" checked>
+        <input type="radio" name="scout-slides" id="scout-slide-2">
+        <input type="radio" name="scout-slides" id="scout-slide-3">
+        <input type="radio" name="scout-slides" id="scout-slide-4">
+        <input type="radio" name="scout-slides" id="scout-slide-5">
+
+        <!-- Slides -->
+        <ul class="carousel__slides">
+          <li class="carousel__slide">
+            <figure>
+              <div class="carousel__media">
+                <img src="/assets/images/scout/build-1.jpg" alt="SCOUT 3D-printed plugs and foam cores on the bench">
+              </div>
+            </figure>
+          </li>
+
+          <li class="carousel__slide">
+            <figure>
+              <div class="carousel__media">
+                <img src="/assets/images/scout/build-2.jpg" alt="Foam core wings after 4-axis hotwire cutting">
+              </div>
+            </figure>
+          </li>
+
+          <li class="carousel__slide">
+            <figure>
+              <div class="carousel__media">
+                <img src="/assets/images/scout/build-3.jpg" alt="CNC-machined wing surfaces ready for glassing">
+              </div>
+            </figure>
+          </li>
+
+          <li class="carousel__slide">
+            <figure>
+              <div class="carousel__media">
+                <img src="/assets/images/scout/build-4.jpg" alt="Composite fuselage and empennage assembly">
+              </div>
+            </figure>
+          </li>
+
+          <li class="carousel__slide">
+            <figure>
+              <div class="carousel__media">
+                <img src="/assets/images/scout/build-5.jpg" alt="Completed SCOUT airframe prior to systems integration">
+              </div>
+            </figure>
+          </li>
+        </ul>
+
+        <!-- Thumbnails -->
+        <ul class="carousel__thumbnails">
+          <li>
+            <label for="scout-slide-1">
+              <img src="/assets/images/scout/build-1.jpg" alt="SCOUT plugs and cores thumbnail">
+            </label>
+          </li>
+          <li>
+            <label for="scout-slide-2">
+              <img src="/assets/images/scout/build-2.jpg" alt="SCOUT wing cores thumbnail">
+            </label>
+          </li>
+          <li>
+            <label for="scout-slide-3">
+              <img src="/assets/images/scout/build-3.jpg" alt="SCOUT CNC finishing thumbnail">
+            </label>
+          </li>
+          <li>
+            <label for="scout-slide-4">
+              <img src="/assets/images/scout/build-4.jpg" alt="SCOUT composite assembly thumbnail">
+            </label>
+          </li>
+          <li>
+            <label for="scout-slide-5">
+              <img src="/assets/images/scout/build-5.jpg" alt="SCOUT completed airframe thumbnail">
+            </label>
+          </li>
+        </ul>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    © <span id="year"></span> Middleton Makes
+  </footer>
+
+  <script>
+    document.getElementById('year').textContent = new Date().getFullYear();
+  </script>
+</body>
+</html>
