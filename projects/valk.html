@@ -36,15 +36,100 @@
     .section-title{margin-top:24px;font-size:20px;margin-bottom:6px}
     .muted{color:var(--muted)}
     ul{margin:8px 0 12px 18px}
-    .gallery{
-      display:grid;
-      grid-template-columns:repeat(auto-fill,minmax(200px,1fr));
-      gap:10px;margin-top:8px;
+
+    /* --- Carousel --- */
+    .carousel{
+      margin-top:16px;
+      border-radius:12px;
+      border:1px solid #1f2329;
+      overflow:hidden;
+      position:relative;
+      background:var(--card);
     }
-    .gallery img{
-      width:100%;border-radius:10px;border:1px solid #1f2329;
-      object-fit:cover;max-height:180px;
+    .carousel-track{
+      display:flex;
+      transition:transform 0.4s ease;
+      will-change:transform;
     }
+    .carousel-slide{
+      min-width:100%;
+    }
+    .carousel-slide img{
+      width:100%;
+      display:block;
+      object-fit:cover;
+      max-height:260px;
+      cursor:pointer;
+    }
+    .carousel-btn{
+      position:absolute;
+      top:50%;
+      transform:translateY(-50%);
+      background:rgba(0,0,0,0.45);
+      border:none;
+      color:#fff;
+      padding:6px 10px;
+      border-radius:8px;
+      cursor:pointer;
+      font-size:20px;
+      z-index:5;
+      transition:background 0.15s;
+    }
+    .carousel-btn:hover{
+      background:rgba(0,0,0,0.7);
+    }
+    .carousel-btn.prev{left:8px;}
+    .carousel-btn.next{right:8px;}
+    .carousel-dots{
+      display:flex;
+      justify-content:center;
+      gap:8px;
+      padding:8px 0 4px;
+    }
+    .carousel-dot{
+      width:8px;
+      height:8px;
+      border-radius:50%;
+      background:var(--muted);
+      cursor:pointer;
+      transition:background 0.15s, transform 0.15s;
+    }
+    .carousel-dot.active{
+      background:var(--accent);
+      transform:scale(1.15);
+    }
+
+    /* --- Lightbox --- */
+    .lightbox{
+      position:fixed;
+      inset:0;
+      background:rgba(0,0,0,0.85);
+      display:none;
+      align-items:center;
+      justify-content:center;
+      z-index:100;
+      padding:16px;
+    }
+    .lightbox.open{
+      display:flex;
+    }
+    .lightbox img{
+      max-width:95vw;
+      max-height:95vh;
+      border-radius:12px;
+      border:1px solid #1f2329;
+      box-shadow:0 18px 45px rgba(0,0,0,0.7);
+    }
+    .lightbox-hint{
+      position:fixed;
+      bottom:12px;
+      left:50%;
+      transform:translateX(-50%);
+      color:#ccc;
+      font-size:12px;
+      opacity:0.8;
+    }
+
     .footer{
       border-top:1px solid #1f2329;
       padding:24px;text-align:center;color:var(--muted);
@@ -53,6 +138,7 @@
     @media (max-width:600px){
       .container{padding:16px}
       h1{font-size:24px}
+      .carousel-slide img{max-height:220px;}
     }
   </style>
 </head>
@@ -75,15 +161,15 @@
 
     <!-- HERO MEDIA: main image -->
     <div class="hero-media">
-      <img src="/assets/images/valk/hero.jpg">
+      <img src="/assets/images/valk/hero.jpg" alt="VALK UAV on launch rail">
     </div>
 
     <section>
       <h2 class="section-title">Overview</h2>
       <p class="muted">
         VALK is a slow-flying, highly stable fixed-wing UAV designed for long-endurance missions with multiple
-        sensor payload options. My role was to take the original 2D airframe drawings into full 3D CAD, run the
-        CNC work for molds and structural components, assist with composite molding, and later redesign the landing
+        sensor payload options. My role was to take the original 2D airframe drawings into full 3D CAD, operate and service 3d printers, 
+        run the CNC work for structural components, assist with composite molding, and later redesign the landing
         gear system from the ground up.
       </p>
     </section>
@@ -95,7 +181,6 @@
         <li>CNC programming and machining for cores, tooling, and mold components.</li>
         <li>Composite layups, resin infusion, and mold preparation for key structural parts.</li>
         <li>Redesign of the landing gear to improve practicality and robustness in the field.</li>
-        <li>Integration of avionics: flight controller, power system, antennas, and payload provisions.</li>
         <li>Support with launch and recovery testing, tuning, and test flights.</li>
       </ul>
     </section>
@@ -128,12 +213,47 @@
         </iframe>
       </div>
 
-      <!-- Build / flight gallery -->
-      <div class="gallery">
-        <img src="/assets/images/valk/build-1.jpg" alt="VALK wing and fuselage during composite layup">
-        <img src="/assets/images/valk/build-2.jpg" alt="CNC-machined cores and tooling for VALK">
-        <img src="/assets/images/valk/build-3.jpg" alt="VALK UAV on the field ready for test flight">
+      <!-- Carousel replacing the 3-image gallery -->
+      <div class="carousel" id="valkCarousel">
+        <button class="carousel-btn prev" aria-label="Previous image">&#10094;</button>
+        <div class="carousel-track">
+          <div class="carousel-slide">
+            <img
+              src="/assets/images/valk/build-1.jpg"
+              data-full="/assets/images/valk/build-1.jpg"
+              alt="VALK wing and fuselage during composite layup">
+          </div>
+          <div class="carousel-slide">
+            <img
+              src="/assets/images/valk/build-2.jpg"
+              data-full="/assets/images/valk/build-2.jpg"
+              alt="CNC-machined cores and tooling for VALK">
+          </div>
+          <div class="carousel-slide">
+            <img
+              src="/assets/images/valk/build-3.jpg"
+              data-full="/assets/images/valk/build-3.jpg"
+              alt="VALK UAV on the field ready for test flight">
+          </div>
+          <!-- Add more slides as needed -->
+          <!--
+          <div class="carousel-slide">
+            <img
+              src="/assets/images/valk/build-4.jpg"
+              data-full="/assets/images/valk/build-4.jpg"
+              alt="Additional VALK build detail">
+          </div>
+          <div class="carousel-slide">
+            <img
+              src="/assets/images/valk/build-5.jpg"
+              data-full="/assets/images/valk/build-5.jpg"
+              alt="VALK UAV in flight">
+          </div>
+          -->
+        </div>
+        <button class="carousel-btn next" aria-label="Next image">&#10095;</button>
       </div>
+      <div class="carousel-dots" id="valkCarouselDots"></div>
     </section>
   </main>
 
@@ -141,9 +261,84 @@
     © <span id="year"></span> Middleton Makes
   </footer>
 
+  <!-- Lightbox overlay -->
+  <div class="lightbox" id="lightbox">
+    <img id="lightboxImage" src="" alt="Expanded VALK image">
+    <div class="lightbox-hint">Click anywhere or press Esc to close</div>
+  </div>
+
   <script>
-    document.getElementById('year').textContent = new Date().getFullYear();
+    (function(){
+      // Footer year
+      document.getElementById('year').textContent = new Date().getFullYear();
+
+      // Simple carousel init
+      function initCarousel(carouselId, dotsId){
+        const carousel = document.getElementById(carouselId);
+        if (!carousel) return;
+
+        const track = carousel.querySelector('.carousel-track');
+        const slides = Array.from(track.querySelectorAll('.carousel-slide'));
+        const prevBtn = carousel.querySelector('.prev');
+        const nextBtn = carousel.querySelector('.next');
+        const dotsContainer = document.getElementById(dotsId);
+
+        let index = 0;
+
+        // Create dots
+        slides.forEach((_, i) => {
+          const dot = document.createElement('div');
+          dot.className = 'carousel-dot' + (i === 0 ? ' active' : '');
+          dot.addEventListener('click', () => {
+            index = i;
+            update();
+          });
+          dotsContainer.appendChild(dot);
+        });
+
+        const dots = Array.from(dotsContainer.querySelectorAll('.carousel-dot'));
+
+        function update(){
+          track.style.transform = 'translateX(' + (-index * 100) + '%)';
+          dots.forEach(d => d.classList.remove('active'));
+          if (dots[index]) dots[index].classList.add('active');
+        }
+
+        nextBtn.addEventListener('click', () => {
+          index = (index + 1) % slides.length;
+          update();
+        });
+
+        prevBtn.addEventListener('click', () => {
+          index = (index - 1 + slides.length) % slides.length;
+          update();
+        });
+      }
+
+      initCarousel('valkCarousel', 'valkCarouselDots');
+
+      // Lightbox logic
+      const lightbox = document.getElementById('lightbox');
+      const lightboxImage = document.getElementById('lightboxImage');
+
+      document.querySelectorAll('#valkCarousel img').forEach(img => {
+        img.addEventListener('click', () => {
+          const full = img.getAttribute('data-full') || img.src;
+          lightboxImage.src = full;
+          lightbox.classList.add('open');
+        });
+      });
+
+      function closeLightbox(){
+        lightbox.classList.remove('open');
+        lightboxImage.src = '';
+      }
+
+      lightbox.addEventListener('click', closeLightbox);
+      document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape') closeLightbox();
+      });
+    })();
   </script>
 </body>
 </html>
-
