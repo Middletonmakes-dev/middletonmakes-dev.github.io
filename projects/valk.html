@@ -36,12 +36,6 @@
     .section-title{margin-top:24px;font-size:20px;margin-bottom:6px}
     .muted{color:var(--muted)}
     ul{margin:8px 0 12px 18px}
-    .btn-row{margin-top:14px;display:flex;gap:10px;flex-wrap:wrap}
-    .btn{
-      display:inline-block;font-size:14px;
-      padding:6px 10px;border-radius:10px;
-      border:1px solid #2a313a;
-    }
     .gallery{
       display:grid;
       grid-template-columns:repeat(auto-fill,minmax(200px,1fr));
@@ -76,69 +70,69 @@
   <main class="container">
     <header>
       <h1>VALK UAV</h1>
-      <p class="subtitle">High-endurance fixed-wing UAV — design, integration, and field work.</p>
+      <p class="subtitle">Long-endurance fixed-wing UAV — CAD, composites, and flight integration.</p>
     </header>
 
-    <!-- HERO MEDIA: choose image OR YouTube embed -->
+    <!-- HERO MEDIA: main image -->
     <div class="hero-media">
-      <!-- Option 1: main image -->
       <img src="/assets/images/valk/hero.jpg">
-
-      <!-- Option 2: YouTube embed (unlisted) – replace with your embed URL and remove the <img> above if you prefer video
-      <iframe src="https://www.youtube.com/embed/YOUR_VIDEO_ID" title="VALK demo video" allowfullscreen></iframe>
-      -->
     </div>
 
     <section>
       <h2 class="section-title">Overview</h2>
       <p class="muted">
-        Short overview here — what VALK is for (mapping, inspection, endurance missions, etc.),
-        and your role: CAD work, airframe tweaks, composite work, integration, bench testing, flight testing, etc.
+        VALK is a slow-flying, highly stable fixed-wing UAV designed for long-endurance missions with multiple
+        sensor payload options. My role was to take the original 2D airframe drawings into full 3D CAD, run the
+        CNC work for molds and structural components, assist with composite molding, and later redesign the landing
+        gear system from the ground up.
       </p>
     </section>
 
     <section>
       <h2 class="section-title">My contributions</h2>
       <ul>
-        <li>Airframe / CAD work (e.g. wing tweaks, fuselage internals, mounts).</li>
-        <li>Composite layups, resin infusion, and mold prep for core parts.</li>
-        <li>Integration of avionics: flight controller, power system, antennas, payload provisions.</li>
-        <li>Launch and recovery testing, tuning, and test flights.</li>
+        <li>3D CAD development from 2D drawings: airframe structure, internal layout, and mounts.</li>
+        <li>CNC programming and machining for cores, tooling, and mold components.</li>
+        <li>Composite layups, resin infusion, and mold preparation for key structural parts.</li>
+        <li>Redesign of the landing gear to improve practicality and robustness in the field.</li>
+        <li>Integration of avionics: flight controller, power system, antennas, and payload provisions.</li>
+        <li>Support with launch and recovery testing, tuning, and test flights.</li>
       </ul>
     </section>
 
     <section>
       <h2 class="section-title">Technical snapshot</h2>
       <ul>
-        <li>Wingspan / MTOW / cruise speed (you can fill these in).</li>
-        <li>Propulsion configuration (motor, ESC, battery, prop).</li>
-        <li>Endurance targets and achieved flight times.</li>
-        <li>Navigation / autopilot stack (e.g. ArduPilot / INAV / vendor system).</li>
+        <li><strong>Wingspan:</strong> 4.5&nbsp;m</li>
+        <li><strong>Length:</strong> 3&nbsp;m</li>
+        <li><strong>Maximum sensor payload:</strong> 8&nbsp;kg</li>
+        <li><strong>Maximum takeoff weight (MTOW):</strong> 40&nbsp;kg</li>
+        <li><strong>Battery mass budget:</strong> up to 5.3&nbsp;kg</li>
+        <li><strong>Propulsion:</strong> configurable for electric or internal combustion powerplants</li>
+        <li><strong>Endurance target:</strong> approximately 5&nbsp;hours (mission and configuration dependent)</li>
+        <li><strong>Navigation / autopilot stack:</strong> ArduPilot on Pixhawk Cube</li>
       </ul>
     </section>
 
     <section>
       <h2 class="section-title">Media</h2>
-      <p class="muted">A few build and flight images (or close-ups of details you’re proud of).</p>
-      <div class="gallery">
-        <img src="https://placehold.co/600x400?text=Build+Photo+1" alt="VALK build photo 1">
-        <img src="https://placehold.co/600x400?text=Build+Photo+2" alt="VALK build photo 2">
-        <img src="https://placehold.co/600x400?text=Flight+Photo" alt="VALK flight photo">
-      </div>
-    </section>
+      <p class="muted">A short overview video and a few build shots.</p>
 
-    <section>
-      <h2 class="section-title">Code / documentation</h2>
-      <p class="muted">
-        If there’s public code, tools, or documentation you can share, link it here. If not, describe processes/tools you used.
-      </p>
-      <div class="btn-row">
-        <!-- Example if there is code -->
-        <!--
-        <a class="btn" href="https://github.com/YOUR-GITHUB-USERNAME/VALK-TOOLS-REPO" target="_blank" rel="noopener">View related code</a>
-        -->
-        <!-- Or external doc link -->
-        <!-- <a class="btn" href="LINK-TO-PDF-OR-DOC" target="_blank" rel="noopener">View design notes</a> -->
+      <!-- Main YouTube video -->
+      <div class="hero-media">
+        <iframe
+          src="https://www.youtube.com/embed/YOUR_VIDEO_ID"
+          title="VALK UAV overview video"
+          allowfullscreen
+          loading="lazy">
+        </iframe>
+      </div>
+
+      <!-- Build / flight gallery -->
+      <div class="gallery">
+        <img src="/assets/images/valk/build-1.jpg" alt="VALK wing and fuselage during composite layup">
+        <img src="/assets/images/valk/build-2.jpg" alt="CNC-machined cores and tooling for VALK">
+        <img src="/assets/images/valk/build-3.jpg" alt="VALK UAV on the field ready for test flight">
       </div>
     </section>
   </main>
@@ -152,5 +146,3 @@
   </script>
 </body>
 </html>
-
-
