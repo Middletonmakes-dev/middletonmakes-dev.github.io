@@ -1,0 +1,425 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>Portal PC Build — Middleton Makes</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <style>
+    :root{
+      --bg:#0b0d10; --card:#14181d; --text:#e6e8eb;
+      --muted:#98a2b3; --accent:#5bd1ff; --chip:#21262d;
+    }
+    *{box-sizing:border-box;margin:0;padding:0}
+    body{
+      background:var(--bg);color:var(--text);
+      font:16px/1.6 system-ui,Segoe UI,Roboto,Ubuntu,"Helvetica Neue",Arial;
+    }
+    a{color:var(--accent);text-decoration:none}
+    a:hover{text-decoration:underline}
+    .topnav{
+      position:sticky;top:0;
+      backdrop-filter:saturate(120%) blur(6px);
+      background:rgba(11,13,16,.85);
+      border-bottom:1px solid #1f2329;
+      display:flex;align-items:center;justify-content:space-between;
+      padding:12px 24px;z-index:10;
+    }
+    .brand{font-weight:700;letter-spacing:.3px}
+    .links a{margin-left:16px;opacity:.9}
+    .links a.active{border-bottom:2px solid var(--accent)}
+    .container{max-width:900px;margin:0 auto;padding:24px}
+    h1{font-size:30px;margin-bottom:4px}
+    .subtitle{color:var(--muted);margin-bottom:18px}
+    .hero-media{margin:12px 0 20px;border-radius:14px;overflow:hidden;border:1px solid #1f2329}
+    .hero-media img{width:100%;display:block;object-fit:cover;max-height:420px}
+    .hero-media iframe{width:100%;aspect-ratio:16/9;border:0;display:block}
+    .section-title{margin-top:24px;font-size:20px;margin-bottom:6px}
+    .muted{color:var(--muted)}
+    ul{margin:8px 0 12px 18px}
+
+    /* --- Carousel (radio + thumbnails) --- */
+    .carousel{
+      display:block;
+      text-align:left;
+      position:relative;
+      margin-top:16px;
+      margin-bottom:12px;
+      background:var(--card);
+      border-radius:12px;
+      border:1px solid #1f2329;
+      padding:14px 14px 10px;
+    }
+
+    /* hide inputs but keep accessible */
+    .carousel > input{
+      clip:rect(1px,1px,1px,1px);
+      clip-path:inset(50%);
+      height:1px;
+      width:1px;
+      margin:-1px;
+      overflow:hidden;
+      padding:0;
+      position:absolute;
+    }
+
+    /* Slide offset logic (8 slides) */
+    .carousel > input:nth-of-type(1):checked ~ .carousel__slides .carousel__slide:first-of-type { margin-left:0%; }
+    .carousel > input:nth-of-type(2):checked ~ .carousel__slides .carousel__slide:first-of-type { margin-left:-100%; }
+    .carousel > input:nth-of-type(3):checked ~ .carousel__slides .carousel__slide:first-of-type { margin-left:-200%; }
+    .carousel > input:nth-of-type(4):checked ~ .carousel__slides .carousel__slide:first-of-type { margin-left:-300%; }
+    .carousel > input:nth-of-type(5):checked ~ .carousel__slides .carousel__slide:first-of-type { margin-left:-400%; }
+    .carousel > input:nth-of-type(6):checked ~ .carousel__slides .carousel__slide:first-of-type { margin-left:-500%; }
+    .carousel > input:nth-of-type(7):checked ~ .carousel__slides .carousel__slide:first-of-type { margin-left:-600%; }
+    .carousel > input:nth-of-type(8):checked ~ .carousel__slides .carousel__slide:first-of-type { margin-left:-700%; }
+
+    /* Thumbnail highlight (also 8) */
+    .carousel > input:nth-of-type(1):checked ~ .carousel__thumbnails li:nth-of-type(1),
+    .carousel > input:nth-of-type(2):checked ~ .carousel__thumbnails li:nth-of-type(2),
+    .carousel > input:nth-of-type(3):checked ~ .carousel__thumbnails li:nth-of-type(3),
+    .carousel > input:nth-of-type(4):checked ~ .carousel__thumbnails li:nth-of-type(4),
+    .carousel > input:nth-of-type(5):checked ~ .carousel__thumbnails li:nth-of-type(5),
+    .carousel > input:nth-of-type(6):checked ~ .carousel__thumbnails li:nth-of-type(6),
+    .carousel > input:nth-of-type(7):checked ~ .carousel__thumbnails li:nth-of-type(7),
+    .carousel > input:nth-of-type(8):checked ~ .carousel__thumbnails li:nth-of-type(8){
+      box-shadow:0 0 0 2px rgba(91,209,255,0.9);
+      border-radius:8px;
+    }
+
+    .carousel__slides{
+      position:relative;
+      z-index:1;
+      padding:0;
+      margin:0;
+      overflow:hidden;
+      white-space:nowrap;
+      box-sizing:border-box;
+      display:flex;
+      border-radius:10px;
+    }
+    .carousel__slide{
+      position:relative;
+      display:block;
+      flex:1 0 100%;
+      width:100%;
+      height:100%;
+      overflow:hidden;
+      transition:all 300ms ease-out;
+      vertical-align:top;
+      box-sizing:border-box;
+      white-space:normal;
+    }
+    .carousel__slide figure{
+      margin:0;
+    }
+
+    /* Main media area (video or image) */
+    .carousel__media{
+      width:100%;
+      aspect-ratio:16 / 9;
+      position:relative;
+      overflow:hidden;
+      border-radius:10px;
+      background:#000;
+    }
+    .carousel__media img,
+    .carousel__media iframe{
+      position:absolute;
+      inset:0;
+      width:100%;
+      height:100%;
+      border:0;
+      display:block;
+      object-fit:cover;
+    }
+
+    .carousel__thumbnails{
+      list-style:none;
+      padding:0;
+      margin:12px 0 0;
+      display:flex;
+      gap:8px;
+      justify-content:flex-start;
+      flex-wrap:wrap;
+    }
+    .carousel__thumbnails li{
+      flex:0 0 auto;
+      max-width:calc((100% / 6) - 4px);
+      transition:all 200ms ease-in-out;
+    }
+    .carousel__thumbnails label{
+      display:block;
+      width:100%;
+      aspect-ratio:1 / 1;
+      border-radius:8px;
+      overflow:hidden;
+      cursor:pointer;
+    }
+    .carousel__thumbnails img{
+      display:block;
+      width:100%;
+      height:100%;
+      object-fit:cover;
+      transition:transform 200ms ease-in-out, box-shadow 200ms ease-in-out;
+    }
+    .carousel__thumbnails label:hover img,
+    .carousel__thumbnails label:focus img{
+      transform:scale(1.03);
+      box-shadow:0 0 0 1px rgba(255,255,255,0.35);
+    }
+
+    .footer{
+      border-top:1px solid #1f2329;
+      padding:24px;text-align:center;color:var(--muted);
+      margin-top:32px;
+    }
+    @media (max-width:600px){
+      .container{padding:16px}
+      h1{font-size:24px}
+      .carousel{
+        padding:10px 10px 8px;
+      }
+      .carousel__thumbnails{
+        gap:6px;
+      }
+      .carousel__thumbnails li{
+        max-width:calc((100% / 4) - 4px);
+      }
+    }
+  </style>
+</head>
+<body>
+  <nav class="topnav">
+    <a class="brand" href="/">Middleton Makes</a>
+    <div class="links">
+      <a href="/#uav">UAV Projects</a>
+      <a href="/#builds" class="active">Builds & Experiments</a>
+      <a href="/#about">About</a>
+      <a href="/#contact">Contact</a>
+    </div>
+  </nav>
+
+  <main class="container">
+    <header>
+      <h1>Portal PC Build</h1>
+      <p class="subtitle">Custom small-form-factor PC with a Portal-inspired chassis and animated ESP32 “eye” display.</p>
+    </header>
+
+    <!-- HERO MEDIA -->
+    <div class="hero-media">
+      <img src="/assets/images/portal-pc/hero.jpg" alt="Portal-inspired SFF PC with circular display">
+    </div>
+
+    <!-- OVERVIEW -->
+    <section>
+      <h2 class="section-title">Overview</h2>
+      <p class="muted">
+        I wanted a custom small-form-factor PC that felt more like a prop from <em>Portal</em> than a standard desktop case,
+        so I designed my own chassis around that idea. The layout, proportions, and mounting strategy were all worked out
+        in CAD, iterating through multiple configurations until everything — GPU, cooling, PSU, and cabling — fit cleanly.
+        The final build uses an aluminium frame and panels with 3D-printed shells, sanded and finished for a clean, almost
+        “test lab” aesthetic.
+        <br><br>
+        What really brings the build to life is the circular front display. It’s driven by an ESP32 and GC9A01 round TFT
+        panel, and it behaves like a Portal-style robotic eye: it blinks, makes small saccades, corrects its gaze, and reacts
+        to the PC’s thermal state in real time. Behind the scenes, the system reads CPU and GPU temperatures sent over serial,
+        renders them as a smooth HUD, and automatically switches between “eye mode” and “temperature mode” based on
+        user-defined rules.
+        <br><br>
+        All of the behaviour is configurable at runtime via simple CFG-style commands sent over USB, using a lightweight
+        HTML-based command centre
+        (<a href="/projects/portal-command-center.html">config dashboard</a>). You can tweak blink speed, saccade timing,
+        timeouts, fade curves, and temperature thresholds without reflashing firmware, making it easy to tune the eye from
+        “subtle ambient” to “full drama”.
+      </p>
+    </section>
+
+    <!-- WHAT I DID -->
+    <section>
+      <h2 class="section-title">What I did</h2>
+      <ul>
+        <li>Concept, layout and full CAD design of the SFF case around real-world component dimensions and cooling constraints.</li>
+        <li>Design and machining of the aluminium frame and panels, including mounting points and access panels.</li>
+        <li>3D printing, sanding, priming and finishing of the Portal-inspired outer shells and detailing.</li>
+        <li>Mechanical integration of all PC hardware: GPU, PSU, cooling, cabling and mounting inside a tight envelope.</li>
+        <li>Electronics design and wiring for the ESP32-driven front display and its power/USB integration into the PC.</li>
+        <li>Firmware development for the ESP32: eye animation system, state machine, temperature-driven behaviour
+            and HUD rendering on the GC9A01 TFT.</li>
+        <li>PC-side script/bridge to collect CPU/GPU telemetry and stream it over serial to the microcontroller.</li>
+        <li>Development of the HTML-based command centre for live configuration via simple text-based commands.</li>
+        <li>Use of AI tools to accelerate firmware prototyping, then manual refinement of the logic and animations.</li>
+        <li>OS installation, testing and long-run stability checks with the display running as a “live status” indicator.</li>
+      </ul>
+    </section>
+
+    <!-- ELECTRONICS & PC HARDWARE -->
+    <section>
+      <h2 class="section-title">Electronics & PC hardware</h2>
+      <ul>
+        <li><strong>Microcontroller:</strong> ESP32-C3 SuperMini</li>
+        <li><strong>Display:</strong> GC9A01 240×240 round TFT display</li>
+        <li><strong>Interface:</strong> USB serial link between PC and ESP32 for live telemetry and CFG commands</li>
+        <li><strong>Sensors:</strong> PC temperature monitoring via software (CPU/GPU temps forwarded over serial)</li>
+        <li><strong>Case:</strong> Custom aluminium frame with 3D-printed Portal-inspired shell and mounting brackets</li>
+        <li><strong>Core PC hardware:</strong> CPU, GPU, RAM, storage and PSU (full spec to be added here)</li>
+      </ul>
+    </section>
+
+    <!-- CODE & RESOURCES -->
+    <section>
+      <h2 class="section-title">Code & resources</h2>
+      <p class="muted">
+        The ESP32 firmware, animation logic, and a reference PC telemetry bridge script are available on GitHub:
+        <br>
+        <a href="https://github.com/YOUR_USERNAME/YOUR_PORTAL_PC_REPO" target="_blank" rel="noopener">
+          View the Portal PC display code on GitHub
+        </a>
+        <!-- Replace the URL above with your actual repository link -->
+      </p>
+    </section>
+
+    <!-- MEDIA -->
+    <section>
+      <h2 class="section-title">Media</h2>
+      <p class="muted">One build video and a set of progress photos from CAD through machining, printing and final assembly.</p>
+
+      <div class="carousel">
+        <!-- Radio Inputs -->
+        <input type="radio" name="portal-pc-slides" id="portal-pc-slide-1" checked>
+        <input type="radio" name="portal-pc-slides" id="portal-pc-slide-2">
+        <input type="radio" name="portal-pc-slides" id="portal-pc-slide-3">
+        <input type="radio" name="portal-pc-slides" id="portal-pc-slide-4">
+        <input type="radio" name="portal-pc-slides" id="portal-pc-slide-5">
+        <input type="radio" name="portal-pc-slides" id="portal-pc-slide-6">
+        <input type="radio" name="portal-pc-slides" id="portal-pc-slide-7">
+        <input type="radio" name="portal-pc-slides" id="portal-pc-slide-8">
+
+        <!-- Slides -->
+        <ul class="carousel__slides">
+          <!-- Slide 1: YouTube video -->
+          <li class="carousel__slide">
+            <figure>
+              <div class="carousel__media">
+                <iframe
+                  src="https://www.youtube.com/embed/YOUR_PORTAL_PC_VIDEO_ID"
+                  title="Portal PC build video"
+                  allowfullscreen
+                  loading="lazy">
+                </iframe>
+              </div>
+            </figure>
+          </li>
+
+          <!-- Slide 2+ : Images -->
+          <li class="carousel__slide">
+            <figure>
+              <div class="carousel__media">
+                <img src="/assets/images/portal-pc/build-1.jpg" alt="Portal PC CAD layout and early planning">
+              </div>
+            </figure>
+          </li>
+
+          <li class="carousel__slide">
+            <figure>
+              <div class="carousel__media">
+                <img src="/assets/images/portal-pc/build-2.jpg" alt="Aluminium frame components during machining">
+              </div>
+            </figure>
+          </li>
+
+          <li class="carousel__slide">
+            <figure>
+              <div class="carousel__media">
+                <img src="/assets/images/portal-pc/build-3.jpg" alt="3D-printed shell and parts before finishing">
+              </div>
+            </figure>
+          </li>
+
+          <li class="carousel__slide">
+            <figure>
+              <div class="carousel__media">
+                <img src="/assets/images/portal-pc/build-4.jpg" alt="ESP32 and GC9A01 display wiring on the bench">
+              </div>
+            </figure>
+          </li>
+
+          <li class="carousel__slide">
+            <figure>
+              <div class="carousel__media">
+                <img src="/assets/images/portal-pc/build-5.jpg" alt="Portal PC assembly with hardware installed">
+              </div>
+            </figure>
+          </li>
+
+          <li class="carousel__slide">
+            <figure>
+              <div class="carousel__media">
+                <img src="/assets/images/portal-pc/build-6.jpg" alt="Animated eye display running on the completed case">
+              </div>
+            </figure>
+          </li>
+
+          <li class="carousel__slide">
+            <figure>
+              <div class="carousel__media">
+                <img src="/assets/images/portal-pc/build-7.jpg" alt="Final glam shot of the Portal PC on the desk">
+              </div>
+            </figure>
+          </li>
+        </ul>
+
+        <!-- Thumbnails -->
+        <ul class="carousel__thumbnails">
+          <li>
+            <label for="portal-pc-slide-1">
+              <img src="/assets/images/portal-pc/thumb-video.jpg" alt="Portal PC video thumbnail">
+            </label>
+          </li>
+          <li>
+            <label for="portal-pc-slide-2">
+              <img src="/assets/images/portal-pc/build-1.jpg" alt="Portal PC build photo 1 thumbnail">
+            </label>
+          </li>
+          <li>
+            <label for="portal-pc-slide-3">
+              <img src="/assets/images/portal-pc/build-2.jpg" alt="Portal PC build photo 2 thumbnail">
+            </label>
+          </li>
+          <li>
+            <label for="portal-pc-slide-4">
+              <img src="/assets/images/portal-pc/build-3.jpg" alt="Portal PC build photo 3 thumbnail">
+            </label>
+          </li>
+          <li>
+            <label for="portal-pc-slide-5">
+              <img src="/assets/images/portal-pc/build-4.jpg" alt="Portal PC electronics thumbnail">
+            </label>
+          </li>
+          <li>
+            <label for="portal-pc-slide-6">
+              <img src="/assets/images/portal-pc/build-5.jpg" alt="Portal PC assembly thumbnail">
+            </label>
+          </li>
+          <li>
+            <label for="portal-pc-slide-7">
+              <img src="/assets/images/portal-pc/build-6.jpg" alt="Portal PC display thumbnail">
+            </label>
+          </li>
+          <li>
+            <label for="portal-pc-slide-8">
+              <img src="/assets/images/portal-pc/build-7.jpg" alt="Portal PC final shot thumbnail">
+            </label>
+          </li>
+        </ul>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    © <span id="year"></span> Middleton Makes
+  </footer>
+
+  <script>
+    document.getElementById('year').textContent = new Date().getFullYear();
+  </script>
+</body>
+</html>
