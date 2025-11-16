@@ -1,0 +1,478 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>UAV Motor Bench Tester — Middleton Makes</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <style>
+    :root{
+      --bg:#0b0d10; --card:#14181d; --text:#e6e8eb;
+      --muted:#98a2b3; --accent:#5bd1ff; --chip:#21262d;
+    }
+    *{box-sizing:border-box;margin:0;padding:0}
+    body{
+      background:var(--bg);color:var(--text);
+      font:16px/1.6 system-ui,Segoe UI,Roboto,Ubuntu,"Helvetica Neue",Arial;
+    }
+    a{color:var(--accent);text-decoration:none}
+    a:hover{text-decoration:underline}
+    .topnav{
+      position:sticky;top:0;
+      backdrop-filter:saturate(120%) blur(6px);
+      background:rgba(11,13,16,.85);
+      border-bottom:1px solid #1f2329;
+      display:flex;align-items:center;justify-content:space-between;
+      padding:12px 24px;z-index:10;
+    }
+    .brand{font-weight:700;letter-spacing:.3px}
+    .links a{margin-left:16px;opacity:.9}
+    .links a.active{border-bottom:2px solid var(--accent)}
+    .container{max-width:900px;margin:0 auto;padding:24px}
+    h1{font-size:30px;margin-bottom:4px}
+    .subtitle{color:var(--muted);margin-bottom:18px}
+    .hero-media{margin:12px 0 20px;border-radius:14px;overflow:hidden;border:1px solid #1f2329}
+    .hero-media img{width:100%;display:block;object-fit:cover;max-height:420px}
+    .hero-media iframe{width:100%;aspect-ratio:16/9;border:0;display:block}
+    .section-title{margin-top:24px;font-size:20px;margin-bottom:6px}
+    .muted{color:var(--muted)}
+    ul{margin:8px 0 12px 18px}
+
+    /* --- Carousel (radio + thumbnails) --- */
+    .carousel{
+      display:block;
+      text-align:left;
+      position:relative;
+      margin-top:16px;
+      margin-bottom:12px;
+      background:var(--card);
+      border-radius:12px;
+      border:1px solid #1f2329;
+      padding:14px 14px 10px;
+    }
+
+    /* hide inputs but keep accessible */
+    .carousel > input{
+      clip:rect(1px,1px,1px,1px);
+      clip-path:inset(50%);
+      height:1px;
+      width:1px;
+      margin:-1px;
+      overflow:hidden;
+      padding:0;
+      position:absolute;
+    }
+
+    /* Slide offset logic (8 slides) */
+    .carousel > input:nth-of-type(1):checked ~ .carousel__slides .carousel__slide:first-of-type { margin-left:0%; }
+    .carousel > input:nth-of-type(2):checked ~ .carousel__slides .carousel__slide:first-of-type { margin-left:-100%; }
+    .carousel > input:nth-of-type(3):checked ~ .carousel__slides .carousel__slide:first-of-type { margin-left:-200%; }
+    .carousel > input:nth-of-type(4):checked ~ .carousel__slides .carousel__slide:first-of-type { margin-left:-300%; }
+    .carousel > input:nth-of-type(5):checked ~ .carousel__slides .carousel__slide:first-of-type { margin-left:-400%; }
+    .carousel > input:nth-of-type(6):checked ~ .carousel__slides .carousel__slide:first-of-type { margin-left:-500%; }
+    .carousel > input:nth-of-type(7):checked ~ .carousel__slides .carousel__slide:first-of-type { margin-left:-600%; }
+    .carousel > input:nth-of-type(8):checked ~ .carousel__slides .carousel__slide:first-of-type { margin-left:-700%; }
+
+    /* Thumbnail highlight (also 8) */
+    .carousel > input:nth-of-type(1):checked ~ .carousel__thumbnails li:nth-of-type(1),
+    .carousel > input:nth-of-type(2):checked ~ .carousel__thumbnails li:nth-of-type(2),
+    .carousel > input:nth-of-type(3):checked ~ .carousel__thumbnails li:nth-of-type(3),
+    .carousel > input:nth-of-type(4):checked ~ .carousel__thumbnails li:nth-of-type(4),
+    .carousel > input:nth-of-type(5):checked ~ .carousel__thumbnails li:nth-of-type(5),
+    .carousel > input:nth-of-type(6):checked ~ .carousel__thumbnails li:nth-of-type(6),
+    .carousel > input:nth-of-type(7):checked ~ .carousel__thumbnails li:nth-of-type(7),
+    .carousel > input:nth-of-type(8):checked ~ .carousel__thumbnails li:nth-of-type(8){
+      box-shadow:0 0 0 2px rgba(91,209,255,0.9);
+      border-radius:8px;
+    }
+
+    .carousel__slides{
+      position:relative;
+      z-index:1;
+      padding:0;
+      margin:0;
+      overflow:hidden;
+      white-space:nowrap;
+      box-sizing:border-box;
+      display:flex;
+      border-radius:10px;
+    }
+    .carousel__slide{
+      position:relative;
+      display:block;
+      flex:1 0 100%;
+      width:100%;
+      height:100%;
+      overflow:hidden;
+      transition:all 300ms ease-out;
+      vertical-align:top;
+      box-sizing:border-box;
+      white-space:normal;
+    }
+    .carousel__slide figure{
+      margin:0;
+    }
+
+    /* Main media area (video or image) */
+    .carousel__media{
+      width:100%;
+      aspect-ratio:16 / 9;
+      position:relative;
+      overflow:hidden;
+      border-radius:10px;
+      background:#000;
+    }
+    .carousel__media img,
+    .carousel__media iframe{
+      position:absolute;
+      inset:0;
+      width:100%;
+      height:100%;
+      border:0;
+      display:block;
+      object-fit:cover;
+    }
+
+    .carousel__thumbnails{
+      list-style:none;
+      padding:0;
+      margin:12px 0 0;
+      display:flex;
+      gap:8px;
+      justify-content:flex-start;
+      flex-wrap:wrap;
+    }
+    .carousel__thumbnails li{
+      flex:0 0 auto;
+      max-width:calc((100% / 6) - 4px);
+      transition:all 200ms ease-in-out;
+    }
+    .carousel__thumbnails label{
+      display:block;
+      width:100%;
+      aspect-ratio:1 / 1;
+      border-radius:8px;
+      overflow:hidden;
+      cursor:pointer;
+    }
+    .carousel__thumbnails img{
+      display:block;
+      width:100%;
+      height:100%;
+      object-fit:cover;
+      transition:transform 200ms ease-in-out, box-shadow 200ms ease-in-out;
+    }
+    .carousel__thumbnails label:hover img,
+    .carousel__thumbnails label:focus img{
+      transform:scale(1.03);
+      box-shadow:0 0 0 1px rgba(255,255,255,0.35);
+    }
+
+    .footer{
+      border-top:1px solid #1f2329;
+      padding:24px;text-align:center;color:var(--muted);
+      margin-top:32px;
+    }
+    @media (max-width:600px){
+      .container{padding:16px}
+      h1{font-size:24px}
+      .carousel{
+        padding:10px 10px 8px;
+      }
+      .carousel__thumbnails{
+        gap:6px;
+      }
+      .carousel__thumbnails li{
+        max-width:calc((100% / 4) - 4px);
+      }
+    }
+    .pill{
+      display:inline-flex;
+      align-items:center;
+      padding:2px 10px;
+      border-radius:999px;
+      background:var(--chip);
+      color:var(--muted);
+      font-size:12px;
+      margin-right:6px;
+    }
+  </style>
+</head>
+<body>
+  <nav class="topnav">
+    <a class="brand" href="/">Middleton Makes</a>
+    <div class="links">
+      <a href="/#uav">UAV Projects</a>
+      <a href="/#builds" class="active">Builds & Experiments</a>
+      <a href="/#about">About</a>
+      <a href="/#contact">Contact</a>
+    </div>
+  </nav>
+
+  <main class="container">
+    <header>
+      <h1>UAV Motor Bench Tester</h1>
+      <p class="subtitle">
+        Automated thrust, power, and thermal test rig for brushless UAV power systems — built around an ESP32,
+        load cell and browser-based dashboard.
+      </p>
+      <span class="pill">ESP32</span>
+      <span class="pill">Web dashboard</span>
+      <span class="pill">Load cell thrust rig</span>
+      <span class="pill">Automated test sequences</span>
+    </header>
+
+    <!-- HERO MEDIA -->
+    <div class="hero-media">
+      <img src="/assets/images/motor-bench/hero.jpg" alt="UAV motor bench tester with thrust rig and instruments">
+    </div>
+
+    <!-- OVERVIEW -->
+    <section>
+      <h2 class="section-title">Overview</h2>
+      <p class="muted">
+        This custom UAV motor test rig is a complete bench platform for characterising motors, propellers and ESCs.
+        An ESP32 controls the throttle signal, reads thrust from a load cell via an HX711 amplifier, and serves a
+        browser-based dashboard that streams real-time thrust, current and voltage data.
+        <br><br>
+        The dashboard supports both manual throttle control and a fully automated
+        <strong>Dynamic Test Sequence</strong> system, where you can stack ramp and hold steps to create repeatable
+        test profiles — ideal for comparing different props, motors or cooling configurations.
+        Built-in arming logic, soft-start ramps and rate limits keep the tests smooth and reduce stress on the ESC.
+        <br><br>
+        All data can be logged and exported to CSV for deeper analysis in Excel or your preferred tools. A dummy
+        version of the interface is available here:
+        <a href="/projects/uavdashboard.html">UAV motor dashboard mock</a>.
+      </p>
+      <p class="muted" style="margin-top:8px;">
+        The entire rig — from CAD and 3D-printed parts through to electronics, firmware and web UI — was designed
+        and built in-house. By leaning on AI-assisted coding and rapid iteration, I went from concept to a working,
+        automated test platform in roughly two days of focused work.
+      </p>
+    </section>
+
+    <!-- MY CONTRIBUTIONS -->
+    <section>
+      <h2 class="section-title">My contributions</h2>
+      <ul>
+        <li>Designed the mechanical thrust rig, mounting hardware and safety framework in CAD.</li>
+        <li>3D printed fixtures, motor mounts and brackets to keep the setup rigid and repeatable.</li>
+        <li>Sourced and integrated all electronic components: ESP32, ESC, load cell, HX711, power analyzer and sensors.</li>
+        <li>Developed ESP32 firmware for PWM throttle output, load cell readings and WebSocket communication.</li>
+        <li>Built the browser-based dashboard for live plotting, manual throttle control and automated test sequences.</li>
+        <li>Implemented the Dynamic Test Sequence system with configurable ramp and hold steps.</li>
+        <li>Added arming logic, rate limiting and smooth ramping to improve safety and protect hardware.</li>
+        <li>Ran multiple motor and propeller test campaigns, logging and analysing results in Excel.</li>
+        <li>Used the data to inform prop selection, power system choices and cooling strategies on other UAV projects.</li>
+        <li>Documented the rig so it can be reused as a shared tool for future powertrain development.</li>
+      </ul>
+    </section>
+
+    <!-- ELECTRONICS / HARDWARE -->
+    <section>
+      <h2 class="section-title">Electronics & hardware</h2>
+      <ul>
+        <li><strong>Controller:</strong> ESP32 development board (WebSocket server + PWM throttle output).</li>
+        <li><strong>Thrust measurement:</strong> 0–10&nbsp;kg load cell with HX711 amplifier.</li>
+        <li><strong>Powertrain:</strong> Brushless motor under test, paired with a suitable UAV ESC.</li>
+        <li><strong>Power source:</strong> LiPo battery dedicated to the ESC and motor.</li>
+        <li><strong>Instrumentation:</strong> Watt meter / power analyzer for current and voltage readings.</li>
+        <li><strong>Thermals:</strong> Handheld infrared thermometer for surface temperature checks.</li>
+        <li><strong>Mechanical:</strong> Rigid thrust stand, motor mount and fixtures (machined / 3D printed).</li>
+        <li><strong>Host device:</strong> Any phone, tablet or laptop with a modern browser to access the dashboard.</li>
+      </ul>
+    </section>
+
+    <!-- HOW IT WAS USED -->
+    <section>
+      <h2 class="section-title">How it was used</h2>
+      <p class="muted">
+        Tests were configured directly on the dashboard as a sequence of ramp and hold steps. A typical
+        Dynamic Test Sequence for a propulsion setup looked like this:
+      </p>
+      <ul>
+        <li>Ramp from 0&nbsp;% to 20&nbsp;% throttle over 5&nbsp;seconds, hold for 5&nbsp;seconds.</li>
+        <li>Ramp to 60&nbsp;% over 5&nbsp;seconds, hold for 60&nbsp;seconds.</li>
+        <li>Ramp to 100&nbsp;% over 5&nbsp;seconds, hold for 20&nbsp;seconds.</li>
+        <li>Ramp back down to 60&nbsp;% over 5&nbsp;seconds, hold for 30&nbsp;seconds.</li>
+        <li>Ramp smoothly down to 0&nbsp;% and disarm.</li>
+      </ul>
+      <p class="muted">
+        During each automated run the rig continuously logged thrust and telemetry from the ESP32.
+        In parallel, current, voltage and temperature readings from the power analyzer and infrared
+        thermometer were captured and entered into the dashboard at key points.
+        <br><br>
+        After a test, the full dataset was exported as a CSV file and analysed in Excel. This made it easy to
+        compare different motors, propellers and cooling setups on equal terms, and to spot where efficiency
+        dropped off or thermal limits were being approached.
+      </p>
+    </section>
+
+    <!-- CODE LINKS -->
+    <section>
+      <h2 class="section-title">Code & resources</h2>
+      <p class="muted">
+        The ESP32 firmware and browser dashboard are available on GitHub:
+      </p>
+      <ul>
+        <li>
+          <a href="https://github.com/YOUR_USERNAME/uav-motor-bench-dashboard" target="_blank" rel="noopener">
+            Dashboard (HTML/JS) repository
+          </a>
+        </li>
+        <li>
+          <a href="https://github.com/YOUR_USERNAME/uav-motor-bench-esp32" target="_blank" rel="noopener">
+            ESP32 firmware repository
+          </a>
+        </li>
+      </ul>
+      <p class="muted">
+        The repositories include wiring notes, basic calibration steps for the load cell, and example test sequences.
+      </p>
+    </section>
+
+    <!-- MEDIA -->
+    <section>
+      <h2 class="section-title">Media</h2>
+      <p class="muted">Overview video and build photos of the rig in use.</p>
+
+      <div class="carousel">
+        <!-- Radio Inputs -->
+        <input type="radio" name="motorbench-slides" id="motorbench-slide-1" checked>
+        <input type="radio" name="motorbench-slides" id="motorbench-slide-2">
+        <input type="radio" name="motorbench-slides" id="motorbench-slide-3">
+        <input type="radio" name="motorbench-slides" id="motorbench-slide-4">
+        <input type="radio" name="motorbench-slides" id="motorbench-slide-5">
+        <input type="radio" name="motorbench-slides" id="motorbench-slide-6">
+        <input type="radio" name="motorbench-slides" id="motorbench-slide-7">
+        <input type="radio" name="motorbench-slides" id="motorbench-slide-8">
+
+        <!-- Slides -->
+        <ul class="carousel__slides">
+          <!-- Slide 1: YouTube video -->
+          <li class="carousel__slide">
+            <figure>
+              <div class="carousel__media">
+                <iframe
+                  src="https://www.youtube.com/embed/YOUR_MOTOR_BENCH_VIDEO_ID"
+                  title="UAV Motor Bench Tester overview"
+                  allowfullscreen
+                  loading="lazy">
+                </iframe>
+              </div>
+            </figure>
+          </li>
+
+          <!-- Slide 2+ : Images -->
+          <li class="carousel__slide">
+            <figure>
+              <div class="carousel__media">
+                <img src="/assets/images/motor-bench/build-1.jpg" alt="Motor bench tester with motor mounted on thrust stand">
+              </div>
+            </figure>
+          </li>
+
+          <li class="carousel__slide">
+            <figure>
+              <div class="carousel__media">
+                <img src="/assets/images/motor-bench/build-2.jpg" alt="Close-up of load cell and HX711 mounting">
+              </div>
+            </figure>
+          </li>
+
+          <li class="carousel__slide">
+            <figure>
+              <div class="carousel__media">
+                <img src="/assets/images/motor-bench/build-3.jpg" alt="ESP32 control electronics and wiring on the rig">
+              </div>
+            </figure>
+          </li>
+
+          <li class="carousel__slide">
+            <figure>
+              <div class="carousel__media">
+                <img src="/assets/images/motor-bench/build-4.jpg" alt="Dashboard running on a tablet next to the test stand">
+              </div>
+            </figure>
+          </li>
+
+          <li class="carousel__slide">
+            <figure>
+              <div class="carousel__media">
+                <img src="/assets/images/motor-bench/build-5.jpg" alt="View of watt meter and power analyzer during a test">
+              </div>
+            </figure>
+          </li>
+
+          <li class="carousel__slide">
+            <figure>
+              <div class="carousel__media">
+                <img src="/assets/images/motor-bench/build-6.jpg" alt="Rig mid-test with motor at high throttle">
+              </div>
+            </figure>
+          </li>
+
+          <li class="carousel__slide">
+            <figure>
+              <div class="carousel__media">
+                <img src="/assets/images/motor-bench/build-7.jpg" alt="Overall bench layout showing safety area and instruments">
+              </div>
+            </figure>
+          </li>
+        </ul>
+
+        <!-- Thumbnails -->
+        <ul class="carousel__thumbnails">
+          <li>
+            <label for="motorbench-slide-1">
+              <img src="/assets/images/motor-bench/thumb-video.jpg" alt="Motor bench tester video thumbnail">
+            </label>
+          </li>
+          <li>
+            <label for="motorbench-slide-2">
+              <img src="/assets/images/motor-bench/build-1.jpg" alt="Motor bench build photo 1 thumbnail">
+            </label>
+          </li>
+          <li>
+            <label for="motorbench-slide-3">
+              <img src="/assets/images/motor-bench/build-2.jpg" alt="Motor bench build photo 2 thumbnail">
+            </label>
+          </li>
+          <li>
+            <label for="motorbench-slide-4">
+              <img src="/assets/images/motor-bench/build-3.jpg" alt="Motor bench build photo 3 thumbnail">
+            </label>
+          </li>
+          <li>
+            <label for="motorbench-slide-5">
+              <img src="/assets/images/motor-bench/build-4.jpg" alt="Dashboard and rig thumbnail">
+            </label>
+          </li>
+          <li>
+            <label for="motorbench-slide-6">
+              <img src="/assets/images/motor-bench/build-5.jpg" alt="Instrumentation thumbnail">
+            </label>
+          </li>
+          <li>
+            <label for="motorbench-slide-7">
+              <img src="/assets/images/motor-bench/build-6.jpg" alt="High throttle test thumbnail">
+            </label>
+          </li>
+          <li>
+            <label for="motorbench-slide-8">
+              <img src="/assets/images/motor-bench/build-7.jpg" alt="Overall bench layout thumbnail">
+            </label>
+          </li>
+        </ul>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    © <span id="year"></span> Middleton Makes
+  </footer>
+
+  <script>
+    document.getElementById('year').textContent = new Date().getFullYear();
+  </script>
+</body>
+</html>
