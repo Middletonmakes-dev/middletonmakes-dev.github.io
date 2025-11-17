@@ -30,33 +30,152 @@
     .container{max-width:900px;margin:0 auto;padding:24px}
     h1{font-size:30px;margin-bottom:4px}
     .subtitle{color:var(--muted);margin-bottom:18px}
-    .hero-media{margin:12px 0 20px;border-radius:14px;overflow:hidden;border:1px solid #1f2329}
-    .hero-media img{width:100%;display:block;object-fit:cover;max-height:420px}
-    .hero-media iframe{width:100%;aspect-ratio:16/9;border:0;display:block}
+    .hero-media{
+      margin:12px 0 20px;
+      border-radius:14px;
+      overflow:hidden;
+      border:1px solid #1f2329;
+    }
+    .hero-media img{
+      width:100%;
+      display:block;
+      object-fit:cover;
+      max-height:420px;
+    }
+    .hero-media iframe{
+      width:100%;
+      aspect-ratio:16/9;
+      border:0;
+      display:block;
+    }
     .section-title{margin-top:24px;font-size:20px;margin-bottom:6px}
     .muted{color:var(--muted)}
     ul{margin:8px 0 12px 18px}
-    .btn-row{margin-top:14px;display:flex;gap:10px;flex-wrap:wrap}
-    .btn{
-      display:inline-block;font-size:14px;
-      padding:6px 10px;border-radius:10px;
-      border:1px solid #2a313a;
+
+    /* --- Carousel (radio + thumbnails) --- */
+    .carousel{
+      display:block;
+      text-align:left;
+      position:relative;
+      margin-top:16px;
+      margin-bottom:12px;
+      background:var(--card);
+      border-radius:12px;
+      border:1px solid #1f2329;
+      padding:14px 14px 10px;
     }
-    .gallery{
-      display:grid;
-      grid-template-columns:repeat(auto-fill,minmax(200px,1fr));
-      gap:10px;margin-top:8px;
+
+    /* hide inputs but keep accessible */
+    .carousel > input{
+      clip:rect(1px,1px,1px,1px);
+      clip-path:inset(50%);
+      height:1px;
+      width:1px;
+      margin:-1px;
+      overflow:hidden;
+      padding:0;
+      position:absolute;
     }
-    .gallery img{
-      width:100%;border-radius:10px;border:1px solid #1f2329;
-      object-fit:cover;max-height:180px;
+
+    /* Slide offset logic (5 slides) */
+    .carousel > input:nth-of-type(1):checked ~ .carousel__slides .carousel__slide:first-of-type { margin-left:0%; }
+    .carousel > input:nth-of-type(2):checked ~ .carousel__slides .carousel__slide:first-of-type { margin-left:-100%; }
+    .carousel > input:nth-of-type(3):checked ~ .carousel__slides .carousel__slide:first-of-type { margin-left:-200%; }
+    .carousel > input:nth-of-type(4):checked ~ .carousel__slides .carousel__slide:first-of-type { margin-left:-300%; }
+    .carousel > input:nth-of-type(5):checked ~ .carousel__slides .carousel__slide:first-of-type { margin-left:-400%; }
+
+    /* Thumbnail highlight (5) */
+    .carousel > input:nth-of-type(1):checked ~ .carousel__thumbnails li:nth-of-type(1),
+    .carousel > input:nth-of-type(2):checked ~ .carousel__thumbnails li:nth-of-type(2),
+    .carousel > input:nth-of-type(3):checked ~ .carousel__thumbnails li:nth-of-type(3),
+    .carousel > input:nth-of-type(4):checked ~ .carousel__thumbnails li:nth-of-type(4),
+    .carousel > input:nth-of-type(5):checked ~ .carousel__thumbnails li:nth-of-type(5){
+      box-shadow:0 0 0 2px rgba(91,209,255,0.9);
+      border-radius:8px;
     }
-    .video-grid{
-      display:grid;
-      grid-template-columns:1fr;
-      gap:12px;
-      margin-top:10px;
+
+    .carousel__slides{
+      position:relative;
+      z-index:1;
+      padding:0;
+      margin:0;
+      overflow:hidden;
+      white-space:nowrap;
+      box-sizing:border-box;
+      display:flex;
+      border-radius:10px;
     }
+    .carousel__slide{
+      position:relative;
+      display:block;
+      flex:1 0 100%;
+      width:100%;
+      height:100%;
+      overflow:hidden;
+      transition:all 300ms ease-out;
+      vertical-align:top;
+      box-sizing:border-box;
+      white-space:normal;
+    }
+    .carousel__slide figure{
+      margin:0;
+    }
+
+    /* Main media area (video or image) */
+    .carousel__media{
+      width:100%;
+      aspect-ratio:16 / 9;
+      position:relative;
+      overflow:hidden;
+      border-radius:10px;
+      background:#000;
+    }
+    .carousel__media img,
+    .carousel__media iframe{
+      position:absolute;
+      inset:0;
+      width:100%;
+      height:100%;
+      border:0;
+      display:block;
+      object-fit:cover;
+    }
+
+    .carousel__thumbnails{
+      list-style:none;
+      padding:0;
+      margin:12px 0 0;
+      display:flex;
+      gap:8px;
+      justify-content:flex-start;
+      flex-wrap:wrap;
+    }
+    .carousel__thumbnails li{
+      flex:0 0 auto;
+      max-width:calc((100% / 6) - 4px);
+      transition:all 200ms ease-in-out;
+    }
+    .carousel__thumbnails label{
+      display:block;
+      width:100%;
+      aspect-ratio:1 / 1;
+      border-radius:8px;
+      overflow:hidden;
+      cursor:pointer;
+    }
+    .carousel__thumbnails img{
+      display:block;
+      width:100%;
+      height:100%;
+      object-fit:cover;
+      transition:transform 200ms ease-in-out, box-shadow 200ms ease-in-out;
+    }
+    .carousel__thumbnails label:hover img,
+    .carousel__thumbnails label:focus img{
+      transform:scale(1.03);
+      box-shadow:0 0 0 1px rgba(255,255,255,0.35);
+    }
+
     .footer{
       border-top:1px solid #1f2329;
       padding:24px;text-align:center;color:var(--muted);
@@ -65,6 +184,15 @@
     @media (max-width:600px){
       .container{padding:16px}
       h1{font-size:24px}
+      .carousel{
+        padding:10px 10px 8px;
+      }
+      .carousel__thumbnails{
+        gap:6px;
+      }
+      .carousel__thumbnails li{
+        max-width:calc((100% / 4) - 4px);
+      }
     }
   </style>
 </head>
@@ -83,97 +211,175 @@
     <header>
       <h1>CNC Hotwire Cutter</h1>
       <p class="subtitle">
-        Custom foam-cutting rig for wings and fuselages, running CNC control and custom dynamic wire tensioner.
+        Custom foam-cutting rig for wings and fuselages, running CNC control and a dynamic wire tensioner.
       </p>
     </header>
 
     <!-- HERO MEDIA -->
     <div class="hero-media">
-      <!-- Option A: main image (once you upload it, update the src below) -->
-      <img src="/assets/images/hotwire-cutter/hero.png">
-
-      <!-- Option B: use a YouTube hero instead of the image
-      <iframe src="YOUTUBE_EMBED_URL_1" title="Hotwire cutter demo" allowfullscreen></iframe>
-      -->
+      <img src="/assets/images/hotwire-cutter/hero.png" alt="CNC hotwire cutter frame with foam blank">
     </div>
 
+    <!-- OVERVIEW -->
     <section>
       <h2 class="section-title">Overview</h2>
       <p class="muted">
         This CNC hotwire cutter is built for shaping XPS/EPS foam cores for UAV wings and fuselages.
-        The rig is driven by a controller running G-code on a MKS gen L and was designed as a flexible
-        platform for experimenting with wire tension, temperature, and cutting strategies. Based on RC keiths hotwire.
+        The machine is driven by an MKS Gen&nbsp;L controller running G-code and was designed as a flexible
+        platform for experimenting with wire tension, temperature and cutting strategies.
+        The mechanical concept is based on
+        <a href="https://rckeith.co.uk/" target="_blank" rel="noopener">RC&nbsp;Keith’s hotwire cutter tutorial</a>,
+        adapted and scaled to suit larger UAV cores.
+        <br><br>
+        Over time the rig evolved from a simple manual-tension setup into a fully
+        <a href="/projects/tensioner.html">dynamic wire tensioner system</a>
+        using an ESP32, load cell and stepper motor. This upgrade keeps wire tension consistent as the wire heats,
+        cools and expands, which noticeably improves surface finish and accuracy on long cuts.
       </p>
     </section>
 
+    <!-- CONTRIBUTIONS -->
     <section>
-      <h2 class="section-title">Mechanical & electronics</h2>
+      <h2 class="section-title">My contributions</h2>
       <ul>
-        <li>Frame built to accommodate wing panels and full fuselage blocks.</li>
-        <li>Stepper-driven axes controlled via a CNC controller MKS Gen L.</li>
-        <li>Nichrome cutting wire, powered with adjustable current for tuning cut quality.</li>
-        <li>Integrated with a dedicated wire tensioner (ESP32 + load cell / stepper motor).</li>
+        <li>Concept development and overall machine architecture tailored to UAV wing and fuselage cores.</li>
+        <li>Full CAD design of the frame, carriages, gantry components and wire support hardware.</li>
+        <li>Selection and sourcing of V-slot extrusion, wheels, hardware and motion components.</li>
+        <li>3D printing of custom brackets, wire mounts, motor plates and sensor holders.</li>
+        <li>Machining and assembly of structural parts, jigs and alignment fixtures.</li>
+        <li>Electronics integration: MKS Gen&nbsp;L controller, stepper drivers, 24&nbsp;V PSU and inductive proximity sensors.</li>
+        <li>Design and integration of the ESP32-based dynamic wire tensioner using a load cell and stepper motor.</li>
+        <li>Configuration of firmware, G-code workflow and CNCjs control for day-to-day cutting.</li>
+        <li>Testing and tuning of wire temperature, feed rates and foam types to dial in cut quality.</li>
+        <li>Ongoing tweaks based on real projects: wings, fuselage blanks and composite core experiments.</li>
       </ul>
     </section>
 
+    <!-- MECHANICAL & ELECTRONICS -->
+    <section>
+      <h2 class="section-title">Mechanical &amp; electronics</h2>
+      <ul>
+        <li>Frame sized to handle both individual wing panels and full fuselage foam blocks.</li>
+        <li>V-slot extruded aluminium rails with wheel carriages for smooth, easily adjustable motion.</li>
+        <li>Stepper-driven axes controlled via an MKS Gen&nbsp;L CNC controller.</li>
+        <li>Nichrome cutting wire with adjustable current for tuning kerf width and surface finish.</li>
+        <li>Integrated dynamic wire tensioner (ESP32 + load cell + stepper) to keep tension consistent.</li>
+        <li>24&nbsp;V power supply sized to handle wire heating and stepper loads.</li>
+        <li>Inductive proximity sensors for homing, soft limits and safe repeatable cuts.</li>
+      </ul>
+    </section>
+
+    <!-- WHAT IT'S USED FOR -->
     <section>
       <h2 class="section-title">What the rig is used for</h2>
       <ul>
-        <li>Cutting wing cores with specific airfoils for fixed-wing UAVs.</li>
-        <li>Fuselage blanks that later get CNC-milled or hand-shaped.</li>
-        <li>Process experiments: wire temp vs feed rate vs foam type.</li>
-        <li>Supporting composite work (foam cores for resin-infused skins).</li>
+        <li>Cutting wing cores to specific airfoils for fixed-wing UAVs.</li>
+        <li>Producing fuselage blanks that are later CNC-milled or hand-shaped.</li>
+        <li>Process experiments: wire temperature vs. feed rate vs. foam density and composition.</li>
+        <li>Creating foam cores for composite parts with resin-infused skins.</li>
+        <li>General foam prototyping where consistent, smooth cuts matter.</li>
       </ul>
     </section>
 
+    <!-- MEDIA -->
     <section>
-      <h2 class="section-title">Videos</h2>
-      <p class="muted">Short clips showing the machine in action and the results.</p>
-      <div class="video-grid">
-        <!-- Video 1 -->
-        <div class="hero-media">
-          <iframe
-            src="https://www.youtube.com/embed/tF-kG6sH9Ek"
-            title="Hotwire cutter video 1"
-            allowfullscreen>
-          </iframe>
-        </div>
+      <h2 class="section-title">Media</h2>
+      <p class="muted">Build videos and a few shots of the machine and the parts it produces.</p>
 
-        <!-- Video 2 -->
-        <div class="hero-media">
-          <iframe
-            src="https://www.youtube.com/embed/M7giuJBWljc"
-            title="Hotwire cutter video 2"
-            allowfullscreen>
-          </iframe>
-        </div>
-      </div>
-    </section>
+      <div class="carousel">
+        <!-- Radio Inputs -->
+        <input type="radio" name="hotwire-slides" id="hotwire-slide-1" checked>
+        <input type="radio" name="hotwire-slides" id="hotwire-slide-2">
+        <input type="radio" name="hotwire-slides" id="hotwire-slide-3">
+        <input type="radio" name="hotwire-slides" id="hotwire-slide-4">
+        <input type="radio" name="hotwire-slides" id="hotwire-slide-5">
 
-    <section>
-      <h2 class="section-title">Build gallery</h2>
-      <p class="muted">Photos of the frame, electronics, and some of the foam parts it’s produced.</p>
-      <div class="gallery">
-        <!-- Replace these with your real image paths once you upload them -->
-        <img src="https://placehold.co/600x400?text=Frame+Build" alt="Hotwire cutter frame">
-        <img src="https://placehold.co/600x400?text=Electronics" alt="Electronics and controller">
-        <img src="https://placehold.co/600x400?text=Foam+Wing+Core" alt="Cut foam wing core">
-      </div>
-    </section>
+        <!-- Slides -->
+        <ul class="carousel__slides">
+          <!-- Slide 1: YouTube video 1 -->
+          <li class="carousel__slide">
+            <figure>
+              <div class="carousel__media">
+                <iframe
+                  src="https://www.youtube.com/embed/tF-kG6sH9Ek"
+                  title="Hotwire cutter — foam cutting demo"
+                  allowfullscreen
+                  loading="lazy">
+                </iframe>
+              </div>
+            </figure>
+          </li>
 
-    <section>
-      <h2 class="section-title">Code & configuration</h2>
-      <p class="muted">
-        If you publish the controller config, CNCjs setup, or wire-tension experiments,
-        link them here. Otherwise this section can describe your approach to feeds, speeds, and wire temperatures.
-      </p>
-      <div class="btn-row">
-        <!-- Uncomment + edit if you have a repo -->
-        <!--
-        <a class="btn" href="https://github.com/YOUR-GITHUB-USERNAME/HOTWIRE-REPO" target="_blank" rel="noopener">
-          View config / code
-        </a>
-        -->
+          <!-- Slide 2: YouTube video 2 -->
+          <li class="carousel__slide">
+            <figure>
+              <div class="carousel__media">
+                <iframe
+                  src="https://www.youtube.com/embed/M7giuJBWljc"
+                  title="Hotwire cutter — wing core cutting"
+                  allowfullscreen
+                  loading="lazy">
+                </iframe>
+              </div>
+            </figure>
+          </li>
+
+          <!-- Slide 3: Build image 1 -->
+          <li class="carousel__slide">
+            <figure>
+              <div class="carousel__media">
+                <img src="/assets/images/hotwire-cutter/build-1.jpg" alt="Hotwire cutter frame and motion system">
+              </div>
+            </figure>
+          </li>
+
+          <!-- Slide 4: Build image 2 -->
+          <li class="carousel__slide">
+            <figure>
+              <div class="carousel__media">
+                <img src="/assets/images/hotwire-cutter/build-2.jpg" alt="Electronics bay: MKS Gen L, PSU and wiring">
+              </div>
+            </figure>
+          </li>
+
+          <!-- Slide 5: Build image 3 -->
+          <li class="carousel__slide">
+            <figure>
+              <div class="carousel__media">
+                <img src="/assets/images/hotwire-cutter/build-3.jpg" alt="Finished foam wing cores fresh off the cutter">
+              </div>
+            </figure>
+          </li>
+        </ul>
+
+        <!-- Thumbnails -->
+        <ul class="carousel__thumbnails">
+          <li>
+            <label for="hotwire-slide-1">
+              <img src="/assets/images/hotwire-cutter/thumb-video-1.jpg" alt="Hotwire video 1 thumbnail">
+            </label>
+          </li>
+          <li>
+            <label for="hotwire-slide-2">
+              <img src="/assets/images/hotwire-cutter/thumb-video-2.jpg" alt="Hotwire video 2 thumbnail">
+            </label>
+          </li>
+          <li>
+            <label for="hotwire-slide-3">
+              <img src="/assets/images/hotwire-cutter/build-1.jpg" alt="Frame build thumbnail">
+            </label>
+          </li>
+          <li>
+            <label for="hotwire-slide-4">
+              <img src="/assets/images/hotwire-cutter/build-2.jpg" alt="Electronics thumbnail">
+            </label>
+          </li>
+          <li>
+            <label for="hotwire-slide-5">
+              <img src="/assets/images/hotwire-cutter/build-3.jpg" alt="Foam wing core thumbnail">
+            </label>
+          </li>
+        </ul>
       </div>
     </section>
   </main>
@@ -187,10 +393,3 @@
   </script>
 </body>
 </html>
-
-
-
-
-
-
-
