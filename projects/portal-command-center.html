@@ -21,7 +21,6 @@
     --ok:#21b355; --warn:#ffb700; --bad:#e04444;
   }
 
-  /* Page & background */
   html,body{height:100%}
   body{
     margin:0;
@@ -30,7 +29,7 @@
     background:linear-gradient(180deg,#fbfdff 0,#eef3f7 100%);
   }
 
-  /* Fixed side banners */
+  /* Fixed decorative side banners */
   .frame{
     display:flex;
     justify-content:center;
@@ -39,22 +38,19 @@
     position:relative;
     overflow-x:hidden;
   }
-.side{
-  position:fixed;
-  top:50%;                           /* center vertically */
-  transform:translateY(-50%);        /* perfectly center the banner */
-  width:220px;                       /* adjust for width of your image */
-  height:auto;
-  object-fit:contain;                /* keeps aspect ratio clean */
-  z-index:0;
-  opacity:0.55;
-  filter:saturate(1.05) contrast(1.02);
-  pointer-events:none;
-}
-.side.left{left:0;}
-.side.right{right:0;}
+  .side{
+    position:fixed;
+    top:50%;
+    transform:translateY(-50%);
+    width:220px;
+    opacity:0.55;
+    object-fit:contain;
+    pointer-events:none;
+    z-index:0;
+  }
+  .side.left{left:0;}
+  .side.right{right:0;}
 
-  /* Center content wrapper sits above banners */
   .wrap{
     position:relative;
     z-index:1;
@@ -63,7 +59,6 @@
     padding:0 24px;
   }
 
-  /* Main card */
   .card{
     background:var(--panel);
     border:1px solid var(--steel);
@@ -72,7 +67,6 @@
     overflow:hidden;
   }
 
-  /* Header */
   .hd{
     display:flex;align-items:center;gap:12px;
     padding:14px 16px;
@@ -83,11 +77,10 @@
     width:28px;height:28px;border-radius:8px;
     background:#fff url(icon.ico) center/cover no-repeat;
     box-shadow:inset 0 0 0 1px #e8edf2;
-    flex:0 0 auto;
   }
   h2{
     margin:0;
-    font-family:Orbitron, Inter, system-ui, Segoe UI;
+    font-family:Orbitron, Inter;
     font-weight:700;
     letter-spacing:.6px;
     font-size:18px;
@@ -99,27 +92,31 @@
     padding:6px 10px;border-radius:999px;
     background:linear-gradient(180deg,#fff,#f2f6fa);
     border:1px solid var(--steel);
-    font-family:Orbitron, Inter, system-ui, Segoe UI;
-    letter-spacing:.3px;
+    font-family:Orbitron, Inter;
   }
   .dot{width:10px;height:10px;border-radius:50%;background:#9aa6b2}
   .ok{background:var(--ok)} .warn{background:var(--warn)} .bad{background:var(--bad)}
 
-  /* Toolbar */
   .bar{display:flex;flex-wrap:wrap;gap:8px;padding:12px 16px;border-bottom:1px solid var(--steel)}
   button{
     appearance:none;cursor:pointer;
     border-radius:12px;border:1px solid #cfd6dd;
     background:linear-gradient(180deg,#fff,#f4f7fa);
-    padding:10px 14px;font-weight:700;letter-spacing:.2px;
+    padding:10px 14px;font-weight:700;
+    font-family:Orbitron, Inter;
+    letter-spacing:.2px;
     box-shadow:0 1px 2px rgba(0,0,0,.06);
-    font-family:Orbitron, Inter, system-ui, Segoe UI;
   }
   button:hover{box-shadow:0 2px 8px rgba(0,0,0,.08)}
+
   .b-blue{border-color:#a9dafc;background:linear-gradient(180deg,#e9f5ff,#d9efff)}
   .b-orange{border-color:#ffd0a6;background:linear-gradient(180deg,#fff3e7,#ffe6cf)}
+  .b-ghost{
+    border-style:dashed;
+    background:linear-gradient(180deg,#ffffff,#f8fafc);
+    color:#1f3144;
+  }
 
-  /* Content & fieldsets */
   .content{padding:12px 16px 18px}
   fieldset{
     margin:14px 0;padding:12px;border-radius:12px;border:1px solid var(--steel);
@@ -127,16 +124,14 @@
   }
   fieldset legend{
     padding:0 8px;font-weight:800;text-transform:uppercase;font-size:11px;color:#3d5266;
-    font-family:Orbitron, Inter, system-ui, Segoe UI; letter-spacing:.5px;
+    font-family:Orbitron, Inter; letter-spacing:.5px;
   }
-  /* Portal accent bar under each section */
   fieldset::before{
     content:"";position:absolute;left:10px;right:10px;top:0;
     height:3px;transform:translateY(-1px);
     background:linear-gradient(90deg,var(--blue) 0 55%,var(--orange) 55% 100%);
     border-radius:2px;
   }
-
   label{
     display:grid;grid-template-columns:260px 1fr;
     gap:10px;align-items:center;margin:8px 0;
@@ -144,144 +139,206 @@
   }
   input[type=number]{
     width:180px;padding:8px 10px;border-radius:10px;
-    border:1px solid #cfd6dd;background:#fff;font-weight:700;
-    outline:none;transition:border .15s, box-shadow .15s;
-    font-family:Inter, system-ui, Segoe UI;
+    border:1px solid #cfd6dd;font-weight:700;
+    background:#fff;outline:none;
+    transition:border .15s, box-shadow .15s;
   }
   input[type=number]:focus{
     border-color:#9ed4ff; box-shadow:0 0 0 3px rgba(37,168,255,.15);
   }
 
-  /* Footer */
   .foot{
-    display:flex;justify-content:flex-end;padding:8px 16px 14px;color:#576777;font-size:12px
+    display:flex;justify-content:space-between;
+    padding:8px 16px 14px;color:#576777;font-size:12px
   }
 
-  /* Responsiveness for smaller screens */
   @media (max-width:1000px){
     .side{width:150px;opacity:.5}
   }
   @media (max-width:780px){
-    .side{display:none}           /* hide banners on very small screens */
+    .side{display:none}
     .wrap{padding:0 16px}
     label{grid-template-columns:1fr}
     input[type=number]{width:100%}
   }
 </style>
 </head>
+
 <body>
-  <div class="frame">
-    <img src="left.png" alt="" class="side left">
-    <div class="wrap">
-      <div class="card">
-        <div class="hd">
-          <div class="logo" aria-hidden="true"></div>
-          <h2>Portal HUD Control</h2>
-          <div class="statusrow">
-            <span class="dot" id="dot"></span>
-            <span id="status">Connecting…</span>
-          </div>
-        </div>
+<div class="frame">
+  <img src="left.png" class="side left" alt="">
+  <div class="wrap">
+    <div class="card">
+      <div class="hd">
+        <div class="logo"></div>
+        <h2>Portal HUD Control</h2>
 
-        <div class="bar">
-          <button class="b-ghost" onclick="loadCfg()">⟳ Refresh</button>
-          <button class="b-blue"  onclick="saveCfg()">⇪ Save to ESP</button>
-          <button class="b-orange" onclick="pause()">⏸ Pause telemetry</button>
-          <button class="b-ghost"  onclick="resume()">▶ Resume</button>
-        </div>
-
-        <div class="content">
-          <fieldset>
-            <legend>Eye</legend>
-            <label>Blink min (ms) <input id="blinkMin" type="number"></label>
-            <label>Blink max (ms) <input id="blinkMax" type="number"></label>
-            <label>Saccade min (ms) <input id="saccMin" type="number"></label>
-            <label>Saccade max (ms) <input id="saccMax" type="number"></label>
-          </fieldset>
-
-          <fieldset>
-            <legend>Screen sequence</legend>
-            <label>Temp screen (ms) <input id="tempScreenMs" type="number"></label>
-            <label>Eye screen (ms)  <input id="eyeScreenMs"  type="number"></label>
-          </fieldset>
-
-          <fieldset>
-            <legend>Priority</legend>
-            <label>High temp (°C) <input id="highTempC" type="number" step="0.1"></label>
-            <label>Low  temp (°C) <input id="lowTempC"  type="number" step="0.1"></label>
-            <label>Low-temp dwell (ms) <input id="lowTempDwellMs" type="number"></label>
-          </fieldset>
-
-          <fieldset>
-            <legend>Timeout &amp; Fade</legend>
-            <label>Telemetry timeout (ms) <input id="telemetryTimeoutMs" type="number"></label>
-            <label>Fade (ms) <input id="fadeMs" type="number"></label>
-          </fieldset>
-        </div>
-
-        <div class="foot">
-          Aperture Diagnostics:
-          <span style="margin-left:6px;font-family:ui-monospace,Consolas">http://127.0.0.1:8765</span>
+        <div class="statusrow">
+          <span class="dot" id="dot"></span>
+          <span id="status" aria-live="polite">Connecting…</span>
         </div>
       </div>
+
+      <div class="bar">
+        <button type="button" class="b-ghost"  onclick="loadCfg()">⟳ Refresh</button>
+        <button type="button" class="b-blue"   onclick="saveCfg()">⇪ Save to ESP</button>
+        <button type="button" class="b-orange" onclick="pause()">⏸ Pause telemetry</button>
+        <button type="button" class="b-ghost"  onclick="resume()">▶ Resume</button>
+        <button type="button" class="b-ghost" style="margin-left:auto" onclick="location.href='/projects/portal-pc.html'">← Return</button>
+      </div>
+
+      <div class="content">
+
+        <fieldset>
+          <legend>Eye</legend>
+          <label>Blink min (ms) <input id="blinkMin" type="number"></label>
+          <label>Blink max (ms) <input id="blinkMax" type="number"></label>
+          <label>Saccade min (ms) <input id="saccMin" type="number"></label>
+          <label>Saccade max (ms) <input id="saccMax" type="number"></label>
+        </fieldset>
+
+        <fieldset>
+          <legend>Screen sequence</legend>
+          <label>Temp screen (ms) <input id="tempScreenMs" type="number"></label>
+          <label>Eye screen (ms)  <input id="eyeScreenMs"  type="number"></label>
+        </fieldset>
+
+        <fieldset>
+          <legend>Priority</legend>
+          <label>High temp (°C) <input id="highTempC" type="number" step="0.1"></label>
+          <label>Low  temp (°C) <input id="lowTempC"  type="number" step="0.1"></label>
+          <label>Low-temp dwell (ms) <input id="lowTempDwellMs" type="number"></label>
+        </fieldset>
+
+        <fieldset>
+          <legend>Timeout &amp; Fade</legend>
+          <label>Telemetry timeout (ms) <input id="telemetryTimeoutMs" type="number"></label>
+          <label>Fade (ms) <input id="fadeMs" type="number"></label>
+        </fieldset>
+
+      </div>
+
+      <div class="foot">
+        <span>Aperture Diagnostics (demo)</span>
+        <span style="font-family:ui-monospace,Consolas">http://127.0.0.1:8765</span>
+      </div>
     </div>
-    <img src="right.png" alt="" class="side right">
   </div>
 
+  <img src="right.png" class="side right" alt="">
+</div>
+
 <script>
-/* ---- ORIGINAL LOGIC (unchanged) ---- */
-const API = '';
+/* -------------------------
+     DEMO MODE
+-------------------------- */
+const DEMO = true;
+const API  = "";    // real use: IP or relative API path
 
 function setStatus(text, cls){
   const s = document.getElementById('status');
   const d = document.getElementById('dot');
   s.textContent = text;
-  d.className = 'dot ' + (cls||'');
+  d.className = "dot " + (cls || "");
 }
 
-async function pollStatus(){
-  try{
-    const r = await fetch(API + '/status', {cache:'no-store'});
-    if(!r.ok) throw new Error('HTTP '+r.status);
-    const j = await r.json();
-    const port = j.serial || '(none)';
-    const paused = !!j.paused_pc;
-    setStatus(paused ? `Connected ${port} — Paused` : `Connected ${port}`, paused?'warn':'ok');
-  }catch(e){
-    setStatus('Connecting…','');
-  }
-}
-setInterval(pollStatus, 1000); pollStatus();
+/* Demo mock values */
+if (DEMO){
+  window.addEventListener('DOMContentLoaded', ()=>{
+    setStatus("Demo mode — offline", "warn");
 
-async function loadCfg(){
-  try{
-    const r = await fetch(API + '/config/get', {cache:'no-store'}); const j = await r.json();
-    if (!j.ok) { setStatus('Failed to load','bad'); console.log(j); return; }
-    for (const [k,v] of Object.entries(j.cfg)){
-      const el = document.getElementById(k); if (el) el.value = v;
+    const demoValues = {
+      blinkMin:400,
+      blinkMax:1500,
+      saccMin:2000,
+      saccMax:5000,
+      tempScreenMs:3000,
+      eyeScreenMs:2000,
+      highTempC:75,
+      lowTempC:35,
+      lowTempDwellMs:5000,
+      telemetryTimeoutMs:5000,
+      fadeMs:800
+    };
+
+    for(const [k,v] of Object.entries(demoValues)){
+      const el = document.getElementById(k);
+      if(el) el.value = v;
     }
-    setStatus('Config loaded','ok');
-  }catch(e){
-    setStatus('Failed to connect','bad');
+  });
+
+  // Replace real functions with no-ops for demo mode
+  function loadCfg(){ setStatus("Demo: Loaded", "ok"); }
+  function saveCfg(){ setStatus("Demo: Saved", "ok"); }
+  function pause(){ setStatus("Paused (demo)", "warn"); }
+  function resume(){ setStatus("Demo mode — offline", "warn"); }
+
+} else {
+
+/* ---- REAL BACKEND LOGIC ---- */
+
+  async function pollStatus(){
+    try{
+      const r = await fetch(API + "/status", {cache:"no-store"});
+      if(!r.ok) throw new Error("HTTP "+r.status);
+      const j = await r.json();
+      const port = j.serial || "(none)";
+      const paused = !!j.paused_pc;
+      setStatus(paused ? `Connected ${port} — Paused` : `Connected ${port}`, paused?"warn":"ok");
+    }catch(e){
+      setStatus("Connecting…");
+    }
   }
+  setInterval(pollStatus,1000);
+  pollStatus();
+
+  async function loadCfg(){
+    try{
+      const r = await fetch(API + "/config/get");
+      const j = await r.json();
+      if(!j.ok){ setStatus("Failed to load","bad"); return; }
+      for(const [k,v] of Object.entries(j.cfg)){
+        const el = document.getElementById(k);
+        if(el) el.value = v;
+      }
+      setStatus("Config loaded","ok");
+    }catch(e){
+      setStatus("Failed to connect","bad");
+    }
+  }
+
+  async function setOne(key){
+    const el = document.getElementById(key);
+    if(!el) return;
+    const val = el.value;
+    try{
+      const r = await fetch(API + "/config/set", {
+        method:"POST",
+        headers:{"Content-Type":"application/json"},
+        body:JSON.stringify({key,value:val})
+      });
+      const j = await r.json();
+      if(!j.ok) console.warn("Set failed",key);
+    }catch(e){ console.warn("Set failed (network)",key); }
+  }
+
+  async function saveCfg(){
+    const ids = ["blinkMin","blinkMax","saccMin","saccMax","tempScreenMs","eyeScreenMs","highTempC","lowTempC","lowTempDwellMs","telemetryTimeoutMs","fadeMs"];
+    for(const id of ids) await setOne(id);
+
+    try{
+      const r = await fetch(API + "/config/save",{method:"POST"});
+      const j = await r.json();
+      setStatus(j.ok ? "Saved" : "Save failed", j.ok?"ok":"bad");
+    }catch(e){ setStatus("Save failed","bad"); }
+  }
+
+  async function pause(){ await fetch(API+"/action/pause",{method:"POST"}); setStatus("Paused","warn"); }
+  async function resume(){ await fetch(API+"/action/resume",{method:"POST"}); pollStatus(); }
+
+  loadCfg();
 }
-async function setOne(key){
-  const el = document.getElementById(key); if (!el) return;
-  const val = el.value;
-  const r = await fetch(API + '/config/set', {method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({key, value:val})});
-  const j = await r.json(); if (!j.ok) console.warn('Set failed', key, j);
-}
-async function saveCfg(){
-  const ids = ['blinkMin','blinkMax','saccMin','saccMax','tempScreenMs','eyeScreenMs','highTempC','lowTempC','lowTempDwellMs','telemetryTimeoutMs','fadeMs'];
-  for (const id of ids) await setOne(id);
-  const r = await fetch(API + '/config/save', {method:'POST'});
-  const j = await r.json();
-  setStatus(j.ok ? 'Saved' : 'Save failed', j.ok?'ok':'bad');
-}
-async function pause(){ await fetch(API + '/action/pause', {method:'POST'}); setStatus('Paused','warn'); }
-async function resume(){ await fetch(API + '/action/resume', {method:'POST'}); pollStatus(); }
-loadCfg();
 </script>
+
 </body>
 </html>
-
