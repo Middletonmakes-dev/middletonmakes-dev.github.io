@@ -4,64 +4,16 @@
   <meta charset="utf-8" />
   <title>Slow-Motion Timer — Middleton Makes</title>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <link rel="stylesheet" href="/assets/css/global.css" />
   <style>
-    :root{
-      --bg:#0b0d10; --card:#14181d; --text:#e6e8eb;
-      --muted:#98a2b3; --accent:#5bd1ff; --chip:#21262d;
-    }
-    *{box-sizing:border-box;margin:0;padding:0}
-    body{
-      background:var(--bg);color:var(--text);
-      font:16px/1.6 system-ui,Segoe UI,Roboto,Ubuntu,"Helvetica Neue",Arial;
-    }
-    a{color:var(--accent);text-decoration:none}
-    a:hover{text-decoration:underline}
-    .topnav{
-      position:sticky;top:0;
-      backdrop-filter:saturate(120%) blur(6px);
-      background:rgba(11,13,16,.85);
-      border-bottom:1px solid #1f2329;
-      display:flex;align-items:center;justify-content:space-between;
-      padding:12px 24px;z-index:10;
-    }
-    .brand{font-weight:700;letter-spacing:.3px}
-    .links a{margin-left:16px;opacity:.9}
-    .links a.active{border-bottom:2px solid var(--accent)}
-    .container{max-width:900px;margin:0 auto;padding:24px}
-    h1{font-size:30px;margin-bottom:4px}
-    .subtitle{color:var(--muted);margin-bottom:18px}
-    .hero-media{margin:12px 0 20px;border-radius:14px;overflow:hidden;border:1px solid #1f2329}
-    .hero-media img{width:100%;display:block;object-fit:cover;max-height:420px}
-    .hero-media iframe{width:100%;aspect-ratio:16/9;border:0;display:block}
-    .section-title{margin-top:24px;font-size:20px;margin-bottom:6px}
-    .muted{color:var(--muted)}
-    ul{margin:8px 0 12px 18px}
+    /* Slide offset logic (4 slides: 2 videos + 2 images) */
+    .carousel > input:nth-of-type(1):checked ~ .carousel__slides .carousel__slide:first-of-type { margin-left:0%; }
+    .carousel > input:nth-of-type(2):checked ~ .carousel__slides .carousel__slide:first-of-type { margin-left:-100%; }
+    .carousel > input:nth-of-type(3):checked ~ .carousel__slides .carousel__slide:first-of-type { margin-left:-200%; }
+    .carousel > input:nth-of-type(4):checked ~ .carousel__slides .carousel__slide:first-of-type { margin-left:-300%; }
 
-    /* --- CAROUSEL (4 SLIDES) --- */
-    .carousel{
-      display:block;
-      position:relative;
-      background:var(--card);
-      border-radius:12px;
-      border:1px solid #1f2329;
-      padding:14px 14px 10px;
-      margin-top:16px;
-    }
-
-    .carousel > input{
-      clip:rect(1px,1px,1px,1px);
-      clip-path:inset(50%);
-      height:1px;width:1px;margin:-1px;
-      overflow:hidden;padding:0;position:absolute;
-    }
-
-    /* Offset logic for 4 slides */
-    .carousel > input:nth-of-type(1):checked ~ .carousel__slides .carousel__slide:first-of-type{margin-left:0%;}
-    .carousel > input:nth-of-type(2):checked ~ .carousel__slides .carousel__slide:first-of-type{margin-left:-100%;}
-    .carousel > input:nth-of-type(3):checked ~ .carousel__slides .carousel__slide:first-of-type{margin-left:-200%;}
-    .carousel > input:nth-of-type(4):checked ~ .carousel__slides .carousel__slide:first-of-type{margin-left:-300%;}
-
-    /* Thumbnail highlight */
+    /* Thumbnail highlight (4) */
     .carousel > input:nth-of-type(1):checked ~ .carousel__thumbnails li:nth-of-type(1),
     .carousel > input:nth-of-type(2):checked ~ .carousel__thumbnails li:nth-of-type(2),
     .carousel > input:nth-of-type(3):checked ~ .carousel__thumbnails li:nth-of-type(3),
@@ -69,73 +21,14 @@
       box-shadow:0 0 0 2px rgba(91,209,255,0.9);
       border-radius:8px;
     }
-
-    .carousel__slides{
-      display:flex;
-      overflow:hidden;
-      padding:0;margin:0;
-      border-radius:10px;
-    }
-    .carousel__slide{
-      flex:1 0 100%;
-      transition:300ms ease-out;
-    }
-    .carousel__slide figure{margin:0;}
-
-    .carousel__media{
-      width:100%;aspect-ratio:16/9;
-      border-radius:10px;
-      background:#000;
-      overflow:hidden;
-      position:relative;
-    }
-    .carousel__media img,
-    .carousel__media iframe{
-      position:absolute;inset:0;
-      width:100%;height:100%;
-      object-fit:cover;border:0;
-    }
-
-    .carousel__thumbnails{
-      list-style:none;margin:12px 0 0;padding:0;
-      display:flex;gap:8px;
-      flex-wrap:wrap;
-    }
-    .carousel__thumbnails li{
-      flex:0 0 calc((100% / 4) - 4px);
-    }
-    .carousel__thumbnails label{
-      display:block;width:100%;aspect-ratio:1;
-      border-radius:8px;overflow:hidden;cursor:pointer;
-    }
-    .carousel__thumbnails img{
-      width:100%;height:100%;object-fit:cover;
-      transition:200ms;
-    }
-    .carousel__thumbnails label:hover img{
-      transform:scale(1.03);
-      box-shadow:0 0 0 1px rgba(255,255,255,0.35);
-    }
-
-    .footer{
-      border-top:1px solid #1f2329;
-      padding:24px;text-align:center;color:var(--muted);
-      margin-top:32px;
-    }
-
-    @media (max-width:600px){
-      .carousel{padding:10px}
-      .carousel__thumbnails li{flex:0 0 calc((100% / 4) - 4px)}
-    }
   </style>
 </head>
-
 <body>
   <nav class="topnav">
     <a class="brand" href="/">Middleton Makes</a>
     <div class="links">
       <a href="/#uav">UAV Projects</a>
-      <a href="/#builds">Builds & Experiments</a>
+      <a href="/#builds" class="active">Builds & Experiments</a>
       <a href="/#about">About</a>
       <a href="/#contact">Contact</a>
     </div>
@@ -143,117 +36,177 @@
 
   <main class="container">
     <header>
-      <h1>Slow-Motion Millisecond Timer</h1>
-      <p class="subtitle">Arduino-based timing tool for analysing high-speed events captured in slow-motion video.</p>
+      <h1>Slow-Motion Timer</h1>
+      <p class="subtitle">A millisecond timer designed to be read back from high-FPS phone footage.</p>
     </header>
 
-    <!-- HERO -->
+    <!-- HERO MEDIA -->
     <div class="hero-media">
-      <img src="/assets/images/slowmo-timer/hero.gif" alt="">
+      <img
+        src="/assets/images/slowmo-timer/hero.gif"
+        alt="Slow-motion timer display running while being filmed"
+        class="js-enlarge">
     </div>
 
     <!-- OVERVIEW -->
     <section>
       <h2 class="section-title">Overview</h2>
       <p class="muted">
-        This project is a compact Arduino-based timer designed for analysing high-speed events in slow-motion video.
-        It displays time in centiseconds using a TM1637 4-digit display.  
+        This project is a simple millisecond timer built around a microcontroller and a TM1637 four-digit display,
+        designed specifically to be read in phone slow-motion footage. The idea is straightforward: you start the
+        timer at the first reference point, stop it at the second, and then review the footage frame-by-frame to
+        get an accurate time between those two events.
         <br><br>
-        Indoors the display records perfectly. Outdoors, the camera shutter becomes extremely fast, causing each digit's
-        refresh cycle to appear separately — which creates flickering or ghosting in the slow-mo footage.
+        It’s especially useful for quick experiments where you don’t want to wire up sensors or write a full data
+        logger — things like estimating acceleration over a short distance, timing a launcher or mechanism, or
+        comparing how long different setups take to spin up.
+        <br><br>
+        Indoors under stable lighting, the timer is very easy to read from slow-motion footage. In bright sunlight,
+        however, the phone’s automatic exposure and very short shutter speed can sometimes “miss” segments or catch
+        the display mid-refresh. The result looks like the timer is less clear outside, but it’s actually a camera
+        sampling and shutter interaction issue rather than a problem with the timer logic itself.
       </p>
     </section>
 
-    <!-- CONTRIBUTIONS -->
+    <!-- HOW IT WORKS -->
     <section>
-      <h2 class="section-title">My contributions</h2>
+      <h2 class="section-title">How it works</h2>
+      <p class="muted">
+        The timer uses a momentary button and a simple state machine:
+      </p>
       <ul>
-        <li>Selected and wired the Arduino, TM1637, button, batteries and switch.</li>
-        <li>Wrote the Arduino timing and display logic.</li>
-        <li>Installed components in a compact enclosure.</li>
-        <li>Used the timer extensively on motor spool-up analysis for ENDURA.</li>
+        <li>On the first button press, the timer resets to zero and starts counting in milliseconds.</li>
+        <li>On the second press, it stops and holds the final time on the display.</li>
+        <li>You then film the whole event in slow motion (e.g., 240&nbsp;fps) with the display in frame.</li>
+        <li>Later, you scrub the footage frame-by-frame and read the stopped value directly on the display.</li>
       </ul>
+      <p class="muted">
+        Because it’s just a basic 4-digit display, the practical range is 0–9999&nbsp;ms — perfect for short
+        launch, drop, or actuation events where you care about sub-second timing without over-engineering the setup.
+      </p>
     </section>
 
     <!-- PARTS LIST -->
     <section>
-      <h2 class="section-title">Parts list</h2>
+      <h2 class="section-title">Parts used</h2>
       <ul>
-        <li>Arduino Pro Mini</li>
-        <li>TM1637 4-digit display</li>
-        <li>Momentary push button</li>
-        <li>1 kΩ resistor</li>
-        <li>2× AAA batteries and switch</li>
-        <li>Small project enclosure</li>
+        <li><strong>Microcontroller:</strong> Arduino-compatible board (e.g. Arduino Nano / Uno).</li>
+        <li><strong>Display:</strong> TM1637 4-digit 7-segment display module.</li>
+        <li><strong>Input:</strong> Momentary push button for start/stop.</li>
+        <li><strong>Power:</strong> USB or 5&nbsp;V supply (e.g. from your laptop or a power bank).</li>
+        <li><strong>Misc:</strong> Breadboard or perfboard, jumper wires, basic header pins.</li>
       </ul>
     </section>
 
-    <!-- CODE -->
+    <!-- NOTES ON CAMERA / SHUTTER -->
     <section>
-      <h2 class="section-title">Code</h2>
+      <h2 class="section-title">Indoor vs sunlight behaviour</h2>
       <p class="muted">
-        <a href="https://github.com/YOUR_USERNAME/YOUR_REPO" target="_blank">View the source code on GitHub</a>
+        The timer worked almost perfectly indoors: room lighting and a slightly longer effective shutter time meant
+        every frame captured a clean, stable view of the digits. In direct sunlight, the phone ramps up shutter speed
+        and adjusts exposure on the fly, which means:
+      </p>
+      <ul>
+        <li>Some frames are captured mid-refresh while the TM1637 is multiplexing the digits.</li>
+        <li>Exposure changes and reflections can make certain segments appear dimmer or “missing”.</li>
+      </ul>
+      <p class="muted">
+        The underlying timing is still correct — the microcontroller keeps solid millisecond counts — but the camera
+        occasionally samples during those brief refresh windows. For serious outdoor measurements, the next step
+        would be a higher-brightness display or a camera with manual exposure and shutter control.
       </p>
     </section>
 
     <!-- MEDIA -->
     <section>
       <h2 class="section-title">Media</h2>
-      <p class="muted">Two demo videos and two build photos.</p>
+      <p class="muted">Two short demo clips and a couple of build shots. Click any image to enlarge.</p>
 
       <div class="carousel">
+        <!-- Radio Inputs -->
+        <input type="radio" name="slowmo-slides" id="slowmo-slide-1" checked>
+        <input type="radio" name="slowmo-slides" id="slowmo-slide-2">
+        <input type="radio" name="slowmo-slides" id="slowmo-slide-3">
+        <input type="radio" name="slowmo-slides" id="slowmo-slide-4">
 
-        <!-- RADIO BUTTONS -->
-        <input type="radio" name="slomo-slides" id="slomo-slide-1" checked>
-        <input type="radio" name="slomo-slides" id="slomo-slide-2">
-        <input type="radio" name="slomo-slides" id="slomo-slide-3">
-        <input type="radio" name="slomo-slides" id="slomo-slide-4">
-
-        <!-- SLIDES -->
+        <!-- Slides -->
         <ul class="carousel__slides">
-
+          <!-- Slide 1: Indoor demo video -->
           <li class="carousel__slide">
             <figure>
               <div class="carousel__media">
-                <iframe src="https://www.youtube.com/embed/BMWj0OLjqYM" loading="lazy" allowfullscreen></iframe>
+                <iframe
+                  src="https://www.youtube.com/embed/BMWj0OLjqYM"
+                  title="Slow-motion timer indoor demo"
+                  allowfullscreen
+                  loading="lazy">
+                </iframe>
               </div>
             </figure>
           </li>
 
+          <!-- Slide 2: Outdoor demo video -->
           <li class="carousel__slide">
             <figure>
               <div class="carousel__media">
-                <iframe src="https://www.youtube.com/embed/MwjTLoUhR0k" loading="lazy" allowfullscreen></iframe>
+                <iframe
+                  src="https://www.youtube.com/embed/MwjTLoUhR0k"
+                  title="Slow-motion timer outdoor demo"
+                  allowfullscreen
+                  loading="lazy">
+                </iframe>
               </div>
             </figure>
           </li>
 
+          <!-- Slide 3: Breadboard build -->
           <li class="carousel__slide">
             <figure>
               <div class="carousel__media">
-                <img src="/assets/images/slowmo-timer/build-1.jpg">
+                <img
+                  src="/assets/images/slowmo-timer/build-1.jpg"
+                  alt="Slow-motion timer prototype on breadboard with TM1637 display"
+                  class="js-enlarge">
               </div>
             </figure>
           </li>
 
+          <!-- Slide 4: Close-up of display -->
           <li class="carousel__slide">
             <figure>
               <div class="carousel__media">
-                <img src="/assets/images/slowmo-timer/build-2.jpg">
+                <img
+                  src="/assets/images/slowmo-timer/build-2.jpg"
+                  alt="Close-up of TM1637 display showing milliseconds"
+                  class="js-enlarge">
               </div>
             </figure>
           </li>
-
         </ul>
 
-        <!-- THUMBNAILS -->
+        <!-- Thumbnails -->
         <ul class="carousel__thumbnails">
-          <li><label for="slomo-slide-1"><img src="/assets/images/slowmo-timer/thumb-video-1.jpg"></label></li>
-          <li><label for="slomo-slide-2"><img src="/assets/images/slowmo-timer/thumb-video-2.jpg"></label></li>
-          <li><label for="slomo-slide-3"><img src="/assets/images/slowmo-timer/build-1.jpg"></label></li>
-          <li><label for="slomo-slide-4"><img src="/assets/images/slowmo-timer/build-2.jpg"></label></li>
+          <li>
+            <label for="slowmo-slide-1">
+              <img src="/assets/images/slowmo-timer/thumb-video-1.jpg" alt="Indoor demo thumbnail">
+            </label>
+          </li>
+          <li>
+            <label for="slowmo-slide-2">
+              <img src="/assets/images/slowmo-timer/thumb-video-2.jpg" alt="Outdoor demo thumbnail">
+            </label>
+          </li>
+          <li>
+            <label for="slowmo-slide-3">
+              <img src="/assets/images/slowmo-timer/build-1.jpg" alt="Breadboard build thumbnail">
+            </label>
+          </li>
+          <li>
+            <label for="slowmo-slide-4">
+              <img src="/assets/images/slowmo-timer/build-2.jpg" alt="Display close-up thumbnail">
+            </label>
+          </li>
         </ul>
-
       </div>
     </section>
   </main>
@@ -262,8 +215,57 @@
     © <span id="year"></span> Middleton Makes
   </footer>
 
+  <!-- Lightbox markup -->
+  <div class="lightbox-backdrop" id="lightbox">
+    <button type="button" id="lightbox-close">Close ✕</button>
+    <div class="lightbox-content">
+      <img src="" alt="Expanded view" id="lightbox-img">
+    </div>
+  </div>
+
   <script>
+    // Year in footer
     document.getElementById('year').textContent = new Date().getFullYear();
+
+    // Simple lightbox for images with .js-enlarge
+    (function () {
+      const lightbox = document.getElementById('lightbox');
+      const lightboxImg = document.getElementById('lightbox-img');
+      const closeBtn = document.getElementById('lightbox-close');
+
+      function openLightbox(src, alt) {
+        lightboxImg.src = src;
+        lightboxImg.alt = alt || 'Expanded view';
+        lightbox.classList.add('is-visible');
+      }
+
+      function closeLightbox() {
+        lightbox.classList.remove('is-visible');
+        lightboxImg.src = '';
+        lightboxImg.alt = 'Expanded view';
+      }
+
+      document.addEventListener('click', function (e) {
+        const target = e.target;
+        if (target.classList && target.classList.contains('js-enlarge')) {
+          openLightbox(target.src, target.alt);
+        }
+      });
+
+      closeBtn.addEventListener('click', closeLightbox);
+
+      lightbox.addEventListener('click', function (e) {
+        if (e.target === lightbox) {
+          closeLightbox();
+        }
+      });
+
+      document.addEventListener('keydown', function (e) {
+        if (e.key === 'Escape' && lightbox.classList.contains('is-visible')) {
+          closeLightbox();
+        }
+      });
+    })();
   </script>
 </body>
 </html>
