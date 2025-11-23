@@ -1,0 +1,490 @@
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>UAV Launcher — Middleton Makes</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <style>
+    :root{
+      --bg:#0b0d10; --card:#14181d; --text:#e6e8eb;
+      --muted:#98a2b3; --accent:#5bd1ff; --chip:#21262d;
+    }
+    *{box-sizing:border-box;margin:0;padding:0}
+    body{
+      background:var(--bg);color:var(--text);
+      font:16px/1.6 system-ui,Segoe UI,Roboto,Ubuntu,"Helvetica Neue",Arial;
+    }
+    a{color:var(--accent);text-decoration:none}
+    a:hover{text-decoration:underline}
+    .topnav{
+      position:sticky;top:0;
+      backdrop-filter:saturate(120%) blur(6px);
+      background:rgba(11,13,16,.85);
+      border-bottom:1px solid #1f2329;
+      display:flex;align-items:center;justify-content:space-between;
+      padding:12px 24px;z-index:10;
+    }
+    .brand{font-weight:700;letter-spacing:.3px}
+    .links a{margin-left:16px;opacity:.9}
+    .links a.active{border-bottom:2px solid var(--accent)}
+    .container{max-width:900px;margin:0 auto;padding:24px}
+    h1{font-size:30px;margin-bottom:4px}
+    .subtitle{color:var(--muted);margin-bottom:18px}
+    .hero-media{margin:12px 0 20px;border-radius:14px;overflow:hidden;border:1px solid #1f2329}
+    .hero-media img{width:100%;display:block;object-fit:cover;max-height:420px}
+    .hero-media iframe{width:100%;aspect-ratio:16/9;border:0;display:block}
+    .section-title{margin-top:24px;font-size:20px;margin-bottom:6px}
+    .muted{color:var(--muted)}
+    ul{margin:8px 0 12px 18px}
+
+    /* --- Carousel (radio + thumbnails) --- */
+    .carousel{
+      display:block;
+      text-align:left;
+      position:relative;
+      margin-top:16px;
+      margin-bottom:12px;
+      background:var(--card);
+      border-radius:12px;
+      border:1px solid #1f2329;
+      padding:14px 14px 10px;
+    }
+
+    /* hide inputs but keep accessible */
+    .carousel > input{
+      clip:rect(1px,1px,1px,1px);
+      clip-path:inset(50%);
+      height:1px;
+      width:1px;
+      margin:-1px;
+      overflow:hidden;
+      padding:0;
+      position:absolute;
+    }
+
+    /* Slide offset logic (6 slides) */
+    .carousel > input:nth-of-type(1):checked ~ .carousel__slides .carousel__slide:first-of-type { margin-left:0%; }
+    .carousel > input:nth-of-type(2):checked ~ .carousel__slides .carousel__slide:first-of-type { margin-left:-100%; }
+    .carousel > input:nth-of-type(3):checked ~ .carousel__slides .carousel__slide:first-of-type { margin-left:-200%; }
+    .carousel > input:nth-of-type(4):checked ~ .carousel__slides .carousel__slide:first-of-type { margin-left:-300%; }
+    .carousel > input:nth-of-type(5):checked ~ .carousel__slides .carousel__slide:first-of-type { margin-left:-400%; }
+    .carousel > input:nth-of-type(6):checked ~ .carousel__slides .carousel__slide:first-of-type { margin-left:-500%; }
+
+    /* Thumbnail highlight (6) */
+    .carousel > input:nth-of-type(1):checked ~ .carousel__thumbnails li:nth-of-type(1),
+    .carousel > input:nth-of-type(2):checked ~ .carousel__thumbnails li:nth-of-type(2),
+    .carousel > input:nth-of-type(3):checked ~ .carousel__thumbnails li:nth-of-type(3),
+    .carousel > input:nth-of-type(4):checked ~ .carousel__thumbnails li:nth-of-type(4),
+    .carousel > input:nth-of-type(5):checked ~ .carousel__thumbnails li:nth-of-type(5),
+    .carousel > input:nth-of-type(6):checked ~ .carousel__thumbnails li:nth-of-type(6){
+      box-shadow:0 0 0 2px rgba(91,209,255,0.9);
+      border-radius:8px;
+    }
+
+    .carousel__slides{
+      position:relative;
+      z-index:1;
+      padding:0;
+      margin:0;
+      overflow:hidden;
+      white-space:nowrap;
+      box-sizing:border-box;
+      display:flex;
+      border-radius:10px;
+    }
+    .carousel__slide{
+      position:relative;
+      display:block;
+      flex:1 0 100%;
+      width:100%;
+      height:100%;
+      overflow:hidden;
+      transition:all 300ms ease-out;
+      vertical-align:top;
+      box-sizing:border-box;
+      white-space:normal;
+    }
+    .carousel__slide figure{
+      margin:0;
+    }
+
+    /* Main media area (video or image) */
+    .carousel__media{
+      width:100%;
+      aspect-ratio:16 / 9;
+      position:relative;
+      overflow:hidden;
+      border-radius:10px;
+      background:#000;
+    }
+    .carousel__media img,
+    .carousel__media iframe{
+      position:absolute;
+      inset:0;
+      width:100%;
+      height:100%;
+      border:0;
+      display:block;
+      object-fit:cover;
+    }
+
+    .carousel__thumbnails{
+      list-style:none;
+      padding:0;
+      margin:12px 0 0;
+      display:flex;
+      gap:8px;
+      justify-content:flex-start;
+      flex-wrap:wrap;
+    }
+    .carousel__thumbnails li{
+      flex:0 0 auto;
+      max-width:calc((100% / 6) - 4px);
+      transition:all 200ms ease-in-out;
+    }
+    .carousel__thumbnails label{
+      display:block;
+      width:100%;
+      aspect-ratio:1 / 1;
+      border-radius:8px;
+      overflow:hidden;
+      cursor:pointer;
+    }
+    .carousel__thumbnails img{
+      display:block;
+      width:100%;
+      height:100%;
+      object-fit:cover;
+      transition:transform 200ms ease-in-out, box-shadow 200ms ease-in-out;
+    }
+    .carousel__thumbnails label:hover img,
+    .carousel__thumbnails label:focus img{
+      transform:scale(1.03);
+      box-shadow:0 0 0 1px rgba(255,255,255,0.35);
+    }
+
+    .footer{
+      border-top:1px solid #1f2329;
+      padding:24px;text-align:center;color:var(--muted);
+      margin-top:32px;
+    }
+
+    /* Lightbox */
+    .lightbox-backdrop{
+      position:fixed;
+      inset:0;
+      background:rgba(0,0,0,0.85);
+      display:none;
+      align-items:center;
+      justify-content:center;
+      z-index:999;
+    }
+    .lightbox-backdrop.is-visible{
+      display:flex;
+    }
+    .lightbox-content{
+      max-width:96vw;
+      max-height:92vh;
+    }
+    .lightbox-content img{
+      width:100%;
+      height:100%;
+      object-fit:contain;
+      display:block;
+      border-radius:12px;
+    }
+    .lightbox-backdrop button{
+      position:absolute;
+      top:16px;
+      right:20px;
+      background:rgba(0,0,0,0.6);
+      color:#fff;
+      border:0;
+      padding:6px 10px;
+      border-radius:999px;
+      cursor:pointer;
+      font-size:14px;
+    }
+    .lightbox-backdrop button:hover{
+      background:rgba(255,255,255,0.1);
+    }
+
+    @media (max-width:600px){
+      .container{padding:16px}
+      h1{font-size:24px}
+      .carousel{
+        padding:10px 10px 8px;
+      }
+      .carousel__thumbnails{
+        gap:6px;
+      }
+      .carousel__thumbnails li{
+        max-width:calc((100% / 3) - 4px);
+      }
+    }
+  </style>
+</head>
+<body>
+  <nav class="topnav">
+    <a class="brand" href="/">Middleton Makes</a>
+    <div class="links">
+      <a href="/#uav">UAV Projects</a>
+      <a href="/#builds">Builds & Experiments</a>
+      <a href="/#about">About</a>
+      <a href="/#contact">Contact</a>
+    </div>
+  </nav>
+
+  <main class="container">
+    <header>
+      <h1>UAV Launcher</h1>
+      <p class="subtitle">Bungee-powered launch rail for consistent, repeatable fixed-wing UAV take-offs.</p>
+    </header>
+
+    <!-- HERO MEDIA -->
+    <div class="hero-media">
+      <img
+        src="/assets/images/uav-launcher/hero.jpg"
+        alt="UAV launcher rail with airframe loaded and ready"
+        class="js-enlarge">
+    </div>
+
+    <!-- OVERVIEW -->
+    <section>
+      <h2 class="section-title">Overview</h2>
+      <p class="muted">
+        Hand-launching heavier airframes quickly becomes the limiting factor in testing: it’s inconsistent,
+        physically demanding, and hard to repeat when you are tuning power systems or running structured
+        launch trials. The bungee-powered UAV launcher was our solution to that problem.
+        <br><br>
+        We started with a simple PVC-tube prototype to prove the concept, then moved onto a fully aluminium,
+        field-ready launcher built around a V-slot rail. The first operational version was designed and built
+        in under a month to meet a tight test schedule, and has since been iterated with telescoping legs,
+        an improved dolly, and an automatic safety latch that locks the trigger when the launcher is under load.
+        <br><br>
+        To size the bungee system we combined rough field testing with energy calculations to ensure we had
+        enough stored energy for our target launch speeds. You can see how I approximated the required
+        bungee strength and launch velocity in the
+        <a href="/projects/bungee-calc.html">bungee energy calculator write-up</a>.
+      </p>
+    </section>
+
+    <!-- CONTRIBUTIONS -->
+    <section>
+      <h2 class="section-title">My contributions</h2>
+      <ul>
+        <li>Concept development and requirements: moving from hand-launch to a controlled, repeatable rail launch system.</li>
+        <li>Full CAD design of the launcher structure, dolly, trigger mechanism and safety latch.</li>
+        <li>Selection and integration of the 40&nbsp;×&nbsp;40&nbsp;mm V-slot rail, wheels and eccentric hardware.</li>
+        <li>Analytical sizing of the bungee system and launcher stroke to meet target launch speeds for multiple airframe weights.</li>
+        <li>Machining and fabrication of aluminium plates, brackets, leg mounts and trigger components.</li>
+        <li>3D printing of guards, spacers, cable guides and small functional parts for the launcher.</li>
+        <li>Assembly, static load checks and repeated field testing with instrumented launches.</li>
+        <li>Iterative refinements: telescoping leg geometry, safety latch behaviour and dolly alignment.</li>
+        <li>Documentation of launcher performance and integration into the broader UAV test workflow.</li>
+      </ul>
+    </section>
+
+    <!-- COMPONENTS -->
+    <section>
+      <h2 class="section-title">Components used</h2>
+      <ul>
+        <li><strong>Main rail:</strong> 40&nbsp;×&nbsp;40&nbsp;mm aluminium V-slot extrusion with matching V-slot wheels and eccentric nuts for preload.</li>
+        <li><strong>Dolly / carrier:</strong> Aluminium plate and square-tube structure that supports the aircraft and interfaces with the V-slot wheels.</li>
+        <li><strong>Legs:</strong> Aluminium square tubing with telescoping adjustment for levelling on uneven terrain.</li>
+        <li><strong>Trigger &amp; latch:</strong> Mechanical trigger mechanism with an automatic safety latch that locks when the launcher is loaded.</li>
+        <li><strong>Bungee system:</strong> Multi-strand bungee cord sized for the required launch energy and draw length.</li>
+        <li><strong>Hardware:</strong> Stainless fasteners, adjustable stops, tie-down points and ground anchors for field use.</li>
+      </ul>
+    </section>
+
+    <!-- MEDIA -->
+    <section>
+      <h2 class="section-title">Media</h2>
+      <p class="muted">Two short launch videos and four build photos. Click any image to enlarge.</p>
+
+      <div class="carousel">
+        <!-- Radio Inputs -->
+        <input type="radio" name="launcher-slides" id="launcher-slide-1" checked>
+        <input type="radio" name="launcher-slides" id="launcher-slide-2">
+        <input type="radio" name="launcher-slides" id="launcher-slide-3">
+        <input type="radio" name="launcher-slides" id="launcher-slide-4">
+        <input type="radio" name="launcher-slides" id="launcher-slide-5">
+        <input type="radio" name="launcher-slides" id="launcher-slide-6">
+
+        <!-- Slides -->
+        <ul class="carousel__slides">
+          <!-- Slide 1: YouTube video -->
+          <li class="carousel__slide">
+            <figure>
+              <div class="carousel__media">
+                <iframe
+                  src="https://www.youtube.com/embed/9qni9qNlKp0"
+                  title="UAV launcher field test video 1"
+                  allowfullscreen
+                  loading="lazy">
+                </iframe>
+              </div>
+            </figure>
+          </li>
+
+          <!-- Slide 2: Second YouTube video -->
+          <li class="carousel__slide">
+            <figure>
+              <div class="carousel__media">
+                <iframe
+                  src="https://www.youtube.com/embed/nxxw8aroCwE"
+                  title="UAV launcher field test video 2"
+                  allowfullscreen
+                  loading="lazy">
+                </iframe>
+              </div>
+            </figure>
+          </li>
+
+          <!-- Slide 3: Build image 1 -->
+          <li class="carousel__slide">
+            <figure>
+              <div class="carousel__media">
+                <img
+                  src="/assets/images/uav-launcher/build-1.jpg"
+                  alt="UAV launcher V-slot rail and dolly assembly"
+                  class="js-enlarge">
+              </div>
+            </figure>
+          </li>
+
+          <!-- Slide 4: Build image 2 -->
+          <li class="carousel__slide">
+            <figure>
+              <div class="carousel__media">
+                <img
+                  src="/assets/images/uav-launcher/build-2.jpg"
+                  alt="Launcher legs and adjustment hardware during setup"
+                  class="js-enlarge">
+              </div>
+            </figure>
+          </li>
+
+          <!-- Slide 5: Build image 3 -->
+          <li class="carousel__slide">
+            <figure>
+              <div class="carousel__media">
+                <img
+                  src="/assets/images/uav-launcher/build-3.jpg"
+                  alt="Detail of the trigger and safety latch mechanism"
+                  class="js-enlarge">
+              </div>
+            </figure>
+          </li>
+
+          <!-- Slide 6: Build image 4 -->
+          <li class="carousel__slide">
+            <figure>
+              <div class="carousel__media">
+                <img
+                  src="/assets/images/uav-launcher/build-4.jpg"
+                  alt="Airframe loaded on the launcher ready for take-off"
+                  class="js-enlarge">
+              </div>
+            </figure>
+          </li>
+        </ul>
+
+        <!-- Thumbnails -->
+        <ul class="carousel__thumbnails">
+          <li>
+            <label for="launcher-slide-1">
+              <img src="/assets/images/uav-launcher/thumb-video-1.jpg" alt="Launcher video 1 thumbnail">
+            </label>
+          </li>
+          <li>
+            <label for="launcher-slide-2">
+              <img src="/assets/images/uav-launcher/thumb-video-2.jpg" alt="Launcher video 2 thumbnail">
+            </label>
+          </li>
+          <li>
+            <label for="launcher-slide-3">
+              <img src="/assets/images/uav-launcher/build-1.jpg" alt="Launcher build photo 1 thumbnail">
+            </label>
+          </li>
+          <li>
+            <label for="launcher-slide-4">
+              <img src="/assets/images/uav-launcher/build-2.jpg" alt="Launcher build photo 2 thumbnail">
+            </label>
+          </li>
+          <li>
+            <label for="launcher-slide-5">
+              <img src="/assets/images/uav-launcher/build-3.jpg" alt="Launcher build photo 3 thumbnail">
+            </label>
+          </li>
+          <li>
+            <label for="launcher-slide-6">
+              <img src="/assets/images/uav-launcher/build-4.jpg" alt="Launcher build photo 4 thumbnail">
+            </label>
+          </li>
+        </ul>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    © <span id="year"></span> Middleton Makes
+  </footer>
+
+  <!-- Lightbox markup -->
+  <div class="lightbox-backdrop" id="lightbox">
+    <button type="button" id="lightbox-close">Close ✕</button>
+    <div class="lightbox-content">
+      <img src="" alt="Expanded view" id="lightbox-img">
+    </div>
+  </div>
+
+  <script>
+    // Year in footer
+    document.getElementById('year').textContent = new Date().getFullYear();
+
+    // Simple lightbox for images with .js-enlarge
+    (function () {
+      const lightbox = document.getElementById('lightbox');
+      const lightboxImg = document.getElementById('lightbox-img');
+      const closeBtn = document.getElementById('lightbox-close');
+
+      function openLightbox(src, alt) {
+        lightboxImg.src = src;
+        lightboxImg.alt = alt || 'Expanded view';
+        lightbox.classList.add('is-visible');
+      }
+
+      function closeLightbox() {
+        lightbox.classList.remove('is-visible');
+        lightboxImg.src = '';
+        lightboxImg.alt = 'Expanded view';
+      }
+
+      document.addEventListener('click', function (e) {
+        const target = e.target;
+        if (target.classList && target.classList.contains('js-enlarge')) {
+          openLightbox(target.src, target.alt);
+        }
+      });
+
+      closeBtn.addEventListener('click', closeLightbox);
+
+      lightbox.addEventListener('click', function (e) {
+        if (e.target === lightbox) {
+          closeLightbox();
+        }
+      });
+
+      document.addEventListener('keydown', function (e) {
+        if (e.key === 'Escape' && lightbox.classList.contains('is-visible')) {
+          closeLightbox();
+        }
+      });
+    })();
+  </script>
+</body>
+</html>
+```
