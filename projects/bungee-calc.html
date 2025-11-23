@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>UAV Launcher — Bungee Strand Selection</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <!-- MathJax for equations -->
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js" async></script>
+
+  <style>
+    :root{
+      --bg:#0b0d10; --card:#14181d; --text:#e6e8eb;
+      --muted:#98a2b3; --accent:#5bd1ff; --chip:#21262d;
+    }
+    *{box-sizing:border-box;margin:0;padding:0}
+    body{
+      background:var(--bg);color:var(--text);
+      font:16px/1.6 system-ui,Segoe UI,Roboto,Ubuntu,"Helvetica Neue",Arial;
+      padding:2rem 1.25rem 3rem;
+      display:flex;justify-content:center;
+    }
+    main{max-width:900px;width:100%;}
+    .card{
+      background:var(--card);
+      border-radius:1rem;
+      border:1px solid rgba(148,163,184,.25);
+      padding:1.5rem 1.7rem 2rem;
+      box-shadow:0 18px 40px rgba(15,23,42,.65);
+    }
+    h1{font-size:1.7rem;margin-bottom:.4rem}
+    h2{font-size:1.1rem;margin:1.1rem 0 .3rem}
+    p{margin:.35rem 0}
+    .muted{color:var(--muted)}
+    .back-link{
+      display:inline-flex;align-items:center;gap:.35rem;
+      font-size:.9rem;margin-bottom:1rem;color:var(--accent);
+    }
+    .back-link:hover{text-decoration:underline}
+    .chip{
+      margin:.8rem 0;
+      padding:.6rem .8rem;
+      border-radius:.8rem;
+      background:var(--chip);
+      font-size:.9rem;
+    }
+    .chip strong{font-weight:600}
+  </style>
+</head>
+
+<body>
+<main>
+
+<a href="/projects/uav-launcher.html" class="back-link">
+  <span>←</span> Back to launcher project
+</a>
+
+<section class="card">
+
+  <h1>UAV Launcher &mdash; Bungee Strand Selection</h1>
+  <p class="muted">
+    This section explains how the initial bungee strand count was selected for the
+    launcher and how flight data was used to refine the configuration for a heavier
+    4&nbsp;kg airframe.
+  </p>
+
+  <div class="chip">
+    <strong>Known parameters</strong><br>
+    Rail length: 3.0&nbsp;m<br>
+    Powered stroke: 2.0&nbsp;m<br>
+    Single-strand force: 96&nbsp;N (peak @ ~90&nbsp;% stretch)<br>
+    Prototype launch mass: 2.3&nbsp;kg<br>
+    Heavy airframe launch mass: 4.0&nbsp;kg
+  </div>
+
+  <h2>1. Initial choice of four bungee strands</h2>
+
+  <p>
+    The launcher uses a 3&nbsp;m rail with a 2&nbsp;m powered stroke. A single length
+    of bungee was cut so that a full 2&nbsp;m draw corresponded to approximately
+    90&nbsp;% stretch when routed from the launcher base, around the nose pulley,
+    and back to the dolly.
+  </p>
+
+  <p>
+    A pull test with a baggage scale showed that one strand produced a peak draw force of:
+  </p>
+
+  <p>
+    \[
+      F_\text{strand} \approx 9.8~\text{kgf} \approx 96~\text{N}
+    \]
+  </p>
+
+  <p>
+    The first airframe used for launcher development had a known mass of:
+  </p>
+
+  <p>
+    \[
+      m_\text{proto} = 2.3~\text{kg}
+    \]
+  </p>
+
+  <p>
+    The performance target for this aircraft was a launch velocity close to its
+    cruise requirement:
+  </p>
+
+  <p>
+    \[
+      v_\text{target} \approx 16~\text{m/s}
+    \]
+  </p>
+
+  <p>
+    The corresponding kinetic energy at launch is:
+  </p>
+
+  <p>
+    \[
+      KE_\text{target}
+      = \tfrac{1}{2} m_\text{proto} v_\text{target}^2
+      = \tfrac{1}{2} \times 2.3 \times 16^2
+      \approx 294~\text{J}
+    \]
+  </p>
+
+  <p class="muted">
+    Assumption (sizing model): the bungee is approximated as a constant-force
+    element over the 2&nbsp;m stroke. In practice, force varies with elongation
+    and efficiency is reduced by pulley friction and rail losses.
+  </p>
+
+  <p>
+    To obtain a first-order estimate of launcher capability, the bungee was modelled
+    as providing approximately constant force over the 2&nbsp;m stroke. For a single
+    strand this gives an ideal work input of:
+  </p>
+
+  <p>
+    \[
+      W_\text{1 strand}
+      \approx F_\text{strand} \cdot s
+      = 96 \times 2
+      = 192~\text{J}
+    \]
+  </p>
+
+  <p>
+    Even before allowing for real-world inefficiencies, a single strand does not meet
+    the 294&nbsp;J requirement for the prototype. Two strands are theoretically
+    sufficient in the ideal model, but offer little margin once friction,
+    non-linear elastic behaviour, and other losses are included.
+  </p>
+
+  <p>
+    To ensure adequate system stiffness, safety margin and reliable acceleration, the
+    launcher was therefore configured with:
+  </p>
+
+  <p>
+    \[
+      N = 4~\text{strands}
+    \]
+  </p>
+
+  <div class="chip">
+    Selected configuration for prototype:<br>
+    <strong>4 bungee strands for a 2.3&nbsp;kg airframe</strong>
+  </div>
+
+  <p>
+    This configuration provided sufficient elastic energy and a comfortable
+    performance margin, which was validated during early flight testing.
+  </p>
+
+  <h2>2. Refinement using 4&nbsp;kg flight data</h2>
+
+  <p>
+    As the project progressed, the same launcher was used with a heavier airframe
+    at a launch mass of:
+  </p>
+
+  <p>
+    \[
+      m_1 = 4~\text{kg}
+    \]
+  </p>
+
+  <p>
+    With four strands installed, the launcher exit speed was measured using a
+    slow-motion timing rig:
+  </p>
+
+  <p>
+    \[
+      v_1 \approx 12.2~\text{m/s}
+    \]
+  </p>
+
+  <p>
+    The corresponding launch energy is:
+  </p>
+
+  <p>
+    \[
+      KE_1
+      = \tfrac{1}{2} m_1 v_1^2
+      = \tfrac{1}{2} \times 4 \times 12.2^2
+      \approx 298~\text{J}
+    \]
+  </p>
+
+  <p>
+    From this result, an empirical linear scaling factor can be inferred for this
+    launcher geometry, representing an effective speed contribution per strand:
+  </p>
+
+  <p>
+    \[
+      v_\text{per strand}
+      \approx \frac{v_1}{N_1}
+      = \frac{12.2}{4}
+      \approx 3.05~\text{m/s per strand}
+    \]
+  </p>
+
+  <p>
+    The objective for the 4&nbsp;kg configuration was to achieve a launch speed
+    comfortably greater than 16&nbsp;m/s to improve climb-out margin and ensure
+    consistent performance. Using the measured strand scaling factor, the required
+    strand count can be estimated as:
+  </p>
+
+  <p>
+    \[
+      N_2
+      \approx \frac{v_\text{target}}{v_\text{per strand}}
+      = \frac{16}{3.05}
+      \approx 5.2
+    \]
+  </p>
+
+  <p>
+    Rounding up and adding a safety overhead, the launcher was upgraded from four
+    to:
+  </p>
+
+  <p>
+    \[
+      N_2 = 6~\text{strands}
+    \]
+  </p>
+
+  <div class="chip">
+    Final heavy-airframe configuration:<br>
+    <strong>6 bungee strands for a 4.0&nbsp;kg airframe</strong>
+  </div>
+
+  <p>
+    Subsequent tests with the 4&nbsp;kg airframe and six strands produced measured
+    launch speeds in excess of 60&nbsp;km/h (\(\approx 16.7~\text{m/s}\)), confirming
+    that the additional strands delivered the desired performance margin.
+  </p>
+
+  <h2>3. Design conclusion</h2>
+
+  <p>
+    For this launcher geometry and bungee stock, strand count and launch speed scale
+    approximately linearly over the 2.3–4&nbsp;kg range. An empirical sizing rule of
+  </p>
+
+  <p>
+    \[
+      v_\text{per strand} \approx 3~\text{m/s}
+    \]
+  </p>
+
+  <p>
+    provides a useful baseline for future configurations, with at least one strand of
+    additional margin recommended for operational robustness and variations in bungee
+    condition.
+  </p>
+
+</section>
+
+</main>
+</body>
+</html>
