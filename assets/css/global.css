@@ -1,0 +1,420 @@
+/* =========================================
+   Middleton Makes — Global Styles
+   Shared across all project & index pages
+   ========================================= */
+
+/* Color system & base typography */
+:root{
+  --bg:#0b0d10;
+  --card:#14181d;
+  --text:#e6e8eb;
+  --muted:#98a2b3;
+  --accent:#5bd1ff;
+  --chip:#21262d;
+
+  --radius-sm:6px;
+  --radius-md:10px;
+  --radius-lg:14px;
+
+  --shadow-soft:0 10px 30px rgba(0,0,0,0.35);
+}
+
+*,
+*::before,
+*::after{
+  box-sizing:border-box;
+  margin:0;
+  padding:0;
+}
+
+html,body{
+  height:100%;
+}
+
+body{
+  background:var(--bg);
+  color:var(--text);
+  font:16px/1.6 system-ui,Segoe UI,Roboto,Ubuntu,"Helvetica Neue",Arial,sans-serif;
+  -webkit-font-smoothing:antialiased;
+}
+
+/* Links */
+a{
+  color:var(--accent);
+  text-decoration:none;
+}
+a:hover{
+  text-decoration:underline;
+}
+
+/* Images & media */
+img{
+  max-width:100%;
+  height:auto;
+  display:block;
+}
+
+/* Lists */
+ul{
+  margin:8px 0 12px 18px;
+}
+li{
+  margin-bottom:4px;
+}
+
+/* Basic text helpers */
+.muted{
+  color:var(--muted);
+}
+
+/* =========================================
+   Layout
+   ========================================= */
+
+.container{
+  max-width:900px;
+  margin:0 auto;
+  padding:24px;
+}
+
+@media (max-width:600px){
+  .container{
+    padding:16px;
+  }
+}
+
+/* Headings & page titles */
+h1{
+  font-size:30px;
+  margin-bottom:4px;
+}
+h2{
+  font-size:22px;
+}
+h3{
+  font-size:18px;
+}
+
+.section-title{
+  margin-top:24px;
+  font-size:20px;
+  margin-bottom:6px;
+}
+
+.subtitle{
+  color:var(--muted);
+  margin-bottom:18px;
+}
+
+/* Generic card-style block */
+.card{
+  background:var(--card);
+  border-radius:var(--radius-md);
+  border:1px solid #1f2329;
+  padding:16px 18px;
+  box-shadow:0 10px 30px rgba(0,0,0,0.3);
+}
+
+/* Chips / tags for tech stacks, categories, etc. */
+.chip{
+  display:inline-flex;
+  align-items:center;
+  padding:4px 10px;
+  border-radius:999px;
+  background:var(--chip);
+  color:var(--muted);
+  font-size:13px;
+  line-height:1.4;
+  margin:0 6px 6px 0;
+}
+
+/* Simple button style for GitHub / external links */
+.btn{
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  padding:8px 14px;
+  border-radius:999px;
+  border:1px solid #2b3037;
+  background:#161a20;
+  color:var(--text);
+  font-size:14px;
+  cursor:pointer;
+  text-decoration:none;
+  gap:6px;
+}
+.btn:hover{
+  background:#1b2027;
+  text-decoration:none;
+}
+
+/* =========================================
+   Top Navigation
+   ========================================= */
+
+.topnav{
+  position:sticky;
+  top:0;
+  backdrop-filter:saturate(120%) blur(6px);
+  background:rgba(11,13,16,.85);
+  border-bottom:1px solid #1f2329;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  padding:12px 24px;
+  z-index:10;
+}
+
+.brand{
+  font-weight:700;
+  letter-spacing:.3px;
+}
+
+.links a{
+  margin-left:16px;
+  opacity:.9;
+}
+.links a.active{
+  border-bottom:2px solid var(--accent);
+}
+
+/* Stack nav links on very small screens if needed */
+@media (max-width:480px){
+  .topnav{
+    flex-wrap:wrap;
+    gap:8px;
+  }
+  .links{
+    width:100%;
+    display:flex;
+    flex-wrap:wrap;
+    justify-content:flex-start;
+  }
+  .links a{
+    margin:4px 12px 0 0;
+  }
+}
+
+/* =========================================
+   Hero Media (top image or video)
+   ========================================= */
+
+.hero-media{
+  margin:12px 0 20px;
+  border-radius:var(--radius-lg);
+  overflow:hidden;
+  border:1px solid #1f2329;
+  background:#000;
+}
+.hero-media img{
+  width:100%;
+  object-fit:cover;
+  max-height:420px;
+}
+.hero-media iframe{
+  width:100%;
+  aspect-ratio:16/9;
+  border:0;
+  display:block;
+}
+
+/* =========================================
+   Project media carousel (structure only)
+   NOTE:
+   - Per-page CSS should still define the
+     radio :checked -> slide offset rules
+     using nth-of-type.
+   ========================================= */
+
+.carousel{
+  display:block;
+  text-align:left;
+  position:relative;
+  margin-top:16px;
+  margin-bottom:12px;
+  background:var(--card);
+  border-radius:12px;
+  border:1px solid #1f2329;
+  padding:14px 14px 10px;
+}
+
+/* Hide radio inputs but keep accessible */
+.carousel > input{
+  clip:rect(1px,1px,1px,1px);
+  clip-path:inset(50%);
+  height:1px;
+  width:1px;
+  margin:-1px;
+  overflow:hidden;
+  padding:0;
+  position:absolute;
+}
+
+/* Slides container */
+.carousel__slides{
+  position:relative;
+  z-index:1;
+  padding:0;
+  margin:0;
+  overflow:hidden;
+  white-space:nowrap;
+  box-sizing:border-box;
+  display:flex;
+  border-radius:10px;
+}
+
+/* Individual slide */
+.carousel__slide{
+  position:relative;
+  display:block;
+  flex:1 0 100%;
+  width:100%;
+  height:100%;
+  overflow:hidden;
+  transition:all 300ms ease-out;
+  vertical-align:top;
+  box-sizing:border-box;
+  white-space:normal;
+}
+
+.carousel__slide figure{
+  margin:0;
+}
+
+/* Main media area (video or image) */
+.carousel__media{
+  width:100%;
+  aspect-ratio:16/9;
+  position:relative;
+  overflow:hidden;
+  border-radius:10px;
+  background:#000;
+}
+
+.carousel__media img,
+.carousel__media iframe{
+  position:absolute;
+  inset:0;
+  width:100%;
+  height:100%;
+  border:0;
+  display:block;
+  object-fit:cover;
+}
+
+/* Thumbnails */
+.carousel__thumbnails{
+  list-style:none;
+  padding:0;
+  margin:12px 0 0;
+  display:flex;
+  gap:8px;
+  justify-content:flex-start;
+  flex-wrap:wrap;
+}
+
+.carousel__thumbnails li{
+  flex:0 0 auto;
+  max-width:calc((100% / 6) - 4px);
+  transition:all 200ms ease-in-out;
+}
+
+.carousel__thumbnails label{
+  display:block;
+  width:100%;
+  aspect-ratio:1/1;
+  border-radius:8px;
+  overflow:hidden;
+  cursor:pointer;
+}
+
+.carousel__thumbnails img{
+  display:block;
+  width:100%;
+  height:100%;
+  object-fit:cover;
+  transition:transform 200ms ease-in-out, box-shadow 200ms ease-in-out;
+}
+
+/* Hover state for thumbnails */
+.carousel__thumbnails label:hover img,
+.carousel__thumbnails label:focus img{
+  transform:scale(1.03);
+  box-shadow:0 0 0 1px rgba(255,255,255,0.35);
+}
+
+/* On very small screens, fewer thumbnails per row */
+@media (max-width:600px){
+  .carousel{
+    padding:10px 10px 8px;
+  }
+  .carousel__thumbnails{
+    gap:6px;
+  }
+  .carousel__thumbnails li{
+    max-width:calc((100% / 3) - 4px);
+  }
+}
+
+/* =========================================
+   Footer
+   ========================================= */
+
+.footer{
+  border-top:1px solid #1f2329;
+  padding:24px;
+  text-align:center;
+  color:var(--muted);
+  margin-top:32px;
+  font-size:14px;
+}
+
+/* =========================================
+   Global lightbox for click-to-enlarge images
+   - Use class="js-enlarge" on any <img>
+   ========================================= */
+
+.lightbox-backdrop{
+  position:fixed;
+  inset:0;
+  background:rgba(0,0,0,0.85);
+  display:none;
+  align-items:center;
+  justify-content:center;
+  z-index:999;
+}
+.lightbox-backdrop.is-visible{
+  display:flex;
+}
+
+.lightbox-content{
+  max-width:96vw;
+  max-height:92vh;
+}
+
+.lightbox-content img{
+  max-width:90vw;
+  max-height:90vh;
+  width:auto;
+  height:auto;
+  object-fit:contain;
+  display:block;
+  border-radius:12px;
+  box-shadow:0 18px 60px rgba(0,0,0,0.7);
+}
+
+.lightbox-backdrop button{
+  position:absolute;
+  top:16px;
+  right:20px;
+  background:rgba(0,0,0,0.6);
+  color:#fff;
+  border:0;
+  padding:6px 10px;
+  border-radius:999px;
+  cursor:pointer;
+  font-size:14px;
+}
+.lightbox-backdrop button:hover{
+  background:rgba(255,255,255,0.1);
+}
