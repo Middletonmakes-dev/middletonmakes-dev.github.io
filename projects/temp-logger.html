@@ -61,9 +61,8 @@
       <h2 class="section-title">Overview</h2>
       <p class="muted">
         This is a simple but surprisingly useful four-channel temperature logger built around an Arduino,
-        DS18B20 digital temperature probes and an SD card. It was originally developed to support the
-        <a href="/projects/motor-bench.html">UAV motor bench tester</a> and
-        <a href="/projects/endura.html">ENDURA UAV</a> work, where we needed to track motor, ESC, battery
+        DS18B20 digital temperature probes and an SD card. It was developed for flight testing
+        <a href="/projects/endura.html">ENDURA UAV</a> where we needed to track motor, ESC, battery
         and ambient temperatures over time while experimenting with different props, ducts and cooling layouts.
       </p>
       <p class="muted">
@@ -82,8 +81,8 @@
       <p class="muted">
         To turn the raw text logs into something graphable, I built a companion tool,
         <a href="/projects/temp-analyzer-demo.html">Temp Analyzer (demo)</a>. You drag and drop the
-        <code>log.txt</code> file from the SD card into the browser, choose the start date/time and
-        sample interval, and the tool automatically timestamps each row and exports a clean CSV/Excel file
+        <code>log.txt</code> file from the SD card into the browser, choose the test date, 
+        and the tool automatically sperates each test and exports a clean CSV/Excel file
         ready for plotting or further analysis.
       </p>
     </section>
@@ -92,16 +91,13 @@
     <section>
       <h2 class="section-title">What I did</h2>
       <ul>
-        <li>Designed and wired a simple four-channel temperature logging system around DS18B20 sensors.</li>
+        <li>Designed and wired the four-channel temperature logging system around DS18B20 sensors.</li>
         <li>Implemented SD card logging on an Arduino, including basic fault handling and beep feedback.</li>
         <li>Created a minimal “headless” workflow: power on, audible confirmation, automatic logging,
             and safe shutdown by simply removing power when the test is done.</li>
-        <li>Deployed the logger on the <a href="/projects/motor-bench.html">UAV motor bench tester</a>
-            to track motor, ESC, battery and ambient air temperatures during throttle profiles.</li>
-        <li>Used the data to refine cooling layouts, ducting and airflow around high-load components
-            on the <a href="/projects/endura.html">ENDURA delta-wing UAV</a>.</li>
-        <li>Built the browser-based
-            <a href="/projects/temp-analyzer-demo.html">Temp Analyzer</a> tool to read <code>log.txt</code>,
+        <li>Deployed the logger on ENDURA to track motor, ESC, battery and ambient air temperatures during flight tests.</li>
+        <li>Used the data to refine cooling layouts, ducting and airflow around high-load components.</li>
+        <li>Built the browser-based tool to read <code>log.txt</code>,
             apply timestamps and export the data to CSV/Excel.</li>
         <li>Documented the wiring convention and channel mapping so the same logger can be reused on future rigs.</li>
       </ul>
@@ -116,11 +112,11 @@
             (each on its own OneWire pin: D2–D5).</li>
         <li><strong>Bus wiring:</strong> Individual OneWire buses with appropriate pull-up resistors
             (typically 4.7&nbsp;k&Omega; per channel).</li>
-        <li><strong>Storage:</strong> SD card module on SPI, with CS on digital pin 10 and a micro-SD card
+        <li><strong>Storage:</strong> SD card module and a micro-SD card
             formatted as FAT/FAT32.</li>
-        <li><strong>Audio feedback:</strong> Piezo buzzer on digital pin 8 for beep codes.</li>
-        <li><strong>Power:</strong> 5&nbsp;V from bench supply, USB, or a regulated pack depending on the test setup.</li>
-        <li><strong>Enclosure / mounting:</strong> Small project box with strain relief for the four probe leads.</li>
+        <li><strong>Audio feedback:</strong> Piezo buzzer for beep codes.</li>
+        <li><strong>Power:</strong> 5&nbsp;V straight from the flight controllers servo rail.</li>
+        <li><strong>Enclosure / mounting:</strong> Small 3D printed box.</li>
       </ul>
     </section>
 
@@ -153,36 +149,10 @@
           If <code>SD.begin()</code> fails, the logger enters an infinite loop and emits a repeating pattern
           of single short beeps with short pauses in between — a continuous alarm that something is wrong
           with the card or wiring.</li>
-        <li><strong>Write error during logging:</strong>
-          If the log file cannot be opened while writing, the logger prints an error to the serial monitor
-          and emits three short beeps to indicate that the current sample was not recorded.</li>
       </ul>
       <p class="muted">
         When you’re done, you simply power the logger down, pull the SD card, and move <code>log.txt</code>
         to your computer for analysis.
-      </p>
-    </section>
-
-    <!-- DATA WORKFLOW WITH TEMP ANALYZER -->
-    <section>
-      <h2 class="section-title">Data workflow with Temp Analyzer</h2>
-      <p class="muted">
-        The raw log file is just a list of comma-separated temperature readings captured at a known fixed
-        interval (2&nbsp;s in the example sketch). To avoid putting an RTC and UI on the logger itself, all
-        of the “date logic” lives in the companion tool,
-        <a href="/projects/temp-analyzer-demo.html">Temp Analyzer</a>:
-      </p>
-      <ul>
-        <li>Open the Temp Analyzer page in your browser.</li>
-        <li>Drag and drop <code>log.txt</code> from the SD card onto the drop zone.</li>
-        <li>Choose the start date and time of the test and confirm the sample interval (e.g. 2&nbsp;s).</li>
-        <li>The tool parses each line, discards marker lines like <code>*,*,*,*</code>, and assigns a timestamp
-            to every sample.</li>
-        <li>Finally, it generates a clean CSV/Excel export with columns for timestamp and the four temperature channels.</li>
-      </ul>
-      <p class="muted">
-        This kept the hardware simple and rugged in the field, while still making it easy to overlay temperature
-        data with other logs (flight logs, thrust data, etc.) back at the desk.
       </p>
     </section>
 
