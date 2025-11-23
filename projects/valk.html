@@ -4,65 +4,10 @@
   <meta charset="utf-8" />
   <title>VALK UAV — Middleton Makes</title>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <link rel="stylesheet" href="/assets/css/global.css" />
   <style>
-    :root{
-      --bg:#0b0d10; --card:#14181d; --text:#e6e8eb;
-      --muted:#98a2b3; --accent:#5bd1ff; --chip:#21262d;
-    }
-    *{box-sizing:border-box;margin:0;padding:0}
-    body{
-      background:var(--bg);color:var(--text);
-      font:16px/1.6 system-ui,Segoe UI,Roboto,Ubuntu,"Helvetica Neue",Arial;
-    }
-    a{color:var(--accent);text-decoration:none}
-    a:hover{text-decoration:underline}
-    .topnav{
-      position:sticky;top:0;
-      backdrop-filter:saturate(120%) blur(6px);
-      background:rgba(11,13,16,.85);
-      border-bottom:1px solid #1f2329;
-      display:flex;align-items:center;justify-content:space-between;
-      padding:12px 24px;z-index:10;
-    }
-    .brand{font-weight:700;letter-spacing:.3px}
-    .links a{margin-left:16px;opacity:.9}
-    .links a.active{border-bottom:2px solid var(--accent)}
-    .container{max-width:900px;margin:0 auto;padding:24px}
-    h1{font-size:30px;margin-bottom:4px}
-    .subtitle{color:var(--muted);margin-bottom:18px}
-    .hero-media{margin:12px 0 20px;border-radius:14px;overflow:hidden;border:1px solid #1f2329}
-    .hero-media img{width:100%;display:block;object-fit:cover;max-height:420px}
-    .hero-media iframe{width:100%;aspect-ratio:16/9;border:0;display:block}
-    .section-title{margin-top:24px;font-size:20px;margin-bottom:6px}
-    .muted{color:var(--muted)}
-    ul{margin:8px 0 12px 18px}
-
-    /* --- Carousel (radio + thumbnails) --- */
-    .carousel{
-      display:block;
-      text-align:left;
-      position:relative;
-      margin-top:16px;
-      margin-bottom:12px;
-      background:var(--card);
-      border-radius:12px;
-      border:1px solid #1f2329;
-      padding:14px 14px 10px;
-    }
-
-    /* hide inputs but keep accessible */
-    .carousel > input{
-      clip:rect(1px,1px,1px,1px);
-      clip-path:inset(50%);
-      height:1px;
-      width:1px;
-      margin:-1px;
-      overflow:hidden;
-      padding:0;
-      position:absolute;
-    }
-
-    /* Slide offset logic (now 8 slides) */
+    /* Carousel offset & thumbnail highlight for 8 slides on this page */
     .carousel > input:nth-of-type(1):checked ~ .carousel__slides .carousel__slide:first-of-type { margin-left:0%; }
     .carousel > input:nth-of-type(2):checked ~ .carousel__slides .carousel__slide:first-of-type { margin-left:-100%; }
     .carousel > input:nth-of-type(3):checked ~ .carousel__slides .carousel__slide:first-of-type { margin-left:-200%; }
@@ -72,7 +17,6 @@
     .carousel > input:nth-of-type(7):checked ~ .carousel__slides .carousel__slide:first-of-type { margin-left:-600%; }
     .carousel > input:nth-of-type(8):checked ~ .carousel__slides .carousel__slide:first-of-type { margin-left:-700%; }
 
-    /* Thumbnail highlight (also 8) */
     .carousel > input:nth-of-type(1):checked ~ .carousel__thumbnails li:nth-of-type(1),
     .carousel > input:nth-of-type(2):checked ~ .carousel__thumbnails li:nth-of-type(2),
     .carousel > input:nth-of-type(3):checked ~ .carousel__thumbnails li:nth-of-type(3),
@@ -83,107 +27,6 @@
     .carousel > input:nth-of-type(8):checked ~ .carousel__thumbnails li:nth-of-type(8){
       box-shadow:0 0 0 2px rgba(91,209,255,0.9);
       border-radius:8px;
-    }
-
-    .carousel__slides{
-      position:relative;
-      z-index:1;
-      padding:0;
-      margin:0;
-      overflow:hidden;
-      white-space:nowrap;
-      box-sizing:border-box;
-      display:flex;
-      border-radius:10px;
-    }
-    .carousel__slide{
-      position:relative;
-      display:block;
-      flex:1 0 100%;
-      width:100%;
-      height:100%;
-      overflow:hidden;
-      transition:all 300ms ease-out;
-      vertical-align:top;
-      box-sizing:border-box;
-      white-space:normal;
-    }
-    .carousel__slide figure{
-      margin:0;
-    }
-
-    /* Main media area (video or image) */
-    .carousel__media{
-      width:100%;
-      aspect-ratio:16 / 9;
-      position:relative;
-      overflow:hidden;
-      border-radius:10px;
-      background:#000;
-    }
-    .carousel__media img,
-    .carousel__media iframe{
-      position:absolute;
-      inset:0;
-      width:100%;
-      height:100%;
-      border:0;
-      display:block;
-      object-fit:cover;
-    }
-
-    .carousel__thumbnails{
-      list-style:none;
-      padding:0;
-      margin:12px 0 0;
-      display:flex;
-      gap:8px;
-      justify-content:flex-start;
-      flex-wrap:wrap;
-    }
-    .carousel__thumbnails li{
-      flex:0 0 auto;
-      max-width:calc((100% / 6) - 4px);
-      transition:all 200ms ease-in-out;
-    }
-    .carousel__thumbnails label{
-      display:block;
-      width:100%;
-      aspect-ratio:1 / 1;
-      border-radius:8px;
-      overflow:hidden;
-      cursor:pointer;
-    }
-    .carousel__thumbnails img{
-      display:block;
-      width:100%;
-      height:100%;
-      object-fit:cover;
-      transition:transform 200ms ease-in-out, box-shadow 200ms ease-in-out;
-    }
-    .carousel__thumbnails label:hover img,
-    .carousel__thumbnails label:focus img{
-      transform:scale(1.03);
-      box-shadow:0 0 0 1px rgba(255,255,255,0.35);
-    }
-
-    .footer{
-      border-top:1px solid #1f2329;
-      padding:24px;text-align:center;color:var(--muted);
-      margin-top:32px;
-    }
-    @media (max-width:600px){
-      .container{padding:16px}
-      h1{font-size:24px}
-      .carousel{
-        padding:10px 10px 8px;
-      }
-      .carousel__thumbnails{
-        gap:6px;
-      }
-      .carousel__thumbnails li{
-        max-width:calc((100% / 4) - 4px);
-      }
     }
   </style>
 </head>
@@ -204,11 +47,12 @@
       <p class="subtitle">Long-endurance fixed-wing UAV — CAD, composites, and flight integration.</p>
     </header>
 
-    <!-- HERO MEDIA: main image -->
+    <!-- HERO MEDIA -->
     <div class="hero-media">
-      <img src="/assets/images/valk/hero.jpg" alt="VALK UAV on launch rail">
+      <img src="/assets/images/valk/hero.jpg" alt="VALK UAV on launch rail" class="js-enlarge">
     </div>
 
+    <!-- OVERVIEW -->
     <section>
       <h2 class="section-title">Overview</h2>
       <p class="muted">
@@ -219,6 +63,7 @@
       </p>
     </section>
 
+    <!-- CONTRIBUTIONS -->
     <section>
       <h2 class="section-title">My contributions</h2>
       <ul>
@@ -231,6 +76,7 @@
       </ul>
     </section>
 
+    <!-- TECHNICAL SNAPSHOT -->
     <section>
       <h2 class="section-title">Technical snapshot</h2>
       <ul>
@@ -245,13 +91,13 @@
       </ul>
     </section>
 
+    <!-- MEDIA -->
     <section>
       <h2 class="section-title">Media</h2>
       <p class="muted">Overview video and build / flight shots.</p>
 
-      <!-- Carousel with YouTube as first slide -->
       <div class="carousel">
-        <!-- Radio controls (now 8) -->
+        <!-- Radio controls (8 slides) -->
         <input type="radio" name="valk-slides" id="valk-slide-1" checked>
         <input type="radio" name="valk-slides" id="valk-slide-2">
         <input type="radio" name="valk-slides" id="valk-slide-3">
@@ -281,7 +127,7 @@
           <li class="carousel__slide">
             <figure>
               <div class="carousel__media">
-                <img src="/assets/images/valk/build-1.jpg" alt="VALK wing and fuselage during composite layup">
+                <img src="/assets/images/valk/build-1.jpg" alt="VALK wing and fuselage during composite layup" class="js-enlarge">
               </div>
             </figure>
           </li>
@@ -289,7 +135,7 @@
           <li class="carousel__slide">
             <figure>
               <div class="carousel__media">
-                <img src="/assets/images/valk/build-2.jpg" alt="CNC-machined cores and tooling for VALK">
+                <img src="/assets/images/valk/build-2.jpg" alt="CNC-machined cores and tooling for VALK" class="js-enlarge">
               </div>
             </figure>
           </li>
@@ -297,7 +143,7 @@
           <li class="carousel__slide">
             <figure>
               <div class="carousel__media">
-                <img src="/assets/images/valk/build-3.jpg" alt="VALK UAV on the field ready for test flight">
+                <img src="/assets/images/valk/build-3.jpg" alt="VALK UAV on the field ready for test flight" class="js-enlarge">
               </div>
             </figure>
           </li>
@@ -305,7 +151,7 @@
           <li class="carousel__slide">
             <figure>
               <div class="carousel__media">
-                <img src="/assets/images/valk/build-4.jpg" alt="Additional VALK build detail">
+                <img src="/assets/images/valk/build-4.jpg" alt="Additional VALK build detail" class="js-enlarge">
               </div>
             </figure>
           </li>
@@ -313,7 +159,7 @@
           <li class="carousel__slide">
             <figure>
               <div class="carousel__media">
-                <img src="/assets/images/valk/build-5.jpg" alt="VALK UAV in flight">
+                <img src="/assets/images/valk/build-5.jpg" alt="VALK UAV in flight" class="js-enlarge">
               </div>
             </figure>
           </li>
@@ -321,7 +167,7 @@
           <li class="carousel__slide">
             <figure>
               <div class="carousel__media">
-                <img src="/assets/images/valk/build-6.jpg" alt="VALK UAV in flight 2">
+                <img src="/assets/images/valk/build-6.jpg" alt="VALK UAV in flight 2" class="js-enlarge">
               </div>
             </figure>
           </li>
@@ -329,7 +175,7 @@
           <li class="carousel__slide">
             <figure>
               <div class="carousel__media">
-                <img src="/assets/images/valk/build-7.jpg" alt="VALK UAV in flight 3">
+                <img src="/assets/images/valk/build-7.jpg" alt="VALK UAV in flight 3" class="js-enlarge">
               </div>
             </figure>
           </li>
@@ -386,8 +232,57 @@
     © <span id="year"></span> Middleton Makes
   </footer>
 
+  <!-- Lightbox markup -->
+  <div class="lightbox-backdrop" id="lightbox">
+    <button type="button" id="lightbox-close">Close ✕</button>
+    <div class="lightbox-content">
+      <img src="" alt="Expanded view" id="lightbox-img">
+    </div>
+  </div>
+
   <script>
+    // Year in footer
     document.getElementById('year').textContent = new Date().getFullYear();
+
+    // Simple lightbox for images with .js-enlarge
+    (function () {
+      const lightbox = document.getElementById('lightbox');
+      const lightboxImg = document.getElementById('lightbox-img');
+      const closeBtn = document.getElementById('lightbox-close');
+
+      function openLightbox(src, alt) {
+        lightboxImg.src = src;
+        lightboxImg.alt = alt || 'Expanded view';
+        lightbox.classList.add('is-visible');
+      }
+
+      function closeLightbox() {
+        lightbox.classList.remove('is-visible');
+        lightboxImg.src = '';
+        lightboxImg.alt = 'Expanded view';
+      }
+
+      document.addEventListener('click', function (e) {
+        const target = e.target;
+        if (target.classList && target.classList.contains('js-enlarge')) {
+          openLightbox(target.src, target.alt);
+        }
+      });
+
+      closeBtn.addEventListener('click', closeLightbox);
+
+      lightbox.addEventListener('click', function (e) {
+        if (e.target === lightbox) {
+          closeLightbox();
+        }
+      });
+
+      document.addEventListener('keydown', function (e) {
+        if (e.key === 'Escape' && lightbox.classList.contains('is-visible')) {
+          closeLightbox();
+        }
+      });
+    })();
   </script>
 </body>
 </html>
