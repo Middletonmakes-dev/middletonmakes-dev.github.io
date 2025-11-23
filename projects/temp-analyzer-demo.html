@@ -1,0 +1,460 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Test Data Analyzer</title>
+  <style>
+    /* Overall Page Styling */
+    body {
+      background: #f5f7fa;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      color: #333;
+      margin: 0;
+      padding: 20px;
+    }
+    h1 {
+      text-align: center;
+      margin-bottom: 20px;
+    }
+    /* Drop Area Styling */
+    #drop-area {
+      border: 2px dashed #007bff;
+      border-radius: 8px;
+      background: #fff;
+      padding: 30px;
+      text-align: center;
+      margin-bottom: 20px;
+      transition: border-color 0.3s;
+    }
+    #drop-area.hover {
+      border-color: #28a745;
+    }
+    /* Button Styling */
+    button {
+      background: #007bff;
+      color: #fff;
+      border: none;
+      border-radius: 4px;
+      padding: 10px 15px;
+      cursor: pointer;
+      font-size: 14px;
+      margin: 5px;
+      transition: background 0.3s;
+    }
+    button:hover {
+      background: #0056b3;
+    }
+    /* Tabs and Content Styling */
+    .tabs {
+      text-align: center;
+      margin-bottom: 20px;
+    }
+    .tab-content {
+      display: none;
+      background: #fff;
+      border: 1px solid #ddd;
+      border-radius: 8px;
+      padding: 20px;
+      margin-bottom: 20px;
+    }
+    .tab-content.active {
+      display: block;
+    }
+    /* Stats Section */
+    .stats {
+      margin-bottom: 15px;
+      padding: 10px;
+      background: #e9ecef;
+      border-radius: 4px;
+    }
+    .stats p {
+      margin: 5px 0;
+      font-size: 14px;
+    }
+    /* Table Styling */
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-bottom: 10px;
+    }
+    th, td {
+      border: 1px solid #ccc;
+      padding: 10px;
+      text-align: center;
+    }
+    /* Chart Container */
+    .chart-container {
+      margin-top: 20px;
+      background: #fff;
+      border: 1px solid #ddd;
+      border-radius: 8px;
+      padding: 20px;
+    }
+    /* Date Input Styling */
+    input[type="date"] {
+      padding: 8px;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+    }
+  </style>
+</head>
+<body>
+  <h1>Test Data Analyzer</h1>
+  
+  <!-- Date Input -->
+  <div style="text-align:center; margin-bottom:20px;">
+    <label for="testDate">Test Date: </label>
+    <input type="date" id="testDate" />
+  </div>
+  
+  <!-- File Drop Area -->
+  <div id="drop-area">
+    <p>Drag and drop your .txt file here, or click the button below to select a file.</p>
+    <input type="file" id="fileElem" accept=".txt" style="display:none" />
+    <button id="fileSelect">Select a file</button>
+  </div>
+  
+  <!-- Tabs Container -->
+  <div class="tabs" id="tabs"></div>
+  <div id="tabContents"></div>
+  
+  <!-- Export Button -->
+  <div style="text-align:center;">
+    <button id="exportExcel">Export to Excel</button>
+  </div>
+  
+  <!-- Chart.js CDN -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <!-- SheetJS (xlsx) CDN -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+  
+  <script>
+    let tests = [];           // Array to hold test data objects.
+    let chartInstances = [];  // Array to store Chart.js instances for each test.
+
+    // File Selection and Drag & Drop Handling
+    const fileSelect = document.getElementById('fileSelect');
+    const fileElem = document.getElementById('fileElem');
+    const dropArea = document.getElementById('drop-area');
+
+    fileSelect.addEventListener('click', () => fileElem.click());
+    fileElem.addEventListener('change', (e) => {
+      if (e.target.files.length) handleFile(e.target.files[0]);
+    });
+
+    dropArea.addEventListener('dragover', (e) => {
+      e.preventDefault();
+      dropArea.classList.add('hover');
+    });
+    dropArea.addEventListener('dragleave', (e) => {
+      e.preventDefault();
+      dropArea.classList.remove('hover');
+    });
+    dropArea.addEventListener('drop', (e) => {
+      e.preventDefault();
+      dropArea.classList.remove('hover');
+      if (e.dataTransfer.files.length) handleFile(e.dataTransfer.files[0]);
+    });
+
+    // Read the file and process its contents
+    function handleFile(file) {
+      const reader = new FileReader();
+      reader.onload = (e) => processData(e.target.result);
+      reader.readAsText(file);
+    }
+
+    // Process the TXT File Content
+    function processData(text) {
+      tests = [];
+      chartInstances = [];
+      const lines = text.split(/\r?\n/).filter(line => line.trim() !== '');
+      let currentTest = { data: [] };
+
+      lines.forEach(line => {
+        if (line.trim() === "*,*,*,*") {
+          if (currentTest.data.length > 0) {
+            tests.push(currentTest);
+          }
+          currentTest = { data: [] };
+        } else {
+          const values = line.split(',').map(v => parseFloat(v));
+          if (values.length === 4 && values.every(v => !isNaN(v))) {
+            currentTest.data.push({
+              ESC: values[0],
+              MTR: values[1],
+              VTX: values[2],
+              AMB: values[3]
+            });
+          }
+        }
+      });
+      if (currentTest.data.length > 0) tests.push(currentTest);
+      buildTabs();
+    }
+
+    // Build Tabs and Content for Each Test
+    function buildTabs() {
+      const tabsDiv = document.getElementById('tabs');
+      const contentsDiv = document.getElementById('tabContents');
+      tabsDiv.innerHTML = '';
+      contentsDiv.innerHTML = '';
+
+      tests.forEach((test, index) => {
+        // Create a Tab Button for the Test
+        const tabButton = document.createElement('button');
+        tabButton.textContent = 'Test ' + (index + 1);
+        tabButton.addEventListener('click', () => showTab(index));
+        tabsDiv.appendChild(tabButton);
+
+        // Create the Tab Content Container
+        const tabContent = document.createElement('div');
+        tabContent.classList.add('tab-content');
+        tabContent.id = 'tab-' + index;
+
+        // --- Stats Section (Always Visible) ---
+        const statsDiv = document.createElement('div');
+        statsDiv.classList.add('stats');
+        const numReadings = test.data.length;
+        const totalTimeMinutes = (numReadings * 3) / 60;  // 3-second intervals
+        let statsHTML = `<p><strong>Total Time:</strong> ${totalTimeMinutes.toFixed(2)} minutes</p>`;
+        ['ESC', 'MTR', 'VTX', 'AMB'].forEach(col => {
+          const values = test.data.map(r => r[col]);
+          const maxVal = Math.max(...values);
+          const avgVal = values.reduce((a, b) => a + b, 0) / values.length;
+          statsHTML += `<p><strong>${col}</strong> - Max: ${maxVal.toFixed(2)}, Average: ${avgVal.toFixed(2)}</p>`;
+        });
+        statsDiv.innerHTML = statsHTML;
+        tabContent.appendChild(statsDiv);
+
+        // --- Table Section with Toggle ---
+        const toggleButton = document.createElement('button');
+        toggleButton.textContent = 'Minimize Table';
+        tabContent.appendChild(toggleButton);
+
+        const tableContainer = document.createElement('div');
+        tableContainer.classList.add('table-container');
+        const table = document.createElement('table');
+        const thead = document.createElement('thead');
+        const headerRow = document.createElement('tr');
+        ['ESC', 'MTR', 'VTX', 'AMB'].forEach(col => {
+          const th = document.createElement('th');
+          th.textContent = col;
+          headerRow.appendChild(th);
+        });
+        thead.appendChild(headerRow);
+        table.appendChild(thead);
+        const tbody = document.createElement('tbody');
+        test.data.forEach(row => {
+          const tr = document.createElement('tr');
+          ['ESC', 'MTR', 'VTX', 'AMB'].forEach(col => {
+            const td = document.createElement('td');
+            td.textContent = row[col].toFixed(2);
+            tr.appendChild(td);
+          });
+          tbody.appendChild(tr);
+        });
+        table.appendChild(tbody);
+        tableContainer.appendChild(table);
+        tabContent.appendChild(tableContainer);
+
+        toggleButton.addEventListener('click', () => {
+          if (tableContainer.style.display === 'none') {
+            tableContainer.style.display = 'block';
+            toggleButton.textContent = 'Minimize Table';
+          } else {
+            tableContainer.style.display = 'none';
+            toggleButton.textContent = 'Maximize Table';
+          }
+        });
+
+        // --- Chart Section (Each Test Has Its Own Graph) ---
+        const chartDiv = document.createElement('div');
+        chartDiv.classList.add('chart-container');
+        const canvas = document.createElement('canvas');
+        canvas.id = 'chartCanvas-' + index;
+        chartDiv.appendChild(canvas);
+        tabContent.appendChild(chartDiv);
+
+        contentsDiv.appendChild(tabContent);
+
+        // Create the Chart for this Test
+        createChartForTest(index, test);
+      });
+
+      // Show the first tab by default (if any)
+      if (tests.length > 0) showTab(0);
+    }
+
+    // Function to Show a Specific Tab
+    function showTab(index) {
+      const allTabs = document.querySelectorAll('.tab-content');
+      allTabs.forEach((tab, i) => {
+        tab.classList.toggle('active', i === index);
+      });
+    }
+
+    // Create a Chart for a Given Test Using Chart.js
+    function createChartForTest(index, test) {
+      const ctx = document.getElementById('chartCanvas-' + index).getContext('2d');
+      // Create time labels (each reading is 3 seconds apart, converted to minutes)
+      const labels = test.data.map((_, idx) => (idx * 3 / 60).toFixed(2));
+      const datasets = [
+        {
+          label: 'ESC',
+          data: test.data.map(r => r.ESC),
+          borderColor: 'red',
+          backgroundColor: 'rgba(255,0,0,0.1)',
+          fill: true,
+          tension: 0.1,
+          pointRadius: 3
+        },
+        {
+          label: 'MTR',
+          data: test.data.map(r => r.MTR),
+          borderColor: 'blue',
+          backgroundColor: 'rgba(0,0,255,0.1)',
+          fill: true,
+          tension: 0.1,
+          pointRadius: 3
+        },
+        {
+          label: 'VTX',
+          data: test.data.map(r => r.VTX),
+          borderColor: 'green',
+          backgroundColor: 'rgba(0,255,0,0.1)',
+          fill: true,
+          tension: 0.1,
+          pointRadius: 3
+        },
+        {
+          label: 'AMB',
+          data: test.data.map(r => r.AMB),
+          borderColor: 'orange',
+          backgroundColor: 'rgba(255,165,0,0.1)',
+          fill: true,
+          tension: 0.1,
+          pointRadius: 3
+        }
+      ];
+
+      const chartInstance = new Chart(ctx, {
+        type: 'line',
+        data: {
+          labels: labels,
+          datasets: datasets
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          layout: {
+            padding: {
+              top: 20,
+              bottom: 20,
+              left: 20,
+              right: 20
+            }
+          },
+          plugins: {
+            legend: {
+              display: true,
+              labels: {
+                font: {
+                  size: 14,
+                  family: "'Segoe UI', sans-serif"
+                },
+                color: '#333'
+              },
+              onClick: (e, legendItem, legend) => {
+                const dsIndex = legendItem.datasetIndex;
+                const ci = legend.chart;
+                const meta = ci.getDatasetMeta(dsIndex);
+                meta.hidden = meta.hidden === null ? !ci.data.datasets[dsIndex].hidden : null;
+                ci.update();
+              }
+            },
+            tooltip: {
+              backgroundColor: '#fff',
+              titleColor: '#333',
+              bodyColor: '#333',
+              borderColor: '#ccc',
+              borderWidth: 1,
+              padding: 10,
+              cornerRadius: 4
+            }
+          },
+          scales: {
+            x: {
+              title: {
+                display: true,
+                text: 'Time (minutes)',
+                font: {
+                  size: 16,
+                  family: "'Segoe UI', sans-serif"
+                },
+                color: '#333'
+              },
+              grid: {
+                color: '#ccc'
+              }
+            },
+            y: {
+              title: {
+                display: true,
+                text: 'Temperature (°C)',
+                font: {
+                  size: 16,
+                  family: "'Segoe UI', sans-serif"
+                },
+                color: '#333'
+              },
+              grid: {
+                color: '#ccc'
+              }
+            }
+          }
+        }
+      });
+      chartInstances[index] = chartInstance;
+    }
+
+    // Export All Tests to an Excel Workbook (Each Test in Its Own Sheet)
+    document.getElementById('exportExcel').addEventListener('click', () => {
+      // Create a new workbook.
+      let workbook = XLSX.utils.book_new();
+
+      tests.forEach((test, testIndex) => {
+        let ws_data = [];
+        // Title row.
+        ws_data.push([`Test ${testIndex + 1}`]);
+        ws_data.push([]);
+        
+        // Stats.
+        const numReadings = test.data.length;
+        const totalTimeMinutes = (numReadings * 3) / 60;
+        ws_data.push(["Total Time:", totalTimeMinutes.toFixed(2) + " minutes"]);
+        ['ESC', 'MTR', 'VTX', 'AMB'].forEach(col => {
+          const values = test.data.map(r => r[col]);
+          const maxVal = Math.max(...values);
+          const avgVal = values.reduce((a, b) => a + b, 0) / values.length;
+          ws_data.push([`${col} - Max:`, maxVal.toFixed(2), "Average:", avgVal.toFixed(2)]);
+        });
+        ws_data.push([]);
+        // Header for raw data.
+        ws_data.push(["Time (min)", "ESC", "MTR", "VTX", "AMB"]);
+        // Data rows.
+        test.data.forEach((row, idx) => {
+          const time = (idx * 3 / 60).toFixed(2);
+          ws_data.push([time, row.ESC, row.MTR, row.VTX, row.AMB]);
+        });
+
+        // Convert array-of-arrays to worksheet.
+        const ws = XLSX.utils.aoa_to_sheet(ws_data);
+        XLSX.utils.book_append_sheet(workbook, ws, `Test ${testIndex + 1}`);
+      });
+
+      // Write the workbook and trigger the download.
+      XLSX.writeFile(workbook, "test_data.xlsx");
+    });
+  </script>
+</body>
+</html>
