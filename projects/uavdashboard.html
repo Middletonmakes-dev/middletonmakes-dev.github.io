@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>UAV Motor Testing Dashboard (Demo)</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.1.3/css/bootstrap.min.css" />
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <style>
+    .chart-container { width: 100%; height: 400px; }
+    #eventLogBox, #dataLogBox {
+      height: 150px; overflow-y: auto;
+      background-color: #f9f9f9; border: 1px solid #ddd;
+      padding: 10px; font-family: monospace; white-space: pre-wrap;
+    }
+    #liveWeightBox {
+      display: flex; align-items: center; justify-content: center;
+      height: 38px; background-color: #f0f8ff;
+      border: 1px solid #ddd; font-size: 1rem; font-weight: bold;
+    }
+    .test-step {
+      border: 1px solid #ddd; padding: 10px;
+      margin-bottom: 10px; border-radius: 5px;
+    }
+    .test-step .form-control { margin-bottom: 5px; }
+    .return-btn {
+      margin-bottom: 10px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container mt-4">
+
+    <!-- RETURN BUTTON -->
+    <a href="/projects/motor-bench.html" class="btn btn-secondary return-btn">← Return to Project</a>
+
+    <h1>UAV Motor Testing Dashboard (Demo)</h1>
+
+    <!-- Inputs -->
+    <div class="row mt-3">
+      <div class="col-md-3">
+        <label>Motor</label>
+        <input type="text" id="motorInput" class="form-control" placeholder="Enter Motor Type" />
+      </div>
+      <div class="col-md-3">
+        <label>Prop Size</label>
+        <input type="text" id="propSizeInput" class="form-control" placeholder="Enter Prop Size" />
+      </div>
+      <div class="col-md-3">
+        <label>Throttle (%)</label>
+        <input type="number" id="throttleInput" class="form-control" min="0" max="100" value="0" />
+        <button id="setThrottleBtn" class="btn btn-primary mt-2 w-100">Set Throttle</button>
+      </div>
+      <div class="col-md-3">
+        <label>Live Weight</label>
+        <div id="liveWeightBox">0 g</div>
+        <button id="tareBtn" class="btn btn-secondary mt-2 w-100">TARE Scale</button>
+      </div>
+    </div>
+
+    <div class="row mt-3">
+      <div class="col-md-3">
+        <label>Amps (A)</label>
+        <input type="number" id="ampsInput" class="form-control" placeholder="Enter Amps" />
+      </div>
+      <div class="col-md-3">
+        <label>Voltage (V)</label>
+        <input type="number" id="voltageInput" class="form-control" placeholder="Enter Voltage" />
+      </div>
+      <div class="col-md-3">
+        <label>Motor Temp (°C)</label>
+        <input type="number" id="motorTempInput" class="form-control" placeholder="Enter Motor Temp" />
+      </div>
+      <div class="col-md-3">
+        <label>ESC Temp (°C)</label>
+        <input type="number" id="escTempInput" class="form-control" placeholder="Enter ESC Temp" />
+      </div>
+    </div>
+
+    <!-- Buttons -->
+    <div class="row mt-3">
+      <div class="col-md-3">
+        <button id="armBtn" class="btn btn-success w-100">ARM</button>
+      </div>
+      <div class="col-md-3">
+        <button id="disarmBtn" class="btn btn-danger w-100" disabled>DISARM</button>
+      </div>
+      <div class="col-md-3">
+        <button id="startTestBtn" class="btn btn-primary w-100">Start Test</button>
+      </div>
+      <div class="col-md-3">
+        <button id="stopTestBtn" class="btn btn-warning w-100" disabled>Stop Test</button>
+      </div>
+    </div>
+
+    <!-- Collapsible Test Sequence UI -->
+    <div class="mt-4">
+      <button id="toggleSequenceBtn" class="btn btn-info mb-2">Show Test Sequence</button>
+      <div id="testSequenceContainer" style="display: none;">
+        <h3>Test Sequence</h3>
+        <div id="testSteps"></div>
+        <button id="addStepBtn" class="btn btn-secondary">+ Add Step</button>
+      </div>
+    </div>
+
+    <!-- Graphs -->
+    <div class="row mt-4">
+      <div class="col-md-6">
+        <h3>Weight</h3>
+        <div class="chart-container"><canvas id="weightChart"></canvas></div>
+      </div>
+      <div class="col-md-6">
+        <h3>Voltage, Amps, Temperatures</h3>
+        <div class="chart-container"><canvas id="otherDataChart"></canvas></div>
+      </div>
+    </div>
+
+    <!-- Logs -->
+    <div class="mt-4">
+      <h3>Event Log</h3>
+      <div id="eventLogBox"></div>
+
+      <h3 class="mt-4">Data Log</h3>
+      <div id="dataLogBox"></div>
+      <button id="exportDataBtn" class="btn btn-success mt-3">Export Data to Excel</button>
+    </div>
+  </div>
+
+<script>
+/* ===========================
+      DEMO MODE ONLY
+   No WebSockets, no ESP32
+   =========================== */
+
+let testInterval = null;
+let testSequenceActive = false;
+let isArmed = false;
+let currentThrottle = 0;
+const dataLog = [];
+
+/* Fake “live weight” generator */
+setInterval(() => {
+  const fake = (Math.random() * 5 + 495).toFixed(1);
+  document.getElementById("liveWeightBox").textContent = fake + " g";
+}, 800);
+
+/* Charts */
+const weightCtx = document.getElementById('weightChart').getContext('2d');
+const weightChart = new Chart(weightCtx, {
+  type: 'line',
+  data: { labels: [], datasets: [{ label: 'Weight (g)', data: [], borderColor: 'rgb(75,192,192)', fill: false }] },
+  options: { responsive: true }
+});
+
+const otherDataCtx = document.getElementById('otherDataChart').getContext('2d');
+const otherDataChart = new Chart(otherDataCtx, {
+  type: 'line',
+  data: {
+    labels: [],
+    datasets: [
+      { label: 'Amps (A)', data: [], borderColor: 'rgb(255,99,132)', fill: false },
+      { label: 'Voltage (V)', data: [], borderColor: 'rgb(54,162,235)', fill: false },
+      { label: 'Motor Temp (°C)', data: [], borderColor: 'rgb(255,206,86)', fill: false },
+      { label: 'ESC Temp (°C)', data: [], borderColor: 'rgb(153,102,255)', fill: false }
+    ]
+  },
+  options: { responsive: true }
+});
+
+/* Logging helpers */
+function addEventLog(msg) {
+  const box = document.getElementById("eventLogBox");
+  const div = document.createElement("div");
+  div.textContent = msg;
+  box.appendChild(div);
+  box.scrollTop = box.scrollHeight;
+}
+function addDataLog(msg) {
+  const box = document.getElementById("dataLogBox");
+  const div = document.createElement("div");
+  div.textContent = msg;
+  box.appendChild(div);
+  box.scrollTop = box.scrollHeight;
+}
+
+/* BUTTON LOGIC — NOW ALL FAKE / LOCAL ONLY */
+document.getElementById("armBtn").onclick = () => {
+  isArmed = true;
+  document.getElementById("armBtn").disabled = true;
+  document.getElementById("disarmBtn").disabled = false;
+  addEventLog("ESC armed (demo).");
+};
+document.getElementById("disarmBtn").onclick = () => {
+  isArmed = false;
+  document.getElementById("armBtn").disabled = false;
+  document.getElementById("disarmBtn").disabled = true;
+  addEventLog("ESC disarmed (demo).");
+};
+
+document.getElementById("setThrottleBtn").onclick = () => {
+  const val = document.getElementById("throttleInput").value;
+  currentThrottle = val;
+  addEventLog(`Throttle set to ${val}% (demo).`);
+};
+
+document.getElementById("tareBtn").onclick = () => {
+  addEventLog("TARE command (demo).");
+};
+
+document.getElementById("startTestBtn").onclick = () => {
+  if (!isArmed) return addEventLog("Motor not armed!");
+
+  testInterval = setInterval(() => {
+    const amps = parseFloat(document.getElementById('ampsInput').value || 0);
+    const voltage = parseFloat(document.getElementById('voltageInput').value || 0);
+    const motorTemp = parseFloat(document.getElementById('motorTempInput').value || 0);
+    const escTemp = parseFloat(document.getElementById('escTempInput').value || 0);
+    const weight = (Math.random() * 5 + 495).toFixed(1);
+    const time = new Date().toLocaleTimeString();
+
+    weightChart.data.labels.push(time);
+    weightChart.data.datasets[0].data.push(weight);
+    weightChart.update();
+
+    otherDataChart.data.labels.push(time);
+    otherDataChart.data.datasets[0].data.push(amps);
+    otherDataChart.data.datasets[1].data.push(voltage);
+    otherDataChart.data.datasets[2].data.push(motorTemp);
+    otherDataChart.data.datasets[3].data.push(escTemp);
+    otherDataChart.update();
+
+    dataLog.push({ time, weight, amps, voltage, motorTemp, escTemp });
+    addDataLog(`Time: ${time}, Weight: ${weight} g, A: ${amps}, V: ${voltage}, MT: ${motorTemp}, ET: ${escTemp}`);
+  }, 1200);
+
+  addEventLog("Manual test started (demo).");
+  document.getElementById("startTestBtn").disabled = true;
+  document.getElementById("stopTestBtn").disabled = false;
+};
+
+document.getElementById("stopTestBtn").onclick = () => {
+  clearInterval(testInterval);
+  testInterval = null;
+  addEventLog("Test stopped (demo).");
+  document.getElementById("startTestBtn").disabled = false;
+  document.getElementById("stopTestBtn").disabled = true;
+};
+
+/* TEST SEQUENCE UI */
+document.getElementById("toggleSequenceBtn").onclick = () => {
+  const c = document.getElementById("testSequenceContainer");
+  c.style.display = c.style.display === "none" ? "block" : "none";
+};
+
+document.getElementById("addStepBtn").onclick = () => {
+  const div = document.createElement("div");
+  div.className = "test-step row";
+  div.innerHTML = `
+    <div class="col-md-3"><input type="number" class="form-control" placeholder="Target Throttle (%)"></div>
+    <div class="col-md-3"><input type="number" class="form-control" placeholder="Ramp Duration (s)"></div>
+    <div class="col-md-3"><input type="number" class="form-control" placeholder="Hold Duration (s)"></div>
+    <div class="col-md-3"><button class="btn btn-danger removeStepBtn">- Remove</button></div>
+  `;
+  div.querySelector(".removeStepBtn").onclick = () => div.remove();
+  document.getElementById("testSteps").appendChild(div);
+};
+
+/* EXPORT (unchanged) */
+document.getElementById("exportDataBtn").onclick = () => {
+  if (dataLog.length === 0) return addEventLog("No data to export.");
+
+  let csv = "Time,Weight (g),Amps (A),Voltage (V),MotorTemp (°C),ESCTemp (°C)\n";
+  dataLog.forEach(r => csv += `${r.time},${r.weight},${r.amps},${r.voltage},${r.motorTemp},${r.escTemp}\n`);
+
+  const blob = new Blob([csv], { type: "text/csv;charset=utf-8;" });
+  const link = document.createElement("a");
+  link.href = URL.createObjectURL(blob);
+  link.download = "UAV_Test_Data_Demo.csv";
+  link.click();
+
+  addEventLog("CSV exported (demo).");
+};
+</script>
+</body>
+</html>
