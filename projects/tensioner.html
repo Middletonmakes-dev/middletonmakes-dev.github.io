@@ -1,0 +1,425 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>Dynamic Wire Tensioner — Middleton Makes</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <!-- Global shared styles -->
+  <link rel="stylesheet" href="/assets/css/global.css" />
+
+  <!-- Page-specific carousel offset rules (9 slides) -->
+  <style>
+    /* Slide offset logic (9 slides) */
+    .carousel > input:nth-of-type(1):checked ~ .carousel__slides .carousel__slide:first-of-type { margin-left:0%; }
+    .carousel > input:nth-of-type(2):checked ~ .carousel__slides .carousel__slide:first-of-type { margin-left:-100%; }
+    .carousel > input:nth-of-type(3):checked ~ .carousel__slides .carousel__slide:first-of-type { margin-left:-200%; }
+    .carousel > input:nth-of-type(4):checked ~ .carousel__slides .carousel__slide:first-of-type { margin-left:-300%; }
+    .carousel > input:nth-of-type(5):checked ~ .carousel__slides .carousel__slide:first-of-type { margin-left:-400%; }
+    .carousel > input:nth-of-type(6):checked ~ .carousel__slides .carousel__slide:first-of-type { margin-left:-500%; }
+    .carousel > input:nth-of-type(7):checked ~ .carousel__slides .carousel__slide:first-of-type { margin-left:-600%; }
+    .carousel > input:nth-of-type(8):checked ~ .carousel__slides .carousel__slide:first-of-type { margin-left:-700%; }
+    .carousel > input:nth-of-type(9):checked ~ .carousel__slides .carousel__slide:first-of-type { margin-left:-800%; }
+
+    /* Thumbnail highlight (9) */
+    .carousel > input:nth-of-type(1):checked ~ .carousel__thumbnails li:nth-of-type(1),
+    .carousel > input:nth-of-type(2):checked ~ .carousel__thumbnails li:nth-of-type(2),
+    .carousel > input:nth-of-type(3):checked ~ .carousel__thumbnails li:nth-of-type(3),
+    .carousel > input:nth-of-type(4):checked ~ .carousel__thumbnails li:nth-of-type(4),
+    .carousel > input:nth-of-type(5):checked ~ .carousel__thumbnails li:nth-of-type(5),
+    .carousel > input:nth-of-type(6):checked ~ .carousel__thumbnails li:nth-of-type(6),
+    .carousel > input:nth-of-type(7):checked ~ .carousel__thumbnails li:nth-of-type(7),
+    .carousel > input:nth-of-type(8):checked ~ .carousel__thumbnails li:nth-of-type(8),
+    .carousel > input:nth-of-type(9):checked ~ .carousel__thumbnails li:nth-of-type(9){
+      box-shadow:0 0 0 2px rgba(91,209,255,0.9);
+      border-radius:8px;
+    }
+  </style>
+</head>
+<body>
+  <nav class="topnav">
+    <a class="brand" href="/">Middleton Makes</a>
+    <div class="links">
+      <a href="/#uav">UAV Projects</a>
+      <a href="/#builds" class="active">Builds & Experiments</a>
+      <a href="/#about">About</a>
+      <a href="/#contact">Contact</a>
+    </div>
+  </nav>
+
+  <main class="container">
+    <header>
+      <h1>Dynamic Wire Tensioner</h1>
+      <p class="subtitle">
+        Closed-loop, load-cell based wire tension control for the CNC hotwire cutter — ESP32, PID and a custom PCB.
+      </p>
+      <span class="chip">ESP32 + FreeRTOS</span>
+      <span class="chip">Load cell feedback</span>
+      <span class="chip">PID motor control</span>
+      <span class="chip">KiCad PCB</span>
+    </header>
+
+    <!-- HERO MEDIA -->
+    <div class="hero-media">
+      <img
+        src="/assets/images/tensioner/hero.jpg"
+        alt="Dynamic wire tensioner mounted on the CNC hotwire cutter"
+        class="js-enlarge">
+    </div>
+
+    <!-- OVERVIEW -->
+    <section>
+      <h2 class="section-title">Overview</h2>
+      <p class="muted">
+        This dynamic wire-tensioner is a closed-loop add-on for my
+        <a href="/projects/hotwire-cutter.html">CNC hotwire cutter</a>. Instead of relying on fixed weights
+        or manual springs, it continuously monitors wire tension using a precision load cell and automatically
+        adjusts a stepper-driven take-up spool to keep tension stable as the wire heats, cools and stretches
+        during cuts.
+        <br><br>
+        An ESP32 runs dual-core FreeRTOS tasks: one core is dedicated to fast, filtered weight readings, while
+        the other handles the PID control loop and stepper drive. A small OLED on the front panel shows startup
+        checks, IP address and live status. A web dashboard provides full control: you can enable the motor,
+        start and stop the controller, see live tension in grams and tune all parameters from a browser.
+        <br><br>
+        I used this project as an excuse to go end-to-end: from the first breadboard prototype and AI-assisted
+        firmware experiments through to a fully designed PCB in KiCad, 3D-printed housings and a neat, repeatable
+        wiring harness that bolts straight onto the hotwire machine.
+      </p>
+    </section>
+
+    <!-- MY CONTRIBUTIONS -->
+    <section>
+      <h2 class="section-title">My contributions</h2>
+      <ul>
+        <li>Concept and control strategy for a closed-loop, load-cell based wire-tension system.</li>
+        <li>Full CAD design of the tensioner module: brackets, spool, load cell mounts and enclosure.</li>
+        <li>3D printing and iterative prototyping of all mechanical parts until the motion felt smooth and rigid.</li>
+        <li>Electronics design in KiCad: custom PCB for ESP32, HX711 (or equivalent amplifier), stepper driver, OLED and connectors.</li>
+        <li>Firmware development on the ESP32 with FreeRTOS tasks for fast tension sampling and motor control.</li>
+        <li>Implementation of a PID loop to keep wire tension inside a configurable dead-band window.</li>
+        <li>Design and build of the browser-based dashboard for live telemetry, control and calibration.</li>
+        <li>On-rig testing with the CNC hotwire cutter: tuning PID, dead-band and safety limits under real cutting loads.</li>
+        <li>Documentation of wiring, calibration steps and integration so the tensioner can be replicated or serviced later.</li>
+      </ul>
+    </section>
+
+    <!-- ELECTRONICS & HARDWARE -->
+    <section>
+      <h2 class="section-title">Electronics &amp; hardware</h2>
+      <ul>
+        <li><strong>Controller:</strong> ESP32 development board mounted on a custom KiCad PCB.</li>
+        <li><strong>Load cell:</strong> Compression load cell bolted inline with the wire path.</li>
+        <li><strong>Signal chain:</strong> Instrumentation amplifier / HX711 module feeding the ESP32 ADC.</li>
+        <li><strong>Actuator:</strong> NEMA&nbsp;17 stepper motor driving a wire take-up spool via a stepper driver.</li>
+        <li><strong>Display:</strong> 0.96″ I&sup2;C OLED for local status, tension readout and IP address.</li>
+        <li><strong>Networking:</strong> Wi-Fi (ESP32) hosting the REST/WebSocket interface and dashboard.</li>
+        <li><strong>Power:</strong> Shared 24&nbsp;V rail for the stepper with local regulation down to 5&nbsp;V / 3.3&nbsp;V for logic.</li>
+        <li><strong>Mechanics:</strong> 3D-printed mounts, spool and cable guides, designed to bolt onto the existing hotwire frame.</li>
+      </ul>
+    </section>
+
+    <!-- CONTROL BEHAVIOUR -->
+    <section>
+      <h2 class="section-title">How the control system behaves</h2>
+      <p class="muted">
+        When you start the system from the web app, the controller begins reading wire tension every few milliseconds.
+        Each cycle it:
+      </p>
+      <ul>
+        <li>Samples the load cell, filters the reading and converts it into grams of tension.</li>
+        <li>Compares the live value against the target tension and dead-band window.</li>
+        <li>If the tension is inside the window, it does nothing and holds the current motor position.</li>
+        <li>If the tension drifts high or low, the PID controller calculates a correction and steps the motor
+            to wind or unwind wire until tension comes back into range.</li>
+      </ul>
+      <p class="muted">
+        This happens continuously, thousands of times per second, so the wire stays stable even as gantries move
+        and foam geometry changes the load. The motor is always disabled by default and must be explicitly enabled
+        from the dashboard. If you stop the system or switch to “motor free” mode, the driver is released immediately
+        so you can move the wire by hand without fighting the motor.
+      </p>
+    </section>
+
+    <!-- CALIBRATION & DASHBOARD -->
+    <section>
+      <h2 class="section-title">Calibration &amp; web dashboard</h2>
+      <p class="muted">
+        All configuration is done through a simple web UI served directly from the ESP32. From the calibration view
+        you can:
+      </p>
+      <ul>
+        <li>Adjust PID gains (<strong>K<sub>p</sub></strong>, <strong>K<sub>i</sub></strong>, <strong>K<sub>d</sub></strong>).</li>
+        <li>Set upper and lower limits for motor drive to avoid over-travel.</li>
+        <li>Change the dead-band width (how much tension variation is allowed before any correction happens).</li>
+        <li>Tare the load cell and perform a full calibration with a known weight.</li>
+        <li>Dial in a new target tension and see how the system responds in real time.</li>
+      </ul>
+      <p class="muted">
+        The dashboard itself shows live tension in grams, the current target, motor enable state, whether the
+        controller is running or stopped, and a progress bar indicating how close the wire is to the requested tension.
+        All settings are stored in non-volatile memory so the unit remembers its configuration between power cycles.
+      </p>
+    </section>
+
+    <!-- CODE & RESOURCES -->
+    <section>
+      <h2 class="section-title">Code &amp; resources</h2>
+      <p class="muted">
+        Firmware, PCB files and the web dashboard are available on GitHub:
+      </p>
+      <ul>
+        <li>
+          <a href="https://github.com/YOUR_USERNAME/dynamic-wire-tensioner" target="_blank" rel="noopener">
+            Dynamic wire tensioner (firmware, PCB and dashboard)
+          </a>
+        </li>
+      </ul>
+      <p class="muted">
+        The repository includes wiring diagrams, KiCad project files, load cell calibration notes and example PID settings
+        that worked well on my CNC hotwire cutter.
+      </p>
+    </section>
+
+    <!-- MEDIA -->
+    <section>
+      <h2 class="section-title">Media</h2>
+      <p class="muted">
+        Three short videos and a set of build photos showing the progression from prototype to the final PCB-based unit.
+        Click any image to enlarge.
+      </p>
+
+      <div class="carousel">
+        <!-- Radio Inputs -->
+        <input type="radio" name="tensioner-slides" id="tensioner-slide-1" checked>
+        <input type="radio" name="tensioner-slides" id="tensioner-slide-2">
+        <input type="radio" name="tensioner-slides" id="tensioner-slide-3">
+        <input type="radio" name="tensioner-slides" id="tensioner-slide-4">
+        <input type="radio" name="tensioner-slides" id="tensioner-slide-5">
+        <input type="radio" name="tensioner-slides" id="tensioner-slide-6">
+        <input type="radio" name="tensioner-slides" id="tensioner-slide-7">
+        <input type="radio" name="tensioner-slides" id="tensioner-slide-8">
+        <input type="radio" name="tensioner-slides" id="tensioner-slide-9">
+
+        <!-- Slides -->
+        <ul class="carousel__slides">
+          <!-- Slide 1: Overview / demo video -->
+          <li class="carousel__slide">
+            <figure>
+              <div class="carousel__media">
+                <iframe
+                  src="https://www.youtube.com/embed/YOUR_TENSIONER_VIDEO_1_ID"
+                  title="Dynamic wire tensioner overview"
+                  allowfullscreen
+                  loading="lazy">
+                </iframe>
+              </div>
+            </figure>
+          </li>
+
+          <!-- Slide 2: Close-up control behaviour video -->
+          <li class="carousel__slide">
+            <figure>
+              <div class="carousel__media">
+                <iframe
+                  src="https://www.youtube.com/embed/YOUR_TENSIONER_VIDEO_2_ID"
+                  title="Wire tension control in action"
+                  allowfullscreen
+                  loading="lazy">
+                </iframe>
+              </div>
+            </figure>
+          </li>
+
+          <!-- Slide 3: Dashboard / calibration video -->
+          <li class="carousel__slide">
+            <figure>
+              <div class="carousel__media">
+                <iframe
+                  src="https://www.youtube.com/embed/YOUR_TENSIONER_VIDEO_3_ID"
+                  title="Web dashboard and calibration walk-through"
+                  allowfullscreen
+                  loading="lazy">
+                </iframe>
+              </div>
+            </figure>
+          </li>
+
+          <!-- Slide 4–9: Build images -->
+          <li class="carousel__slide">
+            <figure>
+              <div class="carousel__media">
+                <img
+                  src="/assets/images/tensioner/build-1.jpg"
+                  alt="Early breadboard prototype with load cell and stepper"
+                  class="js-enlarge">
+              </div>
+            </figure>
+          </li>
+
+          <li class="carousel__slide">
+            <figure>
+              <div class="carousel__media">
+                <img
+                  src="/assets/images/tensioner/build-2.jpg"
+                  alt="CAD model of the tensioner module mounted on the hotwire cutter"
+                  class="js-enlarge">
+              </div>
+            </figure>
+          </li>
+
+          <li class="carousel__slide">
+            <figure>
+              <div class="carousel__media">
+                <img
+                  src="/assets/images/tensioner/build-3.jpg"
+                  alt="3D-printed spool and brackets on the bench"
+                  class="js-enlarge">
+              </div>
+            </figure>
+          </li>
+
+          <li class="carousel__slide">
+            <figure>
+              <div class="carousel__media">
+                <img
+                  src="/assets/images/tensioner/build-4.jpg"
+                  alt="Assembled KiCad PCB with ESP32, stepper driver and connectors"
+                  class="js-enlarge">
+              </div>
+            </figure>
+          </li>
+
+          <li class="carousel__slide">
+            <figure>
+              <div class="carousel__media">
+                <img
+                  src="/assets/images/tensioner/build-5.jpg"
+                  alt="Tensioner installed on the CNC hotwire cutter frame"
+                  class="js-enlarge">
+              </div>
+            </figure>
+          </li>
+
+          <li class="carousel__slide">
+            <figure>
+              <div class="carousel__media">
+                <img
+                  src="/assets/images/tensioner/build-6.jpg"
+                  alt="Web dashboard open while the cutter is running a job"
+                  class="js-enlarge">
+              </div>
+            </figure>
+          </li>
+        </ul>
+
+        <!-- Thumbnails -->
+        <ul class="carousel__thumbnails">
+          <li>
+            <label for="tensioner-slide-1">
+              <img src="/assets/images/tensioner/thumb-video-1.jpg" alt="Overview video thumbnail">
+            </label>
+          </li>
+          <li>
+            <label for="tensioner-slide-2">
+              <img src="/assets/images/tensioner/thumb-video-2.jpg" alt="Control behaviour video thumbnail">
+            </label>
+          </li>
+          <li>
+            <label for="tensioner-slide-3">
+              <img src="/assets/images/tensioner/thumb-video-3.jpg" alt="Dashboard demo video thumbnail">
+            </label>
+          </li>
+          <li>
+            <label for="tensioner-slide-4">
+              <img src="/assets/images/tensioner/build-1.jpg" alt="Prototype build thumbnail">
+            </label>
+          </li>
+          <li>
+            <label for="tensioner-slide-5">
+              <img src="/assets/images/tensioner/build-2.jpg" alt="CAD / mounting thumbnail">
+            </label>
+          </li>
+          <li>
+            <label for="tensioner-slide-6">
+              <img src="/assets/images/tensioner/build-3.jpg" alt="Spool and bracket thumbnail">
+            </label>
+          </li>
+          <li>
+            <label for="tensioner-slide-7">
+              <img src="/assets/images/tensioner/build-4.jpg" alt="PCB thumbnail">
+            </label>
+          </li>
+          <li>
+            <label for="tensioner-slide-8">
+              <img src="/assets/images/tensioner/build-5.jpg" alt="Installed tensioner thumbnail">
+            </label>
+          </li>
+          <li>
+            <label for="tensioner-slide-9">
+              <img src="/assets/images/tensioner/build-6.jpg" alt="Dashboard in use thumbnail">
+            </label>
+          </li>
+        </ul>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    © <span id="year"></span> Middleton Makes
+  </footer>
+
+  <!-- Global lightbox markup (works with .js-enlarge) -->
+  <div class="lightbox-backdrop" id="lightbox">
+    <button type="button" id="lightbox-close">Close ✕</button>
+    <div class="lightbox-content">
+      <img src="" alt="Expanded view" id="lightbox-img">
+    </div>
+  </div>
+
+  <script>
+    // Year in footer
+    document.getElementById('year').textContent = new Date().getFullYear();
+
+    // Simple lightbox for images with .js-enlarge
+    (function () {
+      const lightbox = document.getElementById('lightbox');
+      const lightboxImg = document.getElementById('lightbox-img');
+      const closeBtn = document.getElementById('lightbox-close');
+
+      function openLightbox(src, alt) {
+        lightboxImg.src = src;
+        lightboxImg.alt = alt || 'Expanded view';
+        lightbox.classList.add('is-visible');
+      }
+
+      function closeLightbox() {
+        lightbox.classList.remove('is-visible');
+        lightboxImg.src = '';
+        lightboxImg.alt = 'Expanded view';
+      }
+
+      document.addEventListener('click', function (e) {
+        const target = e.target;
+        if (target.classList && target.classList.contains('js-enlarge')) {
+          openLightbox(target.src, target.alt);
+        }
+      });
+
+      closeBtn.addEventListener('click', closeLightbox);
+
+      lightbox.addEventListener('click', function (e) {
+        if (e.target === lightbox) {
+          closeLightbox();
+        }
+      });
+
+      document.addEventListener('keydown', function (e) {
+        if (e.key === 'Escape' && lightbox.classList.contains('is-visible')) {
+          closeLightbox();
+        }
+      });
+    })();
+  </script>
+</body>
+</html>
