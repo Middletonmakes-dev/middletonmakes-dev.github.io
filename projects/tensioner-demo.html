@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>Dynamic Wire Tensioner — Demo UI</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <!-- Global shared styles -->
+  <link rel="stylesheet" href="/assets/css/global.css" />
+
+  <style>
+    .demo-card {
+      margin-top: 24px;
+      padding: 20px;
+      border-radius: 14px;
+      background: var(--card);
+      border: 1px solid #1f2329;
+    }
+
+    .section-block {
+      border: 1px solid #1f2329;
+      padding: 16px;
+      border-radius: 10px;
+      margin-bottom: 18px;
+      background: #11151a;
+    }
+
+    .section-block h3 {
+      margin-top: 0;
+      margin-bottom: 8px;
+    }
+
+    input[type=number] {
+      width: 160px;
+      padding: 6px 10px;
+      border-radius: 6px;
+      border: 1px solid #2b3037;
+      background: #0f1318;
+      color: var(--text);
+      margin-top: 4px;
+    }
+
+    button {
+      margin-top: 8px;
+      padding: 8px 14px;
+      border-radius: 8px;
+      border: 1px solid #2b3037;
+      background: #161a20;
+      color: var(--text);
+      cursor: pointer;
+    }
+
+    button:hover {
+      background: #1b2027;
+    }
+
+    .data-line {
+      margin: 6px 0;
+    }
+
+    .progress-container {
+      width: 100%;
+      height: 26px;
+      background: #222;
+      border-radius: 6px;
+      overflow: hidden;
+      margin-top: 10px;
+      position: relative;
+      border: 1px solid #333;
+    }
+
+    .progress-bar {
+      height: 100%;
+      background: var(--accent);
+      width: 20%;
+      transition: width 0.3s ease;
+    }
+
+    .progress-label {
+      position: absolute;
+      width: 100%;
+      text-align: center;
+      top: 0;
+      line-height: 26px;
+      color: #fff;
+      font-size: 14px;
+    }
+
+    .return-wrap {
+      margin-top: 22px;
+    }
+  </style>
+</head>
+
+<body>
+
+  <nav class="topnav">
+    <a class="brand" href="/">Middleton Makes</a>
+    <div class="links">
+      <a href="/#builds" class="active">Builds & Experiments</a>
+      <a href="/#uav">UAV Projects</a>
+      <a href="/#about">About</a>
+      <a href="/#contact">Contact</a>
+    </div>
+  </nav>
+
+  <main class="container">
+
+    <header>
+      <h1>Dynamic Wire Tensioner — Demo UI</h1>
+      <p class="subtitle">
+        A non-functional demonstration of the live web interface used to monitor and tune the CNC hotwire tensioner.
+        All controls and values below are simulated and do not connect to hardware.
+      </p>
+    </header>
+
+    <div class="demo-card">
+
+      <!-- SYSTEM CONTROL -->
+      <div class="section-block">
+        <h3>System Control</h3>
+        <button onclick="demoStatus('Running')">Start</button>
+        <button onclick="demoStatus('Stopped')">Stop</button>
+        <button onclick="demoMotor()">Toggle Freespool</button>
+
+        <p class="data-line">System Status: <strong id="sysState">Stopped</strong></p>
+        <p class="data-line">Motor Status: <strong id="motorState">Disabled</strong></p>
+      </div>
+
+      <!-- TARGET SETPOINT -->
+      <div class="section-block">
+        <h3>Target Tension</h3>
+        <label>Set Target (g):</label><br>
+        <input type="number" id="setTargetInput" placeholder="Enter target">
+        <button onclick="applyTarget()">Set Target</button>
+
+        <p class="data-line">Current Target: <strong id="targetDisplay">—</strong></p>
+      </div>
+
+      <!-- LIVE DATA -->
+      <div class="section-block">
+        <h3>Live Data (Demo)</h3>
+        <p class="data-line">Current Tension: <strong id="tensionVal">0.0 g</strong></p>
+
+        <div class="progress-container">
+          <div id="bar" class="progress-bar"></div>
+          <div id="barLabel" class="progress-label">0.0 g</div>
+        </div>
+      </div>
+
+      <!-- PID -->
+      <div class="section-block">
+        <h3>PID Tuning</h3>
+        <label>Kp:</label><br><input type="number" id="kp"><br>
+        <label>Ki:</label><br><input type="number" id="ki"><br>
+        <label>Kd:</label><br><input type="number" id="kd"><br>
+
+        <button onclick="fakePID()">Apply PID</button>
+
+        <p class="data-line">Current PID:
+          <strong id="pidOut">Kp — , Ki — , Kd —</strong>
+        </p>
+      </div>
+
+      <!-- LOAD CELL -->
+      <div class="section-block">
+        <h3>Load Cell</h3>
+        <button onclick="demoTare()">Tare</button><br><br>
+
+        <label>Calibration Weight (g):</label><br>
+        <input type="number" id="calW"><br>
+        <button onclick="demoCal()">Calibrate</button>
+      </div>
+
+      <!-- OUTPUT LIMITS -->
+      <div class="section-block">
+        <h3>PID Output Limits</h3>
+        <label>Lower Limit:</label><br>
+        <input type="number" id="lowL"><br>
+
+        <label>Upper Limit:</label><br>
+        <input type="number" id="upL"><br>
+
+        <button onclick="demoLimits()">Apply Limits</button>
+
+        <p class="data-line">Current Limits:
+          <strong id="limitOut">Lower — , Upper —</strong>
+        </p>
+      </div>
+
+      <!-- DEAD BAND -->
+      <div class="section-block">
+        <h3>Dead-band</h3>
+        <label>Dead-band (g):</label><br>
+        <input type="number" id="dbVal"><br>
+        <button onclick="demoDB()">Apply Dead-band</button>
+
+        <p class="data-line">Current Dead-band: <strong id="dbOut">—</strong></p>
+      </div>
+
+    </div>
+
+    <div class="return-wrap">
+      <a class="btn" href="/projects/tensioner.html">← Return to Project</a>
+    </div>
+
+  </main>
+
+  <footer class="footer">
+    © <span id="year"></span> Middleton Makes
+  </footer>
+
+  <script>
+    document.getElementById("year").textContent = new Date().getFullYear();
+
+    // DEMO LOGIC
+    function demoStatus(state){
+      document.getElementById("sysState").textContent = state;
+    }
+
+    function demoMotor(){
+      const el = document.getElementById("motorState");
+      el.textContent = el.textContent === "Enabled" ? "Disabled" : "Enabled";
+    }
+
+    function applyTarget(){
+      const val = document.getElementById("setTargetInput").value;
+      if(!val) return;
+      document.getElementById("targetDisplay").textContent = val + " g";
+    }
+
+    function fakePID(){
+      const kp = document.getElementById("kp").value || "—";
+      const ki = document.getElementById("ki").value || "—";
+      const kd = document.getElementById("kd").value || "—";
+      document.getElementById("pidOut").textContent = `Kp ${kp} , Ki ${ki} , Kd ${kd}`;
+    }
+
+    function demoTare(){ alert("Demo: Load cell tared."); }
+    function demoCal(){ alert("Demo: Calibration applied."); }
+
+    function demoLimits(){
+      const lo = document.getElementById("lowL").value || "—";
+      const up = document.getElementById("upL").value || "—";
+      document.getElementById("limitOut").textContent = `Lower ${lo} , Upper ${up}`;
+    }
+
+    function demoDB(){
+      const db = document.getElementById("dbVal").value || "—";
+      document.getElementById("dbOut").textContent = db;
+    }
+
+    // Animate tension for demo effect
+    setInterval(() => {
+      const tension = (Math.random() * 120).toFixed(1);
+      document.getElementById("tensionVal").textContent = tension + " g";
+      document.getElementById("barLabel").textContent = tension + " g";
+      document.getElementById("bar").style.width = Math.min(tension,120) + "%";
+    }, 700);
+  </script>
+
+</body>
+</html>
