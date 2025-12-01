@@ -9,32 +9,29 @@
   <link rel="stylesheet" href="/assets/css/global.css" />
 
   <!-- Page-specific carousel offset rules (9 slides) -->
-  <style>
-    /* Slide offset logic (9 slides) */
-    .carousel > input:nth-of-type(1):checked ~ .carousel__slides .carousel__slide:first-of-type { margin-left:0%; }
-    .carousel > input:nth-of-type(2):checked ~ .carousel__slides .carousel__slide:first-of-type { margin-left:-100%; }
-    .carousel > input:nth-of-type(3):checked ~ .carousel__slides .carousel__slide:first-of-type { margin-left:-200%; }
-    .carousel > input:nth-of-type(4):checked ~ .carousel__slides .carousel__slide:first-of-type { margin-left:-300%; }
-    .carousel > input:nth-of-type(5):checked ~ .carousel__slides .carousel__slide:first-of-type { margin-left:-400%; }
-    .carousel > input:nth-of-type(6):checked ~ .carousel__slides .carousel__slide:first-of-type { margin-left:-500%; }
-    .carousel > input:nth-of-type(7):checked ~ .carousel__slides .carousel__slide:first-of-type { margin-left:-600%; }
-    .carousel > input:nth-of-type(8):checked ~ .carousel__slides .carousel__slide:first-of-type { margin-left:-700%; }
-    .carousel > input:nth-of-type(9):checked ~ .carousel__slides .carousel__slide:first-of-type { margin-left:-800%; }
+<style>
+  /* Slide offset logic (7 slides) */
+  .carousel > input:nth-of-type(1):checked ~ .carousel__slides .carousel__slide:first-of-type { margin-left:0%; }
+  .carousel > input:nth-of-type(2):checked ~ .carousel__slides .carousel__slide:first-of-type { margin-left:-100%; }
+  .carousel > input:nth-of-type(3):checked ~ .carousel__slides .carousel__slide:first-of-type { margin-left:-200%; }
+  .carousel > input:nth-of-type(4):checked ~ .carousel__slides .carousel__slide:first-of-type { margin-left:-300%; }
+  .carousel > input:nth-of-type(5):checked ~ .carousel__slides .carousel__slide:first-of-type { margin-left:-400%; }
+  .carousel > input:nth-of-type(6):checked ~ .carousel__slides .carousel__slide:first-of-type { margin-left:-500%; }
+  .carousel > input:nth-of-type(7):checked ~ .carousel__slides .carousel__slide:first-of-type { margin-left:-600%; }
 
-    /* Thumbnail highlight (9) */
-    .carousel > input:nth-of-type(1):checked ~ .carousel__thumbnails li:nth-of-type(1),
-    .carousel > input:nth-of-type(2):checked ~ .carousel__thumbnails li:nth-of-type(2),
-    .carousel > input:nth-of-type(3):checked ~ .carousel__thumbnails li:nth-of-type(3),
-    .carousel > input:nth-of-type(4):checked ~ .carousel__thumbnails li:nth-of-type(4),
-    .carousel > input:nth-of-type(5):checked ~ .carousel__thumbnails li:nth-of-type(5),
-    .carousel > input:nth-of-type(6):checked ~ .carousel__thumbnails li:nth-of-type(6),
-    .carousel > input:nth-of-type(7):checked ~ .carousel__thumbnails li:nth-of-type(7),
-    .carousel > input:nth-of-type(8):checked ~ .carousel__thumbnails li:nth-of-type(8),
-    .carousel > input:nth-of-type(9):checked ~ .carousel__thumbnails li:nth-of-type(9){
-      box-shadow:0 0 0 2px rgba(91,209,255,0.9);
-      border-radius:8px;
-    }
-  </style>
+  /* Thumbnail highlight (7 slides) */
+  .carousel > input:nth-of-type(1):checked ~ .carousel__thumbnails li:nth-of-type(1),
+  .carousel > input:nth-of-type(2):checked ~ .carousel__thumbnails li:nth-of-type(2),
+  .carousel > input:nth-of-type(3):checked ~ .carousel__thumbnails li:nth-of-type(3),
+  .carousel > input:nth-of-type(4):checked ~ .carousel__thumbnails li:nth-of-type(4),
+  .carousel > input:nth-of-type(5):checked ~ .carousel__thumbnails li:nth-of-type(5),
+  .carousel > input:nth-of-type(6):checked ~ .carousel__thumbnails li:nth-of-type(6),
+  .carousel > input:nth-of-type(7):checked ~ .carousel__thumbnails li:nth-of-type(7) {
+    box-shadow:0 0 0 2px rgba(91,209,255,0.9);
+    border-radius:8px;
+  }
+</style>
+
 </head>
 <body>
   <nav class="topnav">
@@ -189,177 +186,155 @@
         Click any image to enlarge.
       </p>
 
-      <div class="carousel">
-        <!-- Radio Inputs -->
-        <input type="radio" name="tensioner-slides" id="tensioner-slide-1" checked>
-        <input type="radio" name="tensioner-slides" id="tensioner-slide-2">
-        <input type="radio" name="tensioner-slides" id="tensioner-slide-4">
-        <input type="radio" name="tensioner-slides" id="tensioner-slide-5">
-        <input type="radio" name="tensioner-slides" id="tensioner-slide-6">
-        <input type="radio" name="tensioner-slides" id="tensioner-slide-7">
-        <input type="radio" name="tensioner-slides" id="tensioner-slide-8">
+<div class="carousel">
+  <!-- Radio Inputs -->
+  <input type="radio" name="tensioner-slides" id="tensioner-slide-1" checked>
+  <input type="radio" name="tensioner-slides" id="tensioner-slide-2">
+  <input type="radio" name="tensioner-slides" id="tensioner-slide-3">
+  <input type="radio" name="tensioner-slides" id="tensioner-slide-4">
+  <input type="radio" name="tensioner-slides" id="tensioner-slide-5">
+  <input type="radio" name="tensioner-slides" id="tensioner-slide-6">
+  <input type="radio" name="tensioner-slides" id="tensioner-slide-7">
 
-        <!-- Slides -->
-        <ul class="carousel__slides">
-          <!-- Slide 1: Overview / demo video -->
-          <li class="carousel__slide">
-            <figure>
-              <div class="carousel__media">
-                <iframe
-                  src="https://www.youtube.com/embed/53OMD23lP0U"
-                  title="Bench test"
-                  allowfullscreen
-                  loading="lazy">
-                </iframe>
-              </div>
-            </figure>
-          </li>
+  <!-- Slides -->
+  <ul class="carousel__slides">
 
-          <!-- Slide 2: Close-up control behaviour video -->
-          <li class="carousel__slide">
-            <figure>
-              <div class="carousel__media">
-                <iframe
-                  src="https://www.youtube.com/embed/D5R6TJTIZDI"
-                  title="Start-up test sequence"
-                  allowfullscreen
-                  loading="lazy">
-                </iframe>
-              </div>
-            </figure>
-          </li>
+    <!-- Slide 1: Bench Test -->
+    <li class="carousel__slide">
+      <figure>
+        <div class="carousel__media">
+          <iframe
+            src="https://www.youtube.com/embed/53OMD23lP0U"
+            title="Bench test"
+            allowfullscreen
+            loading="lazy">
+          </iframe>
+        </div>
+      </figure>
+    </li>
 
-          <!-- Slide 3: Dashboard / calibration video -->
-          <li class="carousel__slide">
-            <figure>
-              <div class="carousel__media">
-                <iframe
-                  src="https://www.youtube.com/embed/YOUR_TENSIONER_VIDEO_3_ID"
-                  title="Dashboard"
-                  allowfullscreen
-                  loading="lazy">
-                </iframe>
-              </div>
-            </figure>
-          </li>
+    <!-- Slide 2: Startup Test -->
+    <li class="carousel__slide">
+      <figure>
+        <div class="carousel__media">
+          <iframe
+            src="https://www.youtube.com/embed/D5R6TJTIZDI"
+            title="Start-up test sequence"
+            allowfullscreen
+            loading="lazy">
+          </iframe>
+        </div>
+      </figure>
+    </li>
 
-          <!-- Slide 4–9: Build images -->
-          <li class="carousel__slide">
-            <figure>
-              <div class="carousel__media">
-                <img
-                  src="/assets/images/tensioner/build-1.jpg"
-                  alt="Early breadboard prototype with load cell and stepper"
-                  class="js-enlarge">
-              </div>
-            </figure>
-          </li>
+    <!-- Slide 3: Build Image 1 -->
+    <li class="carousel__slide">
+      <figure>
+        <div class="carousel__media">
+          <img
+            src="/assets/images/tensioner/build-1.jpg"
+            alt="Early breadboard prototype with load cell and stepper"
+            class="js-enlarge">
+        </div>
+      </figure>
+    </li>
 
-          <li class="carousel__slide">
-            <figure>
-              <div class="carousel__media">
-                <img
-                  src="/assets/images/tensioner/build-2.jpg"
-                  alt="CAD model of the tensioner module mounted on the hotwire cutter"
-                  class="js-enlarge">
-              </div>
-            </figure>
-          </li>
+    <!-- Slide 4: Build Image 2 -->
+    <li class="carousel__slide">
+      <figure>
+        <div class="carousel__media">
+          <img
+            src="/assets/images/tensioner/build-2.jpg"
+            alt="CAD model of the tensioner module mounted on the hotwire cutter"
+            class="js-enlarge">
+        </div>
+      </figure>
+    </li>
 
-          <li class="carousel__slide">
-            <figure>
-              <div class="carousel__media">
-                <img
-                  src="/assets/images/tensioner/build-3.jpg"
-                  alt="3D-printed spool and brackets on the bench"
-                  class="js-enlarge">
-              </div>
-            </figure>
-          </li>
+    <!-- Slide 5: Build Image 3 -->
+    <li class="carousel__slide">
+      <figure>
+        <div class="carousel__media">
+          <img
+            src="/assets/images/tensioner/build-3.jpg"
+            alt="3D-printed spool and brackets on the bench"
+            class="js-enlarge">
+        </div>
+      </figure>
+    </li>
 
-          <li class="carousel__slide">
-            <figure>
-              <div class="carousel__media">
-                <img
-                  src="/assets/images/tensioner/build-4.jpg"
-                  alt="Assembled KiCad PCB with ESP32, stepper driver and connectors"
-                  class="js-enlarge">
-              </div>
-            </figure>
-          </li>
+    <!-- Slide 6: Build Image 4 -->
+    <li class="carousel__slide">
+      <figure>
+        <div class="carousel__media">
+          <img
+            src="/assets/images/tensioner/build-4.jpg"
+            alt="Assembled KiCad PCB with ESP32, stepper driver and connectors"
+            class="js-enlarge">
+        </div>
+      </figure>
+    </li>
 
-          <li class="carousel__slide">
-            <figure>
-              <div class="carousel__media">
-                <img
-                  src="/assets/images/tensioner/build-5.jpg"
-                  alt="Tensioner installed on the CNC hotwire cutter frame"
-                  class="js-enlarge">
-              </div>
-            </figure>
-          </li>
+    <!-- Slide 7: Build Image 5 -->
+    <li class="carousel__slide">
+      <figure>
+        <div class="carousel__media">
+          <img
+            src="/assets/images/tensioner/build-5.jpg"
+            alt="Tensioner installed on the CNC hotwire cutter frame"
+            class="js-enlarge">
+        </div>
+      </figure>
+    </li>
 
-          <li class="carousel__slide">
-            <figure>
-              <div class="carousel__media">
-                <img
-                  src="/assets/images/tensioner/build-6.jpg"
-                  alt="Web dashboard open while the cutter is running a job"
-                  class="js-enlarge">
-              </div>
-            </figure>
-          </li>
-        </ul>
+  </ul>
 
-        <!-- Thumbnails -->
-        <ul class="carousel__thumbnails">
-          <li>
-            <label for="tensioner-slide-1">
-              <img src="/assets/images/tensioner/thumb-video-1.jpg" alt="Overview video thumbnail">
-            </label>
-          </li>
-          <li>
-            <label for="tensioner-slide-2">
-              <img src="/assets/images/tensioner/thumb-video-2.jpg" alt="Control behaviour video thumbnail">
-            </label>
-          </li>
-          <li>
-            <label for="tensioner-slide-3">
-              <img src="/assets/images/tensioner/thumb-video-3.jpg" alt="Dashboard demo video thumbnail">
-            </label>
-          </li>
-          <li>
-            <label for="tensioner-slide-4">
-              <img src="/assets/images/tensioner/build-1.jpg" alt="Prototype build thumbnail">
-            </label>
-          </li>
-          <li>
-            <label for="tensioner-slide-5">
-              <img src="/assets/images/tensioner/build-2.jpg" alt="CAD / mounting thumbnail">
-            </label>
-          </li>
-          <li>
-            <label for="tensioner-slide-6">
-              <img src="/assets/images/tensioner/build-3.jpg" alt="Spool and bracket thumbnail">
-            </label>
-          </li>
-          <li>
-            <label for="tensioner-slide-7">
-              <img src="/assets/images/tensioner/build-4.jpg" alt="PCB thumbnail">
-            </label>
-          </li>
-          <li>
-            <label for="tensioner-slide-8">
-              <img src="/assets/images/tensioner/build-5.jpg" alt="Installed tensioner thumbnail">
-            </label>
-          </li>
-          <li>
-            <label for="tensioner-slide-9">
-              <img src="/assets/images/tensioner/build-6.jpg" alt="Dashboard in use thumbnail">
-            </label>
-          </li>
-        </ul>
-      </div>
+  <!-- Thumbnails -->
+  <ul class="carousel__thumbnails">
+    <li>
+      <label for="tensioner-slide-1">
+        <img src="/assets/images/tensioner/thumb-video-1.jpg" alt="Bench test thumbnail">
+      </label>
+    </li>
+
+    <li>
+      <label for="tensioner-slide-2">
+        <img src="/assets/images/tensioner/thumb-video-2.jpg" alt="Startup test thumbnail">
+      </label>
+    </li>
+
+    <li>
+      <label for="tensioner-slide-3">
+        <img src="/assets/images/tensioner/build-1.jpg" alt="Prototype thumbnail">
+      </label>
+    </li>
+
+    <li>
+      <label for="tensioner-slide-4">
+        <img src="/assets/images/tensioner/build-2.jpg" alt="CAD thumbnail">
+      </label>
+    </li>
+
+    <li>
+      <label for="tensioner-slide-5">
+        <img src="/assets/images/tensioner/build-3.jpg" alt="Spool thumbnail">
+      </label>
+    </li>
+
+    <li>
+      <label for="tensioner-slide-6">
+        <img src="/assets/images/tensioner/build-4.jpg" alt="PCB thumbnail">
+      </label>
+    </li>
+
+    <li>
+      <label for="tensioner-slide-7">
+        <img src="/assets/images/tensioner/build-5.jpg" alt="Installed tensioner thumbnail">
+      </label>
+    </li>
+  </ul>
+</div>
+
     </section>
   </main>
 
