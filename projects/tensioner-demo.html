@@ -1,263 +1,304 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-  <meta charset="utf-8" />
-  <title>Dynamic Wire Tensioner — Demo UI</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-
-  <!-- Global shared styles -->
-  <link rel="stylesheet" href="/assets/css/global.css" />
-
+  <meta charset="utf-8"/>
+  <title>Wire-Tensioner (Demo UI)</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
   <style>
-    .demo-card {
-      margin-top: 24px;
-      padding: 20px;
-      border-radius: 14px;
-      background: var(--card);
-      border: 1px solid #1f2329;
+    body{
+      font-family:Arial,Helvetica,sans-serif;
+      margin:0;
+      background:#f4f4f4;
+      color:#333
     }
-
-    .section-block {
-      border: 1px solid #1f2329;
-      padding: 16px;
-      border-radius: 10px;
-      margin-bottom: 18px;
-      background: #11151a;
+    .navbar{
+      display:flex;
+      justify-content:space-around;
+      align-items:center;
+      background:#0056b3;
+      padding:10px;
+      color:#fff
     }
-
-    .section-block h3 {
-      margin-top: 0;
-      margin-bottom: 8px;
+    .navbar a{
+      color:#fff;
+      text-decoration:none;
+      font-size:1.2em
     }
-
-    input[type=number] {
-      width: 160px;
-      padding: 6px 10px;
-      border-radius: 6px;
-      border: 1px solid #2b3037;
-      background: #0f1318;
-      color: var(--text);
-      margin-top: 4px;
+    .navbar a:hover{color:#ffcc00}
+    .container{
+      max-width:800px;
+      margin:20px auto;
+      padding:20px;
+      background:#fff;
+      border-radius:8px;
+      box-shadow:0 2px 4px rgba(0,0,0,.1)
     }
-
-    button {
-      margin-top: 8px;
-      padding: 8px 14px;
-      border-radius: 8px;
-      border: 1px solid #2b3037;
-      background: #161a20;
-      color: var(--text);
-      cursor: pointer;
+    h1,h2{
+      text-align:center;
+      color:#0056b3
     }
-
-    button:hover {
-      background: #1b2027;
+    button{
+      background:#0056b3;
+      color:#fff;
+      border:none;
+      padding:10px 20px;
+      border-radius:5px;
+      cursor:pointer;
+      margin:2px 0;
     }
-
-    .data-line {
-      margin: 6px 0;
+    button:hover{background:#003f8a}
+    input{
+      padding:8px;
+      margin:5px 0;
+      width:100%;
+      border:1px solid #ccc;
+      border-radius:4px
     }
-
-    .progress-container {
-      width: 100%;
-      height: 26px;
-      background: #222;
-      border-radius: 6px;
-      overflow: hidden;
-      margin-top: 10px;
-      position: relative;
-      border: 1px solid #333;
+    .section{
+      margin-bottom:20px;
+      padding:10px;
+      border:1px solid #ddd;
+      border-radius:5px;
+      background:#fafafa
     }
-
-    .progress-bar {
-      height: 100%;
-      background: var(--accent);
-      width: 20%;
-      transition: width 0.3s ease;
+    .live-data{
+      font-size:1.2em;
+      font-weight:bold;
+      color:#0056b3
     }
-
-    .progress-label {
-      position: absolute;
-      width: 100%;
-      text-align: center;
-      top: 0;
-      line-height: 26px;
-      color: #fff;
-      font-size: 14px;
+    .progress-container{
+      position:relative;
+      width:100%;
+      height:30px;
+      background:#e0e0e0;
+      border-radius:15px;
+      overflow:hidden;
+      margin-top:10px
     }
-
-    .return-wrap {
-      margin-top: 22px;
+    .progress-bar{
+      position:absolute;
+      height:100%;
+      background:#0056b3;
+      transition:width .3s ease
+    }
+    .progress-label{
+      position:absolute;
+      width:100%;
+      text-align:center;
+      line-height:30px;
+      font-weight:bold;
+      color:#fff
+    }
+    .return-wrap{
+      max-width:800px;
+      margin:0 auto 20px;
+      text-align:center;
     }
   </style>
 </head>
-
 <body>
+<div class="navbar">
+  <a href="#" onclick="showPage('main')"><i class="fas fa-home"></i> Home</a>
+  <a href="#" onclick="showPage('calibration')"><i class="fas fa-cogs"></i> Calibration</a>
+</div>
 
-  <nav class="topnav">
-    <a class="brand" href="/">Middleton Makes</a>
-    <div class="links">
-      <a href="/#builds" class="active">Builds & Experiments</a>
-      <a href="/#uav">UAV Projects</a>
-      <a href="/#about">About</a>
-      <a href="/#contact">Contact</a>
+<div id="mainPage" class="container">
+  <h1>Main Page</h1>
+  <div class="section">
+    <h2>System Control</h2>
+    <button onclick="startSystem()">Start</button>
+    <button onclick="stopSystem()">Stop</button>
+    <button onclick="toggleMotor()">Freespool</button>
+    <p>System Status: <span id="systemStatus" class="live-data">Stopped</span></p>
+    <p>Motor Status:  <span id="motorStatus"  class="live-data">Disabled</span></p>
+  </div>
+  <div class="section">
+    <h2>Target Tension</h2>
+    <label for="targetTension">Set Target (g):</label>
+    <input type="number" id="targetTension" placeholder="Enter target"/>
+    <button onclick="setTargetTension()">Set Target</button>
+    <p>Current Target: <span id="currentTarget" class="live-data">—</span></p>
+  </div>
+  <div class="section">
+    <h2>Live Data (Demo)</h2>
+    <p>Current Tension: <span id="currentTension" class="live-data">0.0 g</span></p>
+    <div class="progress-container">
+      <div id="progressBar" class="progress-bar"></div>
+      <div id="progressLabel" class="progress-label">0.0 g</div>
     </div>
-  </nav>
+    <p style="font-size:0.9em;color:#666;margin-top:8px;">
+      Demo only — values are simulated locally with no hardware connection.
+    </p>
+  </div>
+</div>
 
-  <main class="container">
+<div id="calibrationPage" class="container" style="display:none;">
+  <h1>Calibration Page</h1>
+  <div class="section">
+    <h2>PID Tuning</h2>
+    <label for="kp">Kp:</label><input type="number" id="kp" placeholder="Kp"/>
+    <label for="ki">Ki:</label><input type="number" id="ki" placeholder="Ki"/>
+    <label for="kd">Kd:</label><input type="number" id="kd" placeholder="Kd"/>
+    <button onclick="setPID()">Set PID</button>
+    <p>Current PID: Kp=<span id="currentKp" class="live-data">—</span>,
+       Ki=<span id="currentKi" class="live-data">—</span>,
+       Kd=<span id="currentKd" class="live-data">—</span></p>
+  </div>
+  <div class="section">
+    <h2>Load Cell</h2>
+    <button onclick="tare()">Tare</button>
+    <label for="calibrationWeight">Calibration Weight (g):</label>
+    <input type="number" id="calibrationWeight" placeholder="Weight"/>
+    <button onclick="calibrate()">Calibrate</button>
+  </div>
+  <div class="section">
+    <h2>PID Output Limits</h2>
+    <label for="lowerLimit">Lower:</label><input type="number" id="lowerLimit" placeholder="Lower"/>
+    <label for="upperLimit">Upper:</label><input type="number" id="upperLimit" placeholder="Upper"/>
+    <button onclick="setOutputLimits()">Set Limits</button>
+    <p>Current Limits: Lower=<span id="currentLowerLimit" class="live-data">—</span>,
+       Upper=<span id="currentUpperLimit" class="live-data">—</span></p>
+  </div>
+  <div class="section">
+    <h2>Dead-band</h2>
+    <label for="deadband">Dead-band (g):</label>
+    <input type="number" id="deadband" placeholder="e.g. 10"/>
+    <button onclick="setDeadband()">Set Dead-band</button>
+    <p>Current Dead-band: <span id="currentDeadband" class="live-data">—</span></p>
+  </div>
+</div>
 
-    <header>
-      <h1>Dynamic Wire Tensioner — Demo UI</h1>
-      <p class="subtitle">
-        A non-functional demonstration of the live web interface used to monitor and tune the CNC hotwire tensioner.
-        All controls and values below are simulated and do not connect to hardware.
-      </p>
-    </header>
+<div class="return-wrap">
+  <button onclick="location.href='/projects/tensioner.html'">← Return to Project</button>
+</div>
 
-    <div class="demo-card">
+<script>
+// ---------- Simple page nav ----------
+function showPage(p){
+  document.getElementById('mainPage').style.display        = (p === 'main')        ? 'block' : 'none';
+  document.getElementById('calibrationPage').style.display = (p === 'calibration') ? 'block' : 'none';
+}
 
-      <!-- SYSTEM CONTROL -->
-      <div class="section-block">
-        <h3>System Control</h3>
-        <button onclick="demoStatus('Running')">Start</button>
-        <button onclick="demoStatus('Stopped')">Stop</button>
-        <button onclick="demoMotor()">Toggle Freespool</button>
+// ---------- Demo state ----------
+let systemRunning   = false;
+let motorEnabled    = false;
+let targetValue     = NaN;
+let currentTensionV = 0;
 
-        <p class="data-line">System Status: <strong id="sysState">Stopped</strong></p>
-        <p class="data-line">Motor Status: <strong id="motorState">Disabled</strong></p>
-      </div>
+// ---------- System control (demo only) ----------
+function startSystem(){
+  systemRunning = true;
+  document.getElementById('systemStatus').innerText = 'Running';
+}
+function stopSystem(){
+  systemRunning = false;
+  document.getElementById('systemStatus').innerText = 'Stopped';
+}
+function toggleMotor(){
+  motorEnabled = !motorEnabled;
+  document.getElementById('motorStatus').innerText = motorEnabled ? 'Enabled' : 'Disabled';
+}
 
-      <!-- TARGET SETPOINT -->
-      <div class="section-block">
-        <h3>Target Tension</h3>
-        <label>Set Target (g):</label><br>
-        <input type="number" id="setTargetInput" placeholder="Enter target">
-        <button onclick="applyTarget()">Set Target</button>
+// ---------- Target ----------
+function setTargetTension(){
+  const t = parseFloat(document.getElementById('targetTension').value);
+  if (!isFinite(t) || t <= 0) return;
+  targetValue = t;
+  document.getElementById('currentTarget').innerText = t.toFixed(1) + ' g';
+}
 
-        <p class="data-line">Current Target: <strong id="targetDisplay">—</strong></p>
-      </div>
+// ---------- Progress bar update ----------
+function updateProgressBar(setpt, cur){
+  const progressBar   = document.getElementById('progressBar');
+  const progressLabel = document.getElementById('progressLabel');
 
-      <!-- LIVE DATA -->
-      <div class="section-block">
-        <h3>Live Data (Demo)</h3>
-        <p class="data-line">Current Tension: <strong id="tensionVal">0.0 g</strong></p>
+  if (!isFinite(setpt) || setpt <= 0){
+    progressBar.style.width = '0%';
+    progressLabel.innerText = cur.toFixed(1) + ' g';
+    return;
+  }
 
-        <div class="progress-container">
-          <div id="bar" class="progress-bar"></div>
-          <div id="barLabel" class="progress-label">0.0 g</div>
-        </div>
-      </div>
+  const pct     = (cur / (setpt * 2)) * 100; // full scale ~ 2x setpoint
+  const clamped = Math.min(Math.max(pct, 0), 100);
 
-      <!-- PID -->
-      <div class="section-block">
-        <h3>PID Tuning</h3>
-        <label>Kp:</label><br><input type="number" id="kp"><br>
-        <label>Ki:</label><br><input type="number" id="ki"><br>
-        <label>Kd:</label><br><input type="number" id="kd"><br>
+  progressBar.style.width   = clamped.toFixed(1) + '%';
+  progressLabel.innerText   = cur.toFixed(1) + ' g';
+}
 
-        <button onclick="fakePID()">Apply PID</button>
+// ---------- PID (demo only) ----------
+function setPID(){
+  const kpVal = document.getElementById('kp').value || '—';
+  const kiVal = document.getElementById('ki').value || '—';
+  const kdVal = document.getElementById('kd').value || '—';
+  document.getElementById('currentKp').innerText = kpVal;
+  document.getElementById('currentKi').innerText = kiVal;
+  document.getElementById('currentKd').innerText = kdVal;
+}
 
-        <p class="data-line">Current PID:
-          <strong id="pidOut">Kp — , Ki — , Kd —</strong>
-        </p>
-      </div>
+// ---------- Limits (demo only) ----------
+function setOutputLimits(){
+  const lower = document.getElementById('lowerLimit').value || '—';
+  const upper = document.getElementById('upperLimit').value || '—';
+  document.getElementById('currentLowerLimit').innerText = lower;
+  document.getElementById('currentUpperLimit').innerText = upper;
+}
 
-      <!-- LOAD CELL -->
-      <div class="section-block">
-        <h3>Load Cell</h3>
-        <button onclick="demoTare()">Tare</button><br><br>
+// ---------- Load cell (demo only) ----------
+function tare(){
+  alert('Demo: Tare command (no hardware connected).');
+}
+function calibrate(){
+  const w = document.getElementById('calibrationWeight').value;
+  if (!w) return;
+  alert('Demo: Calibrated with ' + w + ' g (no hardware connected).');
+}
 
-        <label>Calibration Weight (g):</label><br>
-        <input type="number" id="calW"><br>
-        <button onclick="demoCal()">Calibrate</button>
-      </div>
+// ---------- Dead-band (demo only) ----------
+function setDeadband(){
+  const db = document.getElementById('deadband').value || '—';
+  document.getElementById('currentDeadband').innerText = db;
+}
 
-      <!-- OUTPUT LIMITS -->
-      <div class="section-block">
-        <h3>PID Output Limits</h3>
-        <label>Lower Limit:</label><br>
-        <input type="number" id="lowL"><br>
+// ---------- Live data simulation ----------
+function simulateTensionStep(){
+  const display = document.getElementById('currentTension');
 
-        <label>Upper Limit:</label><br>
-        <input type="number" id="upL"><br>
+  // If system isn't running or motor is disabled, relax toward 0 g
+  let desired = 0;
+  if (systemRunning && motorEnabled && isFinite(targetValue) && targetValue > 0){
+    desired = targetValue;
+  }
 
-        <button onclick="demoLimits()">Apply Limits</button>
+  const diff = desired - currentTensionV;
 
-        <p class="data-line">Current Limits:
-          <strong id="limitOut">Lower — , Upper —</strong>
-        </p>
-      </div>
+  // Move slowly toward desired value
+  const baseStep = diff * 0.12;           // proportional step
+  let step       = Math.max(Math.min(baseStep, 1.8), -1.8); // clamp
 
-      <!-- DEAD BAND -->
-      <div class="section-block">
-        <h3>Dead-band</h3>
-        <label>Dead-band (g):</label><br>
-        <input type="number" id="dbVal"><br>
-        <button onclick="demoDB()">Apply Dead-band</button>
+  // Small jitter when close to target
+  if (Math.abs(diff) < 10){
+    step += (Math.random() - 0.5) * 0.6;  // ±0.3 g
+  }
 
-        <p class="data-line">Current Dead-band: <strong id="dbOut">—</strong></p>
-      </div>
+  currentTensionV += step;
+  if (currentTensionV < 0) currentTensionV = 0;
 
-    </div>
+  // If we're supposed to sit near the target, gently keep it within ±10 g
+  if (desired > 0 && Math.abs(currentTensionV - desired) > 10){
+    currentTensionV = desired + (currentTensionV > desired ? 10 : -10);
+  }
 
-    <div class="return-wrap">
-      <a class="btn" href="/projects/tensioner.html">← Return to Project</a>
-    </div>
+  const shown = currentTensionV;
+  display.innerText = shown.toFixed(1) + ' g';
+  updateProgressBar(targetValue, shown);
+}
 
-  </main>
+// Initial text
+document.getElementById('currentTension').innerText = '0.0 g';
+updateProgressBar(NaN, 0);
 
-  <footer class="footer">
-    © <span id="year"></span> Middleton Makes
-  </footer>
-
-  <script>
-    document.getElementById("year").textContent = new Date().getFullYear();
-
-    // DEMO LOGIC
-    function demoStatus(state){
-      document.getElementById("sysState").textContent = state;
-    }
-
-    function demoMotor(){
-      const el = document.getElementById("motorState");
-      el.textContent = el.textContent === "Enabled" ? "Disabled" : "Enabled";
-    }
-
-    function applyTarget(){
-      const val = document.getElementById("setTargetInput").value;
-      if(!val) return;
-      document.getElementById("targetDisplay").textContent = val + " g";
-    }
-
-    function fakePID(){
-      const kp = document.getElementById("kp").value || "—";
-      const ki = document.getElementById("ki").value || "—";
-      const kd = document.getElementById("kd").value || "—";
-      document.getElementById("pidOut").textContent = `Kp ${kp} , Ki ${ki} , Kd ${kd}`;
-    }
-
-    function demoTare(){ alert("Demo: Load cell tared."); }
-    function demoCal(){ alert("Demo: Calibration applied."); }
-
-    function demoLimits(){
-      const lo = document.getElementById("lowL").value || "—";
-      const up = document.getElementById("upL").value || "—";
-      document.getElementById("limitOut").textContent = `Lower ${lo} , Upper ${up}`;
-    }
-
-    function demoDB(){
-      const db = document.getElementById("dbVal").value || "—";
-      document.getElementById("dbOut").textContent = db;
-    }
-
-    // Animate tension for demo effect
-    setInterval(() => {
-      const tension = (Math.random() * 120).toFixed(1);
-      document.getElementById("tensionVal").textContent = tension + " g";
-      document.getElementById("barLabel").textContent = tension + " g";
-      document.getElementById("bar").style.width = Math.min(tension,120) + "%";
-    }, 700);
-  </script>
-
+// Run demo loop
+setInterval(simulateTensionStep, 300);
+</script>
 </body>
 </html>
