@@ -1,0 +1,375 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>Watchdog Internet Reboot Box — Middleton Makes</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <!-- Global shared styles -->
+  <link rel="stylesheet" href="/assets/css/global.css" />
+
+  <!-- Page-specific carousel offset rules (5 slides) -->
+  <style>
+    /* Slide offset logic (5 slides) */
+    .carousel > input:nth-of-type(1):checked ~ .carousel__slides .carousel__slide:first-of-type { margin-left:0%; }
+    .carousel > input:nth-of-type(2):checked ~ .carousel__slides .carousel__slide:first-of-type { margin-left:-100%; }
+    .carousel > input:nth-of-type(3):checked ~ .carousel__slides .carousel__slide:first-of-type { margin-left:-200%; }
+    .carousel > input:nth-of-type(4):checked ~ .carousel__slides .carousel__slide:first-of-type { margin-left:-300%; }
+    .carousel > input:nth-of-type(5):checked ~ .carousel__slides .carousel__slide:first-of-type { margin-left:-400%; }
+
+    /* Thumbnail highlight (5) */
+    .carousel > input:nth-of-type(1):checked ~ .carousel__thumbnails li:nth-of-type(1),
+    .carousel > input:nth-of-type(2):checked ~ .carousel__thumbnails li:nth-of-type(2),
+    .carousel > input:nth-of-type(3):checked ~ .carousel__thumbnails li:nth-of-type(3),
+    .carousel > input:nth-of-type(4):checked ~ .carousel__thumbnails li:nth-of-type(4),
+    .carousel > input:nth-of-type(5):checked ~ .carousel__thumbnails li:nth-of-type(5){
+      box-shadow:0 0 0 2px rgba(91,209,255,0.9);
+      border-radius:8px;
+    }
+  </style>
+</head>
+<body>
+  <nav class="topnav">
+    <a class="brand" href="/">Middleton Makes</a>
+    <div class="links">
+      <a href="/#uav">UAV Projects</a>
+      <a href="/#builds" class="active">Builds & Experiments</a>
+      <a href="/#about">About</a>
+      <a href="/#contact">Contact</a>
+    </div>
+  </nav>
+
+  <main class="container">
+    <header>
+      <h1>Watchdog Internet Reboot Box</h1>
+      <p class="subtitle">
+        ESP32-based network watchdog that quietly power-cycles your fibre ONT and router when connectivity dies, then stands back.
+      </p>
+      <span class="chip">ESP32 DevKit v1</span>
+      <span class="chip">ESP RainMaker</span>
+      <span class="chip">Network watchdog</span>
+      <span class="chip">Automatic power-cycling</span>
+    </header>
+
+    <!-- HERO MEDIA -->
+    <div class="hero-media">
+      <img
+        src="/assets/images/watchdog/hero.jpg"
+        alt="Watchdog Internet Reboot Box installed between fibre ONT and router"
+        class="js-enlarge">
+    </div>
+
+    <!-- OVERVIEW -->
+    <section>
+      <h2 class="section-title">Overview</h2>
+      <p class="muted">
+        This little box sits quietly on the network and keeps an eye on the internet for you. Every 30&nbsp;seconds
+        it checks connectivity by pinging Google’s DNS (<code>8.8.8.8</code>) and trying to load a tiny
+        “204 No Content” page from Google. If both checks pass, it does nothing. If they fail twice in a row,
+        it takes control of the power to your fibre ONT and router, reboots them in a safe sequence, then waits
+        for everything to stabilise before it stands down again.
+        <br><br>
+        I built it because my wife works online, and our internet connection would periodically die in a way
+        that only a full power-cycle of the landlord’s router and ONT would fix. The main gear lived in his house,
+        and constantly asking him to reboot it was not practical. This box makes those problems disappear in the
+        background and exposes a simple app interface for when you want more direct control.
+      </p>
+    </section>
+
+    <!-- HOW IT WORKS -->
+    <section>
+      <h2 class="section-title">How it works</h2>
+      <p class="muted">
+        The core logic runs on an ESP32 DevKit v1 and is exposed through an ESP RainMaker app. When monitoring
+        is enabled from the app, the state machine looks roughly like this:
+      </p>
+      <ul>
+        <li>Every 30&nbsp;seconds:
+          <ul>
+            <li>Ping <code>8.8.8.8</code>.</li>
+            <li>Attempt to fetch a tiny Google “204 No Content” page.</li>
+          </ul>
+        </li>
+        <li>If both tests pass:
+          <ul>
+            <li>Show <strong>“Internet OK”</strong> in the app.</li>
+            <li>Keep both the fibre box and router powered.</li>
+            <li>Clear internal failure counters.</li>
+          </ul>
+        </li>
+        <li>If the tests fail twice in a row (~1&nbsp;minute with no internet):
+          <ul>
+            <li>Turn <strong>OFF</strong> both the fibre box and router via MOSFET relays.</li>
+            <li>Keep them off for the configured <strong>off-time</strong> (default 30&nbsp;seconds).</li>
+            <li>Turn the fibre box <strong>ON</strong>, then wait 10&nbsp;seconds.</li>
+            <li>Turn the router <strong>ON</strong>.</li>
+            <li>Show <strong>“Stabilising…”</strong> and wait the stabilisation timeout (default 2&nbsp;minutes).</li>
+          </ul>
+        </li>
+        <li>Each full reboot sequence counts as an attempt. Once the number of attempts reaches <strong>max_attempts</strong>
+          (default 3), the system stops trying and enters a lockout period (default 6&nbsp;hours) so it does not endlessly
+          reboot your gear.</li>
+      </ul>
+      <p class="muted">
+        All of these timings and limits can be tuned from the Settings tile in the app without reflashing firmware.
+      </p>
+    </section>
+
+    <!-- CONTROLS & STATUS -->
+    <section>
+      <h2 class="section-title">Controls &amp; status</h2>
+      <p class="muted">
+        Through the ESP RainMaker app you can:
+      </p>
+      <ul>
+        <li><strong>Toggle monitoring on/off</strong> remotely.</li>
+        <li><strong>Manually trigger a power-cycle</strong> with a dedicated button — useful if the internet feels “off”
+            but hasn’t fully failed the tests yet.</li>
+        <li><strong>Reset attempt counters and lockout</strong> with another button so the box is allowed to start trying
+            again immediately.</li>
+        <li><strong>Adjust key timings</strong>:
+          <ul>
+            <li>Off-time (how long both ONT and router stay off).</li>
+            <li>Stabilisation time (how long the system waits after power-up before it judges connectivity again).</li>
+            <li>Max attempts before lockout.</li>
+            <li>Lockout duration in hours.</li>
+          </ul>
+        </li>
+      </ul>
+      <p class="muted">
+        A simple status LED on the enclosure mirrors what the app is saying:
+      </p>
+      <ul>
+        <li><strong>Solid ON:</strong> Internet OK, monitoring active.</li>
+        <li><strong>Blinking:</strong> Internet tests are failing / reboot logic is in progress.</li>
+      </ul>
+    </section>
+
+    <!-- HARDWARE -->
+    <section>
+      <h2 class="section-title">Hardware &amp; wiring</h2>
+      <p class="muted">
+        The project is intentionally simple on the hardware side — a robust ESP32, two low-voltage control channels,
+        and one status LED:
+      </p>
+      <ul>
+        <li><strong>Microcontroller:</strong> ESP32 DevKit v1.</li>
+        <li><strong>Power switching:</strong> 2 × MOSFET relay modules (one for the fibre ONT, one for the router).</li>
+        <li><strong>Indicator:</strong> Single LED with series resistor for status feedback.</li>
+        <li><strong>Enclosure &amp; mounts:</strong> 3D printed case, mounting brackets, and strain relief for cabling.</li>
+        <li><strong>Power:</strong> The ESP32 is powered from a stable low-voltage source; the relays switch mains or
+            low-voltage to the ONT/router depending on your setup.</li>
+      </ul>
+      <p class="muted">
+        All of the wiring, enclosure design, 3D printing, and troubleshooting were done from scratch. I also leaned on
+        AI-assisted coding for parts of the firmware, then refined the logic by hand once the core state machine
+        and RainMaker plumbing were in place.
+      </p>
+    </section>
+
+    <!-- DEVELOPMENT NOTES -->
+    <section>
+      <h2 class="section-title">Development notes</h2>
+      <p class="muted">
+        This was my first proper ESP-IDF / RainMaker project built fully in VS&nbsp;Code. I initially tried to get
+        RainMaker working via the Arduino IDE, but ran into limitations and configuration issues. Moving to VS&nbsp;Code
+        forced me to learn the ESP-IDF toolchain properly: configuring the project, handling partitions, managing
+        credentials and provisioning, and wiring up the RainMaker devices, parameters and actions.
+        <br><br>
+        Once the basics were stable, I focused on making the behaviour predictable and safe:
+      </p>
+      <ul>
+        <li>Guarding all power actions behind clear state transitions and counters.</li>
+        <li>Ensuring that ONT power-up always happens before router power-up.</li>
+        <li>Making all timings configurable from the app instead of hard-coded.</li>
+        <li>Adding a lockout window so the box cannot get stuck in a reboot loop.</li>
+      </ul>
+      <p class="muted">
+        The result is a small, dedicated tool that just does its job quietly in the background — no more late-night
+        messages to the landlord asking for a manual reset.
+      </p>
+    </section>
+
+    <!-- CODE & RESOURCES -->
+    <section>
+      <h2 class="section-title">Code &amp; resources</h2>
+      <p class="muted">
+        The full ESP32 project (ESP-IDF + RainMaker) is available on GitHub:
+      </p>
+      <ul>
+        <li>
+          <a href="https://github.com/Middletonmakes-dev/Watchdog" target="_blank" rel="noopener">
+            View the Watchdog Internet Reboot Box code on GitHub
+          </a>
+        </li>
+      </ul>
+    </section>
+
+    <!-- MEDIA -->
+    <section>
+      <h2 class="section-title">Media</h2>
+      <p class="muted">
+        A handful of build shots and enclosure details. Click any photo to enlarge.
+      </p>
+
+      <div class="carousel">
+        <!-- Radio Inputs -->
+        <input type="radio" name="watchdog-slides" id="watchdog-slide-1" checked>
+        <input type="radio" name="watchdog-slides" id="watchdog-slide-2">
+        <input type="radio" name="watchdog-slides" id="watchdog-slide-3">
+        <input type="radio" name="watchdog-slides" id="watchdog-slide-4">
+        <input type="radio" name="watchdog-slides" id="watchdog-slide-5">
+
+        <!-- Slides -->
+        <ul class="carousel__slides">
+          <!-- Slide 1 -->
+          <li class="carousel__slide">
+            <figure>
+              <div class="carousel__media">
+                <img
+                  src="/assets/images/watchdog/build-1.jpg"
+                  alt="Watchdog PCB and wiring on the bench during early testing"
+                  class="js-enlarge">
+              </div>
+            </figure>
+          </li>
+
+          <!-- Slide 2 -->
+          <li class="carousel__slide">
+            <figure>
+              <div class="carousel__media">
+                <img
+                  src="/assets/images/watchdog/build-2.jpg"
+                  alt="ESP32 DevKit v1 wired to two MOSFET relay modules"
+                  class="js-enlarge">
+              </div>
+            </figure>
+          </li>
+
+          <!-- Slide 3 -->
+          <li class="carousel__slide">
+            <figure>
+              <div class="carousel__media">
+                <img
+                  src="/assets/images/watchdog/build-3.jpg"
+                  alt="3D-printed enclosure with cut-outs for cables and LED"
+                  class="js-enlarge">
+              </div>
+            </figure>
+          </li>
+
+          <!-- Slide 4 -->
+          <li class="carousel__slide">
+            <figure>
+              <div class="carousel__media">
+                <img
+                  src="/assets/images/watchdog/build-4.jpg"
+                  alt="Watchdog box installed in-line between power strips and network gear"
+                  class="js-enlarge">
+              </div>
+            </figure>
+          </li>
+
+          <!-- Slide 5 -->
+          <li class="carousel__slide">
+            <figure>
+              <div class="carousel__media">
+                <img
+                  src="/assets/images/watchdog/build-5.jpg"
+                  alt="Close-up of status LED and cable routing on the finished box"
+                  class="js-enlarge">
+              </div>
+            </figure>
+          </li>
+        </ul>
+
+        <!-- Thumbnails -->
+        <ul class="carousel__thumbnails">
+          <li>
+            <label for="watchdog-slide-1">
+              <img src="/assets/images/watchdog/build-1.jpg" alt="Bench wiring thumbnail">
+            </label>
+          </li>
+          <li>
+            <label for="watchdog-slide-2">
+              <img src="/assets/images/watchdog/build-2.jpg" alt="ESP32 and relay wiring thumbnail">
+            </label>
+          </li>
+          <li>
+            <label for="watchdog-slide-3">
+              <img src="/assets/images/watchdog/build-3.jpg" alt="Enclosure build thumbnail">
+            </label>
+          </li>
+          <li>
+            <label for="watchdog-slide-4">
+              <img src="/assets/images/watchdog/build-4.jpg" alt="Installed box thumbnail">
+            </label>
+          </li>
+          <li>
+            <label for="watchdog-slide-5">
+              <img src="/assets/images/watchdog/build-5.jpg" alt="Status LED close-up thumbnail">
+            </label>
+          </li>
+        </ul>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    © <span id="year"></span> Middleton Makes
+  </footer>
+
+  <!-- Global lightbox markup (works with .js-enlarge) -->
+  <div class="lightbox-backdrop" id="lightbox">
+    <button type="button" id="lightbox-close">Close ✕</button>
+    <div class="lightbox-content">
+      <img src="" alt="Expanded view" id="lightbox-img">
+    </div>
+  </div>
+
+  <script>
+    // Year in footer
+    document.getElementById('year').textContent = new Date().getFullYear();
+
+    // Simple lightbox for images with .js-enlarge
+    (function () {
+      const lightbox = document.getElementById('lightbox');
+      const lightboxImg = document.getElementById('lightbox-img');
+      const closeBtn = document.getElementById('lightbox-close');
+
+      function openLightbox(src, alt) {
+        lightboxImg.src = src;
+        lightboxImg.alt = alt || 'Expanded view';
+        lightbox.classList.add('is-visible');
+      }
+
+      function closeLightbox() {
+        lightbox.classList.remove('is-visible');
+        lightboxImg.src = '';
+        lightboxImg.alt = 'Expanded view';
+      }
+
+      document.addEventListener('click', function (e) {
+        const target = e.target;
+        if (target.classList && target.classList.contains('js-enlarge')) {
+          openLightbox(target.src, target.alt);
+        }
+      });
+
+      closeBtn.addEventListener('click', closeLightbox);
+
+      lightbox.addEventListener('click', function (e) {
+        if (e.target === lightbox) {
+          closeLightbox();
+        }
+      });
+
+      document.addEventListener('keydown', function (e) {
+        if (e.key === 'Escape' && lightbox.classList.contains('is-visible')) {
+          closeLightbox();
+        }
+      });
+    })();
+  </script>
+</body>
+</html>
