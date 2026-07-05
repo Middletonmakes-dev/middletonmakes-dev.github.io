@@ -6,7 +6,6 @@ These are context notes, not fixes already applied.
 
 ## Watch List
 
-- `index.html` links to `/projects/deployable-payload.html` and `/assets/images/deployable-payload/hero.jpg`, but the reviewed remote tree did not include that page or image folder.
 - `projects/tensioner.html` says "Page-specific carousel offset rules (9 slides)" but the implemented carousel has 7 radio inputs/slides.
 - There are a few visible copy typos worth cleaning when editing nearby text, including "clients specifications".
 - `index.html` duplicates a homepage-specific style block instead of using `assets/css/global.css`; that is fine for now, but shared tokens can drift.
