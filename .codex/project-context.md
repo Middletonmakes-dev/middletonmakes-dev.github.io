@@ -29,7 +29,7 @@ Homepage cards and project pages include:
 - Build/tooling projects: `CNC Hotwire Cutter`, `Dynamic Wire Tensioner`, `UAV Motor Bench Tester`, `Temperature Logger`, `Slow-motion Timer`, `Portal PC`, `Watchdog`, `UAV Launcher`.
 - Demo/calculator pages: `tensioner-demo.html`, `uavdashboard.html`, `temp-analyzer-demo.html`, `bungee-calc.html`, `portal-command-center.html`.
 
-The remote tree reviewed on 2026-07-05 contained image folders for `endura`, `hotwire-cutter`, `motor-bench`, `portal-pc`, `scout`, `slowmo-timer`, `tensioner`, `uav-launcher`, `valk`, and `watchdog`.
+The remote tree reviewed on 2026-07-05 contained image folders for `endura`, `hotwire-cutter`, `motor-bench`, `portal-pc`, `scout`, `slowmo-timer`, `tensioner`, `uav-launcher`, `valk`, and `watchdog`; this repo now also includes `temp-logger` media.
 
 ## Page Pattern
 
